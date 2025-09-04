@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
+from sqlalchemy import text
 from datetime import datetime
 from . import models, schemas
 from .database import SessionLocal, engine, get_db
@@ -24,7 +25,7 @@ async def health_check():
 async def database_health_check(db: Session = Depends(get_db)):
     try:
         # 간단한 쿼리로 데이터베이스 연결 테스트
-        db.execute("SELECT 1 FROM DUAL")
+        db.execute(text("SELECT 1 FROM DUAL"))
         
         return schemas.HealthCheckResponse(
             status="ok",
