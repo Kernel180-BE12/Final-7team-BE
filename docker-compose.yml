@@ -1,0 +1,46 @@
+version: "3.9"
+
+services:
+  # Spring Boot 서비스
+  springboot:
+    build:
+      context: ./springboot
+      dockerfile: Dockerfile
+    container_name: springboot
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+    restart: always
+
+  # FastAPI 서비스
+  fastapi:
+    build:
+      context: ./fastapi
+      dockerfile: Dockerfile
+    container_name: fastapi
+    ports:
+      - "8000:8000"
+    networks:
+      - app-network
+    restart: always
+
+  # Nginx Reverse Proxy
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - springboot
+      - fastapi
+    networks:
+      - app-network
+    restart: always
+
+# 공통 네트워크 설정
+networks:
+  app-network:
+    driver: bridge
