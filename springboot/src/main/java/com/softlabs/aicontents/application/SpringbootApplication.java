@@ -1,4 +1,4 @@
-package com.softlabs.aicontents;
+package com.softlabs.aicontents.application;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
