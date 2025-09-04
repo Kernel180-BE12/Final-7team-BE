@@ -1,21 +1,162 @@
+# =================
+# General
+# =================
+# Log files
+*.log
+logs/
+# Package files
+*.jar
+*.war
+*.ear
+# macOS custom attributes and thumbnail cache
+.DS_Store
+Thumbs.db
+# Windows
+*.tmp
+*.temp
+# =================================================================
+# Build Tools
+# =================================================================
+### Gradle ###
 .gradle
-**/build/
-!**/src/**/build/
-
-# Ignore Gradle GUI config
-gradle-app.setting
-
-# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
-!gradle-wrapper.jar
-
-# Avoid ignore Gradle wrappper properties
-!gradle-wrapper.properties
-
-# Cache of project
-.gradletasknamecache
-
-# Eclipse Gradle plugin generated files
-# Eclipse Core
-.project
-# JDT-specific (Eclipse Java Development Tools)
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+### Maven ###
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+# =================================================================
+# IDEs
+# =================================================================
+### IntelliJ IDEA ###
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+### STS / Eclipse ###
+.apt_generated
 .classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+### VS Code ###
+.vscode/
+# =================================================================
+# Spring Boot / Java
+# =================================================================
+### Spring Boot ###
+# Application configuration files with sensitive data
+application-local.yml
+application-dev.yml
+application-prod.yml
+application-*.properties
+!application.properties
+# Spring Boot DevTools restart trigger file
+.reloadtrigger
+### Database ###
+# H2 database files
+*.db
+*.mv.db
+*.trace.db
+# Oracle Wallet files
+*.p12
+*.jks
+ewallet.p12
+cwallet.sso
+### Logs ###
+/logs/
+spring.log
+application.log
+# =================================================================
+# External APIs & Secrets
+# =================================================================
+### API Keys & Secrets ###
+.env
+.env.local
+.env.*.local
+secrets.properties
+api-keys.properties
+### SSL Certificates ###
+*.crt
+*.key
+*.pem
+*.p12
+*.pfx
+# =================================================================
+# Testing
+# =================================================================
+### Test Results ###
+/test-results/
+/coverage/
+*.coverage
+.nyc_output
+### JaCoCo ###
+jacoco.exec
+jacoco-it.exec
+# =================================================================
+# Deployment & Docker
+# =================================================================
+### Docker ###
+Dockerfile.local
+docker-compose.override.yml
+.dockerignore.local
+### Cloud & Deployment ###
+.aws/
+.gcp/
+terraform.tfstate
+terraform.tfstate.backup
+.terraform/
+# =================================================================
+# Cache & Temporary Files
+# =================================================================
+### Application Cache ###
+/cache/
+/tmp/
+.cache/
+### Node.js (if using any frontend tools) ###
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+# =================================================================
+# FastAPI (Python)
+# =================================================================
+# Python virtual environments
+**/.venv/
+**/venv/
+# Python caches
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+# Python build files
+*.egg-info/
+dist/
+build/
+# IDE-specific files
+fastapi.iml
+# Uvicorn log files (FastAPI 서버 로그)
+uvicorn.log
