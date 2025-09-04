@@ -1,0 +1,72 @@
+# Git
+.git/
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+*.iws
+*.iml
+*.ipr
+*.swp
+*.swo
+.DS_Store
+
+# OS
+Thumbs.db
+
+# Java specific
+*.class
+*.jar
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.properties
+
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# Spring Boot
+*.original
+spring-boot-*.jar
+
+# Logs
+*.log
+logs/
+
+# Application properties (sensitive data)
+application-prod.properties
+application-local.properties
+
+# Testing
+.junit/
+
+# Documentation
+README.md
+docs/
+*.md
+
+# Docker
+Dockerfile*
+.dockerignore
+docker-compose*.yml
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties

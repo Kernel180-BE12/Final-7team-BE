@@ -1,0 +1,13 @@
+# FastAPI 서버 필수 라이브러리
+fastapi==0.110.0
+uvicorn[standard]==0.30.0
+pydantic==2.6.4
+
+# 환경 변수 관리 (선택)
+python-dotenv==1.0.1
+
+# 외부 API 호출 (선택)
+requests==2.32.2
+
+# HTML 템플릿 사용 시
+Jinja2==3.1.6
