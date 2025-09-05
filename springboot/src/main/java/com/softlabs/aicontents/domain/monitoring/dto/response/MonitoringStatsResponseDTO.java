@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 //프론트에 전달할 응답 구조 DTO
 //통계 정보 + 로그 리스트 포함
-public record MonitoringStatsResponse (
+public record MonitoringStatsResponseDTO(
         Stats stats, //성공/실패/성공률 정보
         List<LogEntry> logs //로그 리스트
 ){
