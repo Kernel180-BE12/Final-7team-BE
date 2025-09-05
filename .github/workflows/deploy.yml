@@ -26,6 +26,11 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
+      # Gradle Wrapper 실행 권한 부여 (추가)
+      - name: Grant execute permission for Gradle wrapper
+        run: chmod +x ./gradlew
+        working-directory: springboot
+
       # 3. Spotless 코드 스타일 검사 
       - name: Run Spotless Check
         run: ./gradlew spotlessCheck
