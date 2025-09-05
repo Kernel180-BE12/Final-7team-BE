@@ -1,4 +1,3 @@
 package com.softlabs.aicontents.common;
 
-public class TestCommon {
-}
+public class TestCommon {}
