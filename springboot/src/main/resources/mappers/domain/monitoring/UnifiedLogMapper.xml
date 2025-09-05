@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.softlabs.aicontents.domain.monitoring.mapper.UnifiedLogMapper">
+<!--    최근 3건 조회-->
+    <select id="findRecentLogs" resultType="com.softlabs.aicontents.domain.monitoring.vo.response.UnifiedLogResponseVO">
+        select
+            LOG_MESSAGE as logMessage,
+            LOG_DETAIL as logDetail,
+            STATUS_CODE as statusCode
+        from ADMIN.TEST_UNIFIED_LOGS
+        order by CREATED_AT desc
+        fetch first 3 rows only
+    </select>
+
+<!--    성공 횟수 조회-->
+    <select id="successCount" resultType="int">
+        select
+            count(*)
+        from ADMIN.TEST_UNIFIED_LOGS
+        where STATUS_CODE = 'SUCCESS'
+    </select>
+
+<!--    실패 횟수 조회-->
+    <select id="failedCount" resultType="int">
+        select
+            count(*)
+        from ADMIN.TEST_UNIFIED_LOGS
+        where STATUS_CODE = 'FAILED'
+    </select>
+
+<!--    모든 행 조회(성공률 계산용)-->
+    <select id="allRows" resultType="float">
+        select
+            count(*)
+        from ADMIN.TEST_UNIFIED_LOGS
+    </select>
+
+</mapper>
