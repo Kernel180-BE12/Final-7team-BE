@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.softlabs.aicontents.domain.testexample.mapper.TestExampleMapper">
+
+    <insert id="insertTestExample" parameterType="com.softlabs.aicontents.domain.testexample.entity.TestExample">
+        <selectKey keyProperty="id" resultType="long" order="BEFORE">
+            SELECT TEST_EXAMPLE_SEQ.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO TEST_EXAMPLE (ID, TEST_DATA)
+        VALUES (#{id}, #{testData})
+    </insert>
+
+</mapper>

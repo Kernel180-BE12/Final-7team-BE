@@ -11,3 +11,8 @@ requests==2.32.2
 
 # HTML 템플릿 사용 시
 Jinja2==3.1.6
+
+# 데이터베이스 관련 라이브러리
+sqlalchemy==2.0.32
+oracledb==3.3.0
+python-multipart==0.0.9
