@@ -6,7 +6,10 @@ WORKDIR /app
 
 # 시스템 패키지 설치 및 pip 업그레이드
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential gcc && \
+    build-essential \
+    gcc \
+    wget \
+    unzip && \
     pip install --upgrade pip && \
     rm -rf /var/lib/apt/lists/*
 
