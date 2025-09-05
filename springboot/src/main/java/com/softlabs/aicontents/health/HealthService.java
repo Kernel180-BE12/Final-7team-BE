@@ -27,10 +27,12 @@ public class HealthService {
             healthInfo.put("message", "RDS 연결이 정상적으로 작동중입니다.");
             
         } catch (Exception e) {
+            e.printStackTrace(); // 콘솔에 상세 에러 출력
             healthInfo.put("status", "DOWN");
             healthInfo.put("database", "Oracle RDS");
             healthInfo.put("connection", "FAILED");
             healthInfo.put("error", e.getMessage());
+            healthInfo.put("errorClass", e.getClass().getSimpleName());
             healthInfo.put("message", "RDS 연결에 실패했습니다.");
         }
         
