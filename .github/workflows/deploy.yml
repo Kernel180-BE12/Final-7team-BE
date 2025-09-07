@@ -62,13 +62,22 @@ jobs:
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v1
 
-      # 4. 변경된 디렉토리 감지
+#      # 4. 변경된 디렉토리 감지
+#      - name: Detect changed directories
+#        id: changes
+#        run: |
+#          echo "springboot=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^springboot/' || true)" >> $GITHUB_ENV
+#          echo "fastapi=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^fastapi/' || true)" >> $GITHUB_ENV
+#          echo "nginx=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^nginx/' || true)" >> $GITHUB_ENV
+
       - name: Detect changed directories
         id: changes
         run: |
-          echo "springboot=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^springboot/' || true)" >> $GITHUB_ENV
-          echo "fastapi=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^fastapi/' || true)" >> $GITHUB_ENV
-          echo "nginx=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^nginx/' || true)" >> $GITHUB_ENV
+          BASE_SHA=${{ github.event.before || github.event.pull_request.base.sha || 'HEAD^' }}
+          echo "springboot=$(git diff --name-only $BASE_SHA ${{ github.sha }} | grep '^springboot/' || true)" >> $GITHUB_ENV
+          echo "fastapi=$(git diff --name-only $BASE_SHA ${{ github.sha }} | grep '^fastapi/' || true)" >> $GITHUB_ENV
+          echo "nginx=$(git diff --name-only $BASE_SHA ${{ github.sha }} | grep '^nginx/' || true)" >> $GITHUB_ENV
+
 
       # 5. SpringBoot 이미지 빌드 & 푸시
       - name: Build & Push SpringBoot
