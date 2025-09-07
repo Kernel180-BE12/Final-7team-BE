@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 //UnifiedLog 테이블 접근용 MyBatis Mapper
+
 @Mapper
 public interface UnifiedLogMapper {
     List<UnifiedLogResponseVO> findRecentLogs(); //최근 로그 N개 조회
