@@ -1,4 +1,3 @@
 package com.softlabs.aicontents.log;
 
-public class TestLog {
-}
+public class TestLog {}
