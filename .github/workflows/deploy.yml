@@ -73,11 +73,17 @@ jobs:
       - name: Detect changed directories
         id: changes
         run: |
-          BASE_SHA=${{ github.event.before || github.event.pull_request.base.sha || 'HEAD^' }}
+          # BASE_SHA 계산: 이전 커밋 없을 경우 첫 커밋으로 설정
+          BASE_SHA=$(git rev-parse --verify ${{ github.event.before }} 2>/dev/null || git rev-list --max-parents=0 HEAD)
+          echo "BASE_SHA=$BASE_SHA" >> $GITHUB_ENV
+
+          # 변경된 폴더 체크
           echo "springboot=$(git diff --name-only $BASE_SHA ${{ github.sha }} | grep '^springboot/' || true)" >> $GITHUB_ENV
           echo "fastapi=$(git diff --name-only $BASE_SHA ${{ github.sha }} | grep '^fastapi/' || true)" >> $GITHUB_ENV
           echo "nginx=$(git diff --name-only $BASE_SHA ${{ github.sha }} | grep '^nginx/' || true)" >> $GITHUB_ENV
-
+      
+      
+      
 
       # 5. SpringBoot 이미지 빌드 & 푸시
       - name: Build & Push SpringBoot
