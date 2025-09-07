@@ -10,6 +10,6 @@ public class SwaggerTestController {
   @GetMapping("/swagger-test")
   @Operation(summary = "Swagger 테스트 API", description = "Swagger UI에서 동작을 확인하기 위한 테스트용 API입니다.")
   public String swaggerTest() {
-    return "Swagger 연동이 정상적으로 작동 중입니다!";
+    return "Swagger 연동이 정상적으로 작동 중입니다!!";
   }
 }
