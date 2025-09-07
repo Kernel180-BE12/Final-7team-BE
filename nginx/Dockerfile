@@ -13,9 +13,6 @@ RUN rm -rf /etc/nginx/conf.d/*
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY conf.d /etc/nginx/conf.d
 
-# 정적 파일 캐싱 설정 -> 추후 react 정적 리소스 서빙할 때 설정
-# COPY static /usr/share/nginx/html
-
 # Nginx 포트 오픈
 EXPOSE 80
 

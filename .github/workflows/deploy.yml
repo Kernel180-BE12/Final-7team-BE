@@ -1,7 +1,6 @@
 name: Backend CI/CD to AWS ECR
 
 on:
-  # main merge 시 CD + dev PR 시 CI 동작하도록 추가
   push:
     branches:
       - main
@@ -11,7 +10,7 @@ on:
       - dev
 
 jobs:
-  build-and-push-backend:
+  build-and-test:
     runs-on: ubuntu-latest
 
     steps:
@@ -26,17 +25,32 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      # 3. Spotless 코드 스타일 검사 
+      # 3. Gradle Wrapper 실행 권한 부여
+      - name: Grant execute permission for Gradle wrapper
+        run: chmod +x ./gradlew
+        working-directory: springboot
+
+      # 4. Spotless 코드 스타일 검사
       - name: Run Spotless Check
         run: ./gradlew spotlessCheck
         working-directory: springboot
 
-      # 4. Gradle 빌드 & 테스트 
+      # 5. Gradle 빌드 & 테스트
       - name: Run Gradle Build & Test
         run: ./gradlew build
         working-directory: springboot
 
-      # 5. AWS 자격 증명 설정
+  build-and-push-backend:
+    needs: build-and-test   # CI 성공 시에만 동작
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      # 1. 코드 체크아웃
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2. AWS 자격 증명 설정
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -44,11 +58,11 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-2
 
-      # 6. ECR 로그인
+      # 3. ECR 로그인
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v1
 
-      # 7. 변경된 디렉토리 감지 (SpringBoot / FastAPI / Nginx)
+      # 4. 변경된 디렉토리 감지
       - name: Detect changed directories
         id: changes
         run: |
@@ -56,35 +70,31 @@ jobs:
           echo "fastapi=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^fastapi/' || true)" >> $GITHUB_ENV
           echo "nginx=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^nginx/' || true)" >> $GITHUB_ENV
 
-      # 8. SpringBoot 이미지 빌드 & 푸시
+      # 5. SpringBoot 이미지 빌드 & 푸시
       - name: Build & Push SpringBoot
         if: env.springboot != ''
         run: |
-          echo "SpringBoot 변경 감지 → 이미지 빌드 & 푸시"
           docker build -t ${{ secrets.ECR_REGISTRY }}/final-7team-springboot:latest ./springboot
           docker push ${{ secrets.ECR_REGISTRY }}/final-7team-springboot:latest
 
-      # 9. FastAPI 이미지 빌드 & 푸시
+      # 6. FastAPI 이미지 빌드 & 푸시
       - name: Build & Push FastAPI
         if: env.fastapi != ''
         run: |
-          echo "FastAPI 변경 감지 → 이미지 빌드 & 푸시"
           docker build -t ${{ secrets.ECR_REGISTRY }}/final-7team-fastapi:latest ./fastapi
           docker push ${{ secrets.ECR_REGISTRY }}/final-7team-fastapi:latest
 
-      # 10. Nginx 이미지 빌드 & 푸시
+      # 7. Nginx 이미지 빌드 & 푸시
       - name: Build & Push Nginx
         if: env.nginx != ''
         run: |
-          echo "Nginx 변경 감지 → 이미지 빌드 & 푸시"
           docker build -t ${{ secrets.ECR_REGISTRY }}/final-7team-nginx:latest ./nginx
           docker push ${{ secrets.ECR_REGISTRY }}/final-7team-nginx:latest
 
-  # main 브랜치에 merge될 때만 EC2 자동 배포
   deploy-to-ec2:
-    if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
     needs: build-and-push-backend
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'   # main 머지 시에만 배포
 
     steps:
       - name: Deploy to EC2
