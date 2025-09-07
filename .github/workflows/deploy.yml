@@ -74,7 +74,7 @@ jobs:
         id: changes
         run: |
           # BASE_SHA 계산: 이전 커밋 없을 경우 첫 커밋으로 설정
-          BASE_SHA=$(git rev-parse --verify ${{ github.event.before }} 2>/dev/null || git rev-list --max-parents=0 HEAD)
+          BASE_SHA=$(git rev-parse HEAD~1 2>/dev/null || git rev-list --max-parents=0 HEAD)
           echo "BASE_SHA=$BASE_SHA" >> $GITHUB_ENV
 
           # 변경된 폴더 체크
