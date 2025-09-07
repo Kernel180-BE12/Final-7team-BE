@@ -50,6 +50,19 @@ jobs:
     needs: build-and-test # CI 성공 시에만 동작
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
+    # Matrix 전략으로 중복되는 빌드&푸시 작업을 하나로 통합
+    strategy:
+      matrix:
+        # 서비스 목록 정의
+        service_name: [springboot, fastapi, nginx]
+        # 서비스별 ECR 리포지토리 이름 매핑
+        include:
+          - service_name: springboot
+            ecr_repo: final-7team-springboot
+          - service_name: fastapi
+            ecr_repo: final-7team-fastapi
+          - service_name: nginx
+            ecr_repo: final-7team-nginx
     # matrix의 출력을 다음 job으로 전달하기 위함
     outputs:
       image_tag: ${{ steps.vars.outputs.sha_short }}
@@ -67,37 +80,33 @@ jobs:
       - name: Get changed files
         id: changed-files
         uses: tj-actions/changed-files@v44
+      # if 조건으로 각 서비스 폴더에 변경이 있을 때만 해당 matrix 실행
+      # 예: springboot 폴더에 변경이 있을 때만 springboot 빌드
+      - name: Check if service changed
+        id: service-changed
+        run: |
+          if echo "${{ steps.changed-files.outputs.all_changed_files }}" | grep -q "${{ matrix.service_name }}"; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
       - name: Configure AWS credentials
+        if: steps.service-changed.outputs.changed == 'true'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-2
       - name: Login to Amazon ECR
+        if: steps.service-changed.outputs.changed == 'true'
         uses: aws-actions/amazon-ecr-login@v2
-      # Matrix 전략으로 중복되는 빌드&푸시 작업을 하나로 통합
       - name: Build and push changed services based on matrix
-        if: steps.changed-files.outputs.any_changed == 'true'
+        if: steps.service-changed.outputs.changed == 'true'
         uses: docker/build-push-action@v5
         with:
           context: ./${{ matrix.service_name }}
           push: true
           tags: ${{ env.ECR_REGISTRY }}/${{ matrix.ecr_repo }}:${{ steps.vars.outputs.sha_short }}
-        strategy:
-          matrix:
-            # 서비스 목록 정의
-            service_name: [springboot, fastapi, nginx]
-            # 서비스별 ECR 리포지토리 이름 매핑
-            include:
-              - service_name: springboot
-                ecr_repo: ${{ env.SPRINGBOOT_ECR_REPOSITORY }}
-              - service_name: fastapi
-                ecr_repo: ${{ env.FASTAPI_ECR_REPOSITORY }}
-              - service_name: nginx
-                ecr_repo: ${{ env.NGINX_ECR_REPOSITORY }}
-    # if 조건으로 각 서비스 폴더에 변경이 있을 때만 해당 matrix 실행
-    # 예: springboot 폴더에 변경이 있을 때만 springboot 빌드
-    if: contains(steps.changed-files.outputs.all_changed_files, matrix.service_name)
   # 3. CD (EC2 배포)
   deploy-to-ec2:
     needs: build-and-push-backend
