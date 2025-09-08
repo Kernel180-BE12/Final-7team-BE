@@ -1,4 +1,3 @@
 package com.softlabs.aicontents.orchestration;
 
-public class TestOrchestration {
-}
+public class TestOrchestration {}
