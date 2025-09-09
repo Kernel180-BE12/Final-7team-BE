@@ -1,0 +1,102 @@
+name: Backend CI/CD to AWS ECR
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+    branches:
+      - dev
+
+jobs:
+  # 1. Spring Boot 빌드 & 테스트
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. 코드 체크아웃
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2. JDK 21 설치
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      # 3. Gradle Wrapper 실행 권한 부여
+      - name: Grant execute permission for Gradle wrapper
+        run: chmod +x ./gradlew
+        working-directory: springboot
+
+      # 4. Spotless 코드 스타일 검사
+      - name: Run Spotless Check
+        run: ./gradlew spotlessCheck
+        working-directory: springboot
+
+      # 5. Gradle 빌드 & 테스트
+      - name: Run Gradle Build & Test
+        run: ./gradlew build
+        working-directory: springboot
+
+  # 2. ECR 빌드 & 푸시
+  build-and-push-backend:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      # 1. 코드 체크아웃
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2. AWS 자격 증명 설정
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+
+      # 3. ECR 로그인
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v1
+
+      # 4. SpringBoot 이미지 빌드 & 푸시
+      - name: Build & Push SpringBoot
+        run: |
+          docker build -t ${{ secrets.ECR_REGISTRY }}/final-7team-springboot:latest ./springboot
+          docker push ${{ secrets.ECR_REGISTRY }}/final-7team-springboot:latest
+
+      # 5. FastAPI 이미지 빌드 & 푸시
+      - name: Build & Push FastAPI
+        run: |
+          docker build -t ${{ secrets.ECR_REGISTRY }}/final-7team-fastapi:latest ./fastapi
+          docker push ${{ secrets.ECR_REGISTRY }}/final-7team-fastapi:latest
+
+      # 6. Nginx 이미지 빌드 & 푸시
+      - name: Build & Push Nginx
+        run: |
+          docker build -t ${{ secrets.ECR_REGISTRY }}/final-7team-nginx:latest ./nginx
+          docker push ${{ secrets.ECR_REGISTRY }}/final-7team-nginx:latest
+
+  # 3. EC2로 배포
+  deploy-to-ec2:
+    needs: build-and-push-backend
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_KEY }}
+          script: |
+            cd ~/softlabs
+            docker-compose pull
+            docker-compose up -d
+            docker image prune -f

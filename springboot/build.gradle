@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.5.5'
 	id 'io.spring.dependency-management' version '1.1.7'
+	id 'com.diffplug.spotless' version '6.25.0'
 }
 
 group = 'com.softlabs.aicontents'
@@ -22,6 +23,15 @@ configurations {
 
 repositories {
 	mavenCentral()
+}
+
+spotless {
+	java {
+		googleJavaFormat('1.17.0')    // Google Java Style 적용
+		removeUnusedImports()        // 사용하지 않는 import 제거
+		trimTrailingWhitespace()     // 라인 끝 공백 제거
+		endWithNewline()             // 파일 끝 개행 유지
+	}
 }
 
 dependencies {
