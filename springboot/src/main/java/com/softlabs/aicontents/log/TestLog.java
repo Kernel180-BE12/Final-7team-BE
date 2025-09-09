@@ -1,4 +1,4 @@
-package com.softlabs.aicontents.log;
-
-public class TestLog {
-}
+//package com.softlabs.aicontents.log;
+//
+//public class TestLog {
+//}
