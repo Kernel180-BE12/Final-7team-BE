@@ -1,10 +1,10 @@
-package com.softlabs.aicontents.scheduler.controller;
+package com.softlabs.aicontents.domain.orchestration;
 
-import com.softlabs.aicontents.scheduler.dto.pipeLineDTO.StepExecutionResultDTO;
-import com.softlabs.aicontents.scheduler.service.AIContentExecutor;
-import com.softlabs.aicontents.scheduler.service.BlogPublishExecutor;
-import com.softlabs.aicontents.scheduler.service.KeywordExecutor;
-import com.softlabs.aicontents.scheduler.service.ProductCrawlingExecutor;
+import com.softlabs.aicontents.domain.scheduler.dto.pipeLineDTO.StepExecutionResultDTO;
+import com.softlabs.aicontents.domain.scheduler.service.executor.AIContentExecutor;
+import com.softlabs.aicontents.domain.scheduler.service.executor.BlogPublishExecutor;
+import com.softlabs.aicontents.domain.scheduler.service.executor.KeywordExecutor;
+import com.softlabs.aicontents.domain.scheduler.service.executor.ProductCrawlingExecutor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -52,6 +52,8 @@ public class PipelineService {
       // todo : if 추출 실패 시 3회 재시도 및 예외처리
 
       log.info("파이프라인 성공");
+
+//      return
 
     } catch (Exception e) {
       log.error("파이프라인 실행 실패:{}", e.getMessage());

@@ -1,9 +1,9 @@
-package com.softlabs.aicontents.scheduler.service;
+package com.softlabs.aicontents.domain.scheduler.service.executor;
 
-import com.softlabs.aicontents.domain.testService.BlogPublishService;
-import com.softlabs.aicontents.scheduler.dto.pipeLineDTO.StepExecutionResultDTO;
-import com.softlabs.aicontents.scheduler.interfacePipe.PipelineStepExecutor;
+import com.softlabs.aicontents.domain.scheduler.dto.pipeLineDTO.StepExecutionResultDTO;
+import com.softlabs.aicontents.domain.scheduler.interfacePipe.PipelineStepExecutor;
 // import com.softlabs.aicontents.domain.testMapper.BlogPublishMapper;
+import com.softlabs.aicontents.domain.testDomainService.BlogPublishService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

@@ -1,4 +1,4 @@
-package com.softlabs.aicontents.domain.testService;
+package com.softlabs.aicontents.domain.testDomainService;
 
 import org.springframework.stereotype.Service;
 
