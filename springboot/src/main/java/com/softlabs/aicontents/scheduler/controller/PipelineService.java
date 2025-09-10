@@ -56,7 +56,7 @@ public class PipelineService {
                 StepExecutionResultDTO step04 = blogExecutor.execute(executionId);
                 //todo : if 추출 실패 시 3회 재시도 및 예외처리
 
-                log.error("파이프라인 성공");
+                log.info("파이프라인 성공");
 
         } catch (Exception e){
             log.error("파이프라인 실행 실패:{}",e.getMessage());
