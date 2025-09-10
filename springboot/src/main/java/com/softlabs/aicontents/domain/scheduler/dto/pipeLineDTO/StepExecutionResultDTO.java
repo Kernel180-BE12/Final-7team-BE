@@ -1,4 +1,4 @@
-package com.softlabs.aicontents.scheduler.dto.pipeLineDTO;
+package com.softlabs.aicontents.domain.scheduler.dto.pipeLineDTO;
 
 import lombok.Getter;
 

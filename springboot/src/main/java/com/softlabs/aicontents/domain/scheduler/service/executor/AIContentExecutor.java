@@ -1,9 +1,9 @@
-package com.softlabs.aicontents.scheduler.service;
+package com.softlabs.aicontents.domain.scheduler.service.executor;
 
-import com.softlabs.aicontents.domain.testService.BlogPublishService;
-import com.softlabs.aicontents.scheduler.dto.pipeLineDTO.StepExecutionResultDTO;
-import com.softlabs.aicontents.scheduler.interfacePipe.PipelineStepExecutor;
-// import com.softlabs.aicontents.domain.testMapper.BlogPublishMapper;
+import com.softlabs.aicontents.domain.testService.AIContentService;
+import com.softlabs.aicontents.domain.scheduler.dto.pipeLineDTO.StepExecutionResultDTO;
+import com.softlabs.aicontents.domain.scheduler.interfacePipe.PipelineStepExecutor;
+// import com.softlabs.aicontents.domain.testMapper.AIContentMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,31 +12,32 @@ import org.springframework.stereotype.Service;
 @Component
 @Slf4j
 @Service
-public class BlogPublishExecutor implements PipelineStepExecutor {
-  @Autowired private BlogPublishService blogPublishService;
+public class AIContentExecutor implements PipelineStepExecutor {
 
-  // todo: 실제 발행 클래스로 변경
+  @Autowired private AIContentService aiContentService;
+
+  // todo: 실제 LLM생성 클래스로 변경
 
   //    @Autowired
-  //    private BlogPublishMapper blogPublishMapper;
-  //    // todo: 실제 발행 매퍼 인터페이스로 변경
+  //    private AIContentMapper aiContentMapper;
+  //    // todo: 실제 LLM생성 매퍼 인터페이스로 변경
 
   @Override
   public StepExecutionResultDTO execute(Long executionId) {
 
     /// test : 파이프라인 동작 테스트
-    System.out.println("발행 메서드 호출/ 실행");
+    System.out.println("LLM생성 메서드 호출/ 실행");
     delayWithDots(3);
 
     /// todo : 테스트용 RDS 조회 쿼리
-    System.out.println("발행 결과 DB에서 쿼리 조회");
+    System.out.println("LLM생성 결과 DB에서 쿼리 조회");
     delayWithDots(3);
-    System.out.println("발행 결과 DB 완료 확인 로직 실행");
+    System.out.println("LLM생성 결과 DB 완료 확인 로직 실행");
     delayWithDots(3);
-    System.out.println("발행 상태 판단 -> 완료(success)");
-    System.out.println("발행 상태 판단 -> 실패(failure)-> 재시도/예외처리");
+    System.out.println("LLM생성 수집 상태 판단 -> 완료(success)");
+    System.out.println("LLM생성 수집 상태 판단 -> 실패(failure)-> 재시도/예외처리");
     delayWithDots(3);
-    System.out.println("[발행] 완료");
+    System.out.println("[스케줄러]가 [LLM] -> [발행] (요청)객체 전달");
     delayWithDots(3);
     return null;
     /// todo : 반환 값으로 이전 기능이 요구하는 파라메터를 반환하기.
@@ -59,7 +60,7 @@ public class BlogPublishExecutor implements PipelineStepExecutor {
 //        try {
 //            //키워드 수집 서비스 실행
 //            log.info("LLM생성 메서스 시작");
-//            blogPublishService.extractBlogPublish(executionId);
+//            aiContentService.extractAiContent(executionId);
 //            // todo: 실제 키워드 수집 서비스 의 추출 메서드
 //
 //            //DB 조회로 결과 확인 (30초 대기 적용)
@@ -80,7 +81,7 @@ public class BlogPublishExecutor implements PipelineStepExecutor {
 //    }
 //    private String waitForResult(Long executionId, int timeoutSeconds) {
 //        for (int i = 0; i < timeoutSeconds; i++) {
-//            String keyword = blogPublishMapper.findBlogPublishByExecutionId(executionId);
+//            String keyword = aiContentMapper.findAicontentByExecutionId(executionId);
 //            if (keyword != null) {
 //                return keyword;
 //            }

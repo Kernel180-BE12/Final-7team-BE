@@ -1,4 +1,4 @@
-package com.softlabs.aicontents.orchestration.enums;
+package com.softlabs.aicontents.domain.orchestration.enums;
 
 public enum PipelineStep {
   STEP_01("STEP_01", "구글 트렌드 키워드 수집", 1),
