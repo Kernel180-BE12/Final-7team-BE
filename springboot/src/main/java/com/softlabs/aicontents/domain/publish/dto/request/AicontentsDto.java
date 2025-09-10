@@ -4,8 +4,8 @@ import lombok.Data;
 
 @Data
 public class AicontentsDto {
-    private String Title;
-    private String MetaDescription;
-    private String Markdown;
-    private String Hashtag;
+  private String Title;
+  private String MetaDescription;
+  private String Markdown;
+  private String Hashtag;
 }

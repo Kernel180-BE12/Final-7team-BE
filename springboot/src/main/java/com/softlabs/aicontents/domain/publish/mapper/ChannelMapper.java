@@ -4,6 +4,7 @@ import java.nio.channels.Channel;
 import java.util.List;
 
 public interface ChannelMapper {
-    List<Channel> selectbyIds(List<Long> channelIds);
-    Channel selectbyId(Long channelId);
+  List<Channel> selectbyIds(List<Long> channelIds);
+
+  Channel selectbyId(Long channelId);
 }
