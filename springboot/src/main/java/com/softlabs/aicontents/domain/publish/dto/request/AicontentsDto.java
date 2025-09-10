@@ -3,9 +3,9 @@ package com.softlabs.aicontents.domain.publish.dto.request;
 import lombok.Data;
 
 @Data
-public class ContentsDto {
+public class AicontentsDto {
     private String Title;
-    private String Description;
-    
-
+    private String MetaDescription;
+    private String Markdown;
+    private String Hashtag;
 }
