@@ -1,12 +1,12 @@
-//package com.softlabs.aicontents.domain.testMapper;
+// package com.softlabs.aicontents.domain.testMapper;
 //
 //
-//import org.apache.ibatis.annotations.Mapper;
+// import org.apache.ibatis.annotations.Mapper;
 //
-//@Mapper
-//public interface BlogPublishMapper {
+// @Mapper
+// public interface BlogPublishMapper {
 //    String findBlogPublishByExecutionId(Long executionId);
-//}
+// }
 //
 //
 ///// todo : 실제 개발한 Mapper 적용

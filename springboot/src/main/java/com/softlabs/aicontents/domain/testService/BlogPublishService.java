@@ -1,14 +1,10 @@
 package com.softlabs.aicontents.domain.testService;
 
-
 import org.springframework.stereotype.Service;
 
 @Service
 public class BlogPublishService {
-    public void extractBlogPublish(Long executionId) {
-
-    }
+  public void extractBlogPublish(Long executionId) {}
 }
 
-
-///todo : 실제 구현 클래스 적용
+/// todo : 실제 구현 클래스 적용

@@ -1,9 +1,9 @@
-//package com.softlabs.aicontents.domain.testMapper;
+// package com.softlabs.aicontents.domain.testMapper;
 //
-//import org.apache.ibatis.annotations.Mapper;
+// import org.apache.ibatis.annotations.Mapper;
 //
-//@Mapper
-//public interface ProductCrawlingMapper {
+// @Mapper
+// public interface ProductCrawlingMapper {
 //    String findproductCrawlingByExecutionId(Long executionId);
 //
 //    }
