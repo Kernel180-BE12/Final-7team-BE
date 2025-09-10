@@ -1,4 +1,4 @@
-package com.softlabs.aicontents.domain.scheduler.service;
+package com.softlabs.aicontents.domain.orchestration;
 
 import com.softlabs.aicontents.domain.scheduler.dto.pipeLineDTO.StepExecutionResultDTO;
 import com.softlabs.aicontents.domain.scheduler.service.executor.AIContentExecutor;
@@ -52,6 +52,8 @@ public class PipelineService {
       // todo : if 추출 실패 시 3회 재시도 및 예외처리
 
       log.info("파이프라인 성공");
+
+//      return
 
     } catch (Exception e) {
       log.error("파이프라인 실행 실패:{}", e.getMessage());
