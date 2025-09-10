@@ -22,8 +22,7 @@ public class ScheduleEngineController {
   private final int MAX_executionCount = 3;
   private boolean isCompleted = false;
 
-  @Autowired
-  private PipelineService pipelineService;
+  @Autowired private PipelineService pipelineService;
 
   // 초 분 시 일 월 요일
   // @Scheduled(cron = "0 58 21 * * *")
@@ -34,26 +33,22 @@ public class ScheduleEngineController {
   /// todo : 1. 파이프라인 3회 실행 후 종료(for문)
   /// todo : 2. 파이프라인 3회 재시도 /예외처리
 
-
-  ///10. 파이프라인 실행
+  /// 10. 파이프라인 실행
   @PostMapping("/pipeline/execute")
   public void executePipline() {
     /// 파이프라인 실행 메서드 호출
     pipelineService.executionPipline();
   }
 
-
- /// 11. 파이프라인 상태 조회
+  /// 11. 파이프라인 상태 조회
   @GetMapping("/pipeline/status/{executionId}")
-  public void checkStatus(){
+  public void checkStatus() {
     /// todo : 상태 조회 로직
   }
 
   /// 12. 파이프라인 제어
   @PostMapping("/pipeline/control/{executionId}")
-  public void controlPipeline(){
-      /// todo : 파이프라인 제어 로직
-    }
-
+  public void controlPipeline() {
+    /// todo : 파이프라인 제어 로직
   }
-
+}
