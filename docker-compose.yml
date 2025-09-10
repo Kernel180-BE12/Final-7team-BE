@@ -1,46 +1,50 @@
 version: "3.9"
 
 services:
-  # Spring Boot 서비스
   springboot:
-    build:
-      context: ./springboot
-      dockerfile: Dockerfile
+    image: 445971788373.dkr.ecr.ap-northeast-2.amazonaws.com/final-7team-springboot:latest
     container_name: springboot
     ports:
       - "8080:8080"
+    env_file:
+      - .env
     networks:
       - app-network
     restart: always
 
-  # FastAPI 서비스
   fastapi:
-    build:
-      context: ./fastapi
-      dockerfile: Dockerfile
+    image: 445971788373.dkr.ecr.ap-northeast-2.amazonaws.com/final-7team-fastapi:latest
     container_name: fastapi
     ports:
       - "8000:8000"
+    env_file:
+      - .env
     networks:
       - app-network
     restart: always
 
-  # Nginx Reverse Proxy
+  react:
+    image: 445971788373.dkr.ecr.ap-northeast-2.amazonaws.com/final-7team-react:latest
+    container_name: react
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+    restart: always
+
   nginx:
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile
+    image: 445971788373.dkr.ecr.ap-northeast-2.amazonaws.com/final-7team-nginx:latest
     container_name: nginx
     ports:
       - "80:80"
     depends_on:
       - springboot
       - fastapi
+      - react
     networks:
       - app-network
     restart: always
 
-# 공통 네트워크 설정
 networks:
   app-network:
     driver: bridge

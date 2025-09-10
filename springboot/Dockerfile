@@ -6,6 +6,7 @@ WORKDIR /app
 # Gradle 캐시 최적화 (dependencies 먼저 받아서 빌드 속도 향상)
 COPY build.gradle settings.gradle gradlew ./
 COPY gradle ./gradle
+RUN chmod +x ./gradlew
 RUN ./gradlew dependencies --no-daemon
 
 # 소스 코드 복사 및 빌드
