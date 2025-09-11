@@ -10,6 +10,7 @@ on:
       - dev
 
 jobs:
+  # 1. Spring Boot 빌드 & 테스트
   build-and-test:
     runs-on: ubuntu-latest
 
@@ -40,8 +41,9 @@ jobs:
         run: ./gradlew build
         working-directory: springboot
 
+  # 2. ECR 빌드 & 푸시
   build-and-push-backend:
-    needs: build-and-test   # CI 성공 시에만 동작
+    needs: build-and-test
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
 
@@ -62,49 +64,39 @@ jobs:
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v1
 
-      # 4. 변경된 디렉토리 감지
-      - name: Detect changed directories
-        id: changes
-        run: |
-          echo "springboot=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^springboot/' || true)" >> $GITHUB_ENV
-          echo "fastapi=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^fastapi/' || true)" >> $GITHUB_ENV
-          echo "nginx=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^nginx/' || true)" >> $GITHUB_ENV
-
-      # 5. SpringBoot 이미지 빌드 & 푸시
+      # 4. SpringBoot 이미지 빌드 & 푸시
       - name: Build & Push SpringBoot
-        if: env.springboot != ''
         run: |
           docker build -t ${{ secrets.ECR_REGISTRY }}/final-7team-springboot:latest ./springboot
           docker push ${{ secrets.ECR_REGISTRY }}/final-7team-springboot:latest
 
-      # 6. FastAPI 이미지 빌드 & 푸시
+      # 5. FastAPI 이미지 빌드 & 푸시
       - name: Build & Push FastAPI
-        if: env.fastapi != ''
         run: |
           docker build -t ${{ secrets.ECR_REGISTRY }}/final-7team-fastapi:latest ./fastapi
           docker push ${{ secrets.ECR_REGISTRY }}/final-7team-fastapi:latest
 
-      # 7. Nginx 이미지 빌드 & 푸시
+      # 6. Nginx 이미지 빌드 & 푸시
       - name: Build & Push Nginx
-        if: env.nginx != ''
         run: |
           docker build -t ${{ secrets.ECR_REGISTRY }}/final-7team-nginx:latest ./nginx
           docker push ${{ secrets.ECR_REGISTRY }}/final-7team-nginx:latest
 
+  # 3. EC2로 배포
   deploy-to-ec2:
     needs: build-and-push-backend
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'   # main 머지 시에만 배포
+    if: github.ref == 'refs/heads/main'
 
     steps:
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SERVER_SSH_KEY }}
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_KEY }}
           script: |
-            cd ~/app
+            cd ~/softlabs
             docker-compose pull
             docker-compose up -d
             docker image prune -f
