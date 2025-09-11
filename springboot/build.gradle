@@ -27,6 +27,8 @@ repositories {
 
 spotless {
 	java {
+		target 'src/**/*.java'
+		targetExclude '../**'
 		googleJavaFormat('1.17.0')    // Google Java Style 적용
 		removeUnusedImports()        // 사용하지 않는 import 제거
 		trimTrailingWhitespace()     // 라인 끝 공백 제거
