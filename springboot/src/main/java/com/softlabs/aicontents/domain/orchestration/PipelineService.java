@@ -1,5 +1,6 @@
 package com.softlabs.aicontents.domain.orchestration;
 
+import com.softlabs.aicontents.domain.scheduler.dto.PipeResultDataDTO;
 import com.softlabs.aicontents.domain.scheduler.dto.pipeLineDTO.StepExecutionResultDTO;
 import com.softlabs.aicontents.domain.scheduler.service.executor.AIContentExecutor;
 import com.softlabs.aicontents.domain.scheduler.service.executor.BlogPublishExecutor;
@@ -24,8 +25,8 @@ public class PipelineService {
 
   @Autowired private BlogPublishExecutor blogExecutor;
 
-  public void executionPipline() {
-    Long executionId = createNewExecution();
+  public PipeResultDataDTO executionPipline() {
+    int executionId = createNewExecution();
     // todo : executionId = (동일한 파이프라인인지 구분하는 용도)
     // DB 에서 PIPELINE_EXECUTIONS 테이블의 execution_id
 
@@ -53,24 +54,25 @@ public class PipelineService {
 
       log.info("파이프라인 성공");
 
-//      return
+       return new PipeResultDataDTO();
 
     } catch (Exception e) {
       log.error("파이프라인 실행 실패:{}", e.getMessage());
       updateExecutionStatus(executionId, "FAILED");
     }
+      return null;
   }
 
-  private Long createNewExecution() {
+  private int createNewExecution() {
 
-    return 0L; /// 일단은 Long타입의 기본값.
+    return 0; /// 일단은 Long타입의 기본값.
     // todo: return 반환값으로,
     // PIPELINE_EXECUTIONS 테이블에서 executionId를 새로 생성하고,
     // 이것을 가져오는 메서드 구현
     // => 파이프라인이 새로 실행될 때마다 executionId를 생성
   }
 
-  private void updateExecutionStatus(Long executionId, String failed) {
+  private void updateExecutionStatus(int executionId, String failed) {
     // todo: PIPELINE_EXECUTIONS에 상태 업데이트하는 코드 구현(SUCCESS, FAILED,PENDING 등등등)
   }
 }

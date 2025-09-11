@@ -1,6 +1,8 @@
 package com.softlabs.aicontents.domain.scheduler.controller;
 
+import com.softlabs.aicontents.common.dto.response.ApiResponseDTO;
 import com.softlabs.aicontents.domain.orchestration.PipelineService;
+import com.softlabs.aicontents.domain.scheduler.dto.PipeResultDataDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -28,22 +30,33 @@ public class ScheduleEngineController {
   // 초 분 시 일 월 요일
   // @Scheduled(cron = "0 58 21 * * *")
 
-  @Scheduled(cron = "1/5 * * * * *")
+  @Scheduled(cron = "1/30 * * * * *")
   /// 12시 18분 정적 실행
 
   /// todo : 1. 파이프라인 3회 실행 후 종료(for문)
   /// todo : 2. 파이프라인 3회 재시도 /예외처리
 
   /// 10. 파이프라인 실행
-  @PostMapping("/execute")
-  public void executePipline() {
-    /// 파이프라인 실행 메서드 호출
-    pipelineService.executionPipline();
-  }
+//  @PostMapping("/execute")
+//  public void executePipline() {
+//    /// 파이프라인 실행 메서드 호출
+//    pipelineService.executionPipline();
+//  }
 
   /// 11. 파이프라인 상태 조회
   @GetMapping("/status/{executionId}")
-  public void checkStatus() {
+  public ApiResponseDTO<PipeResultDataDTO> checkStatus() {
+
+    try {
+
+      PipeResultDataDTO pipeResultDataDTO = pipelineService.executionPipline();
+      String successMesg = "파이프라인 상태 데이터를 pipeResultDataDTO에 저장 완료";
+
+      return ApiResponseDTO.success(pipeResultDataDTO, successMesg);
+
+    }catch (Exception e){
+      return  ApiResponseDTO.error("파이프라인 상태 조회 실패");
+    }
     /// todo : 상태 조회 로직
     /// 파이프 라인이 종료되면, 각 기능들을 지나오면서
     //DB에서 조회한 상태, 키워드, 등등이 VO로 저장되어 있을 것이고

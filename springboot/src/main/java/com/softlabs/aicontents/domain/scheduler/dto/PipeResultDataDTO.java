@@ -11,17 +11,11 @@ import java.util.List;
 //최상위 응답
 @Data
 @Schema
-public class PipeResultDTO {
 
-    boolean success;
-    PipelineDataDTO data;
-
-
-    @Data
-    public class PipelineDataDTO {
+public class PipeResultDataDTO {
 
         // 실행정보
-        Long executionId;
+        int executionId;
         String overallStatus;
         String startedAt;
         String completedAt;
@@ -39,4 +33,4 @@ public class PipeResultDTO {
 
 
     }
-}
+
