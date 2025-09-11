@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.softlabs.aicontents.domain.dashboard.mapper.DashBoardMapper">
+
+    <resultMap id="DashboardResultMap" type="com.softlabs.aicontents.domain.dashboard.vo.DashboardResponseVO">
+        <constructor>
+            <arg column="MENU_ID" javaType="int"/>
+            <arg column="MENU_NAME" javaType="string"/>
+            <arg column="MENU_URL" javaType="string"/>
+            <arg column="MENU_LEVEL" javaType="int"/>
+            <arg column="ROLE_REQUIRED" javaType="string"/>
+            <arg column="VISIBLE" javaType="boolean"/>
+        </constructor>
+    </resultMap>
+
+    <!-- DB 현재 시간 가져오기 -->
+    <select id="selectMenu" resultMap="DashboardResultMap">
+        SELECT MENU_ID,
+               MENU_NAME,
+               MENU_URL,
+               MENU_LEVEL,
+               'admin' AS ROLE_REQUIRED,
+               CASE WHEN IS_VISIBLE = 1 THEN 'true' ELSE 'false' END AS VISIBLE
+          FROM ADMIN.NAVIGATION_MENUS
+         WHERE PARENT_MENU_ID IS NULL
+         ORDER BY SORT_ORDER
+    </select>
+
+</mapper>
