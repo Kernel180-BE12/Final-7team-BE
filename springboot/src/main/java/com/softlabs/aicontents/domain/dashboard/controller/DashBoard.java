@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/v1/dashboard")
-public class ApiTest {
+public class DashBoard {
 
     @Autowired
     DashBoardService dashBoardService;
@@ -32,7 +32,7 @@ public class ApiTest {
         return userName + " Hello:)";
     }
 
-    // 2. 대시보드 데이터 조회
+    // 대시보드 데이터 조회
     @GetMapping("/navMenu")
     public ApiResponseDTO<List<DashBoardResDTO>> getNavMenu() {
         try {
