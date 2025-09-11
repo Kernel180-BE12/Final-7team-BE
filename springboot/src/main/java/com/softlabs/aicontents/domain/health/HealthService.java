@@ -1,11 +1,11 @@
-//package com.softlabs.aicontents.domain.health;
+// package com.softlabs.aicontents.domain.health;
 //
-//import java.util.HashMap;
-//import java.util.Map;
-//import org.springframework.stereotype.Service;
+// import java.util.HashMap;
+// import java.util.Map;
+// import org.springframework.stereotype.Service;
 //
-//@Service
-//public class HealthService {
+// @Service
+// public class HealthService {
 //
 //  private final HealthMapper healthMapper;
 //
@@ -38,4 +38,4 @@
 //
 //    return healthInfo;
 //  }
-//}
+// }

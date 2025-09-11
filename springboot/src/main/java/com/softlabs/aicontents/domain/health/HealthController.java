@@ -1,15 +1,15 @@
-//package com.softlabs.aicontents.domain.health;
+// package com.softlabs.aicontents.domain.health;
 //
-//import java.util.Map;
+// import java.util.Map;
 //
-//import org.springframework.http.ResponseEntity;
-//import org.springframework.web.bind.annotation.GetMapping;
-//import org.springframework.web.bind.annotation.RequestMapping;
-//import org.springframework.web.bind.annotation.RestController;
+// import org.springframework.http.ResponseEntity;
+// import org.springframework.web.bind.annotation.GetMapping;
+// import org.springframework.web.bind.annotation.RequestMapping;
+// import org.springframework.web.bind.annotation.RestController;
 //
-//@RestController
-//@RequestMapping("/api/health")
-//public class HealthController {
+// @RestController
+// @RequestMapping("/api/health")
+// public class HealthController {
 //
 //  private final HealthService healthService;
 //
@@ -33,4 +33,4 @@
 //  public ResponseEntity<Map<String, Object>> checkDatabase() {
 //    return checkHealth();
 //  }
-//}
+// }

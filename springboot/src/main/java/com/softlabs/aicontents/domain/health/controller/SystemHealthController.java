@@ -15,17 +15,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/v1/system")
 @RequiredArgsConstructor
 public class SystemHealthController {
-    private final SystemHealthService systemHealthService;
+  private final SystemHealthService systemHealthService;
 
-    @GetMapping("/health")
-    @Operation(summary = "시스템 상태 조회 API", description = "시스템 상태 조회를 위한 API입니다.")
-    public ApiResponseDTO<SystemHealthDTO> getSystemHealth(){
-        try{
-            SystemHealthDTO dto=systemHealthService.getSystemHealth();
-            return ApiResponseDTO.success(dto);
-        }catch (Exception e){
-            log.error("에러",e);
-            return ApiResponseDTO.error("조회 실패");
-        }
+  @GetMapping("/health")
+  @Operation(summary = "시스템 상태 조회 API", description = "시스템 상태 조회를 위한 API입니다.")
+  public ApiResponseDTO<SystemHealthDTO> getSystemHealth() {
+    try {
+      SystemHealthDTO dto = systemHealthService.getSystemHealth();
+      return ApiResponseDTO.success(dto);
+    } catch (Exception e) {
+      log.error("에러", e);
+      return ApiResponseDTO.error("조회 실패");
     }
+  }
 }

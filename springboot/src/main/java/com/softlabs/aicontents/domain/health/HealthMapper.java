@@ -1,8 +1,8 @@
-//package com.softlabs.aicontents.domain.health;
+// package com.softlabs.aicontents.domain.health;
 //
-//import org.apache.ibatis.annotations.Mapper;
+// import org.apache.ibatis.annotations.Mapper;
 //
-//@Mapper
-//public interface HealthMapper {
+// @Mapper
+// public interface HealthMapper {
 //  String getSysdate();
-//}
+// }
