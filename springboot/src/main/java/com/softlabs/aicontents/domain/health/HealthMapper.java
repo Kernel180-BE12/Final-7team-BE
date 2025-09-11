@@ -1,4 +1,4 @@
-package com.softlabs.aicontents.health;
+package com.softlabs.aicontents.domain.health;
 
 import org.apache.ibatis.annotations.Mapper;
 

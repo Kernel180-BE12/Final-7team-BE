@@ -1,4 +1,4 @@
-package com.softlabs.aicontents.health;
+package com.softlabs.aicontents.domain.health;
 
 import java.util.HashMap;
 import java.util.Map;
