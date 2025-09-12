@@ -4,6 +4,8 @@ import com.softlabs.aicontents.domain.health.dto.response.SystemHealthDTO;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.softlabs.aicontents.domain.health.mapper.HealthCheckMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 public class SystemHealthService {
   private final DatabaseHealthCheckService dbService; // DB 헬스체크 서비스
   private final LlmHealthCheckService llmservice; // LLM(FastAPI) 헬스체크 서비스
+  private final HealthCheckMapper healthCheckMapper;
 
   public SystemHealthDTO getSystemHealth() {
     // 1. 개별 서비스 상태 수집
@@ -23,12 +26,18 @@ public class SystemHealthService {
     // 2.통합 상태 집계
     String status = aggregateStatus(services);
 
-    // 3.DTO 생성 후 반환
+    // 3. DB insert
+    healthCheckMapper.insertHealthCheck(status);
+
+    // 4. 최신 checked_at 조회
+    String lastChecked = healthCheckMapper.selectLatestCheckedAt();
+
+    // 5.DTO 생성 후 반환
     return new SystemHealthDTO(
         status, // 전체 상태
         services, // 개별 서비스 상태 맵
         getVersion(), // 버전 정보
-        Instant.now().toString() // 현재 시간
+            lastChecked // 최근 헬스체크 시간
         );
   }
 
