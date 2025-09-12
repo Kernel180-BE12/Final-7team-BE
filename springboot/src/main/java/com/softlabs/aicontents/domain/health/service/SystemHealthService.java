@@ -1,11 +1,9 @@
 package com.softlabs.aicontents.domain.health.service;
 
 import com.softlabs.aicontents.domain.health.dto.response.SystemHealthDTO;
-import java.time.Instant;
+import com.softlabs.aicontents.domain.health.mapper.HealthCheckMapper;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.softlabs.aicontents.domain.health.mapper.HealthCheckMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -37,7 +35,7 @@ public class SystemHealthService {
         status, // 전체 상태
         services, // 개별 서비스 상태 맵
         getVersion(), // 버전 정보
-            lastChecked // 최근 헬스체크 시간
+        lastChecked // 최근 헬스체크 시간
         );
   }
 

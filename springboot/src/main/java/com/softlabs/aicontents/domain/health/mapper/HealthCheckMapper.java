@@ -5,9 +5,9 @@ import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface HealthCheckMapper {
-    // 상태 insert
-    void insertHealthCheck(@Param("status") String status);
+  // 상태 insert
+  void insertHealthCheck(@Param("status") String status);
 
-    // 최신 checked_at 조회
-    String selectLatestCheckedAt();
+  // 최신 checked_at 조회
+  String selectLatestCheckedAt();
 }
