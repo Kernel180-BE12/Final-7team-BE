@@ -48,6 +48,9 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	// Swagger
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
+	
+	// 검증 관련 의존성
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
 	// Oracle JDBC 드라이버
 	implementation 'com.oracle.database.jdbc:ojdbc8:21.1.0.0'
