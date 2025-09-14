@@ -8,10 +8,9 @@ import lombok.Data;
 @Builder
 public class PublishReqDto {
 
-  @NotNull
-  private  Long aiContentId;
-  private  String title;
-  private  String metaDescription;
-  private  String markdown;
-  private  String hashtag;
+  @NotNull private Long aiContentId;
+  private String title;
+  private String metaDescription;
+  private String markdown;
+  private String hashtag;
 }

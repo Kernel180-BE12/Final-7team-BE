@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/publish")
 public class PublishController {
-    private final PublishService publishService;
+  private final PublishService publishService;
 
-    @PostMapping("/{postId}")
-    public PublishResDto publish(@PathVariable Long postId) {
-        return publishService.publishByPostId(postId);
-    }
+  @PostMapping("/{postId}")
+  public PublishResDto publish(@PathVariable Long postId) {
+    return publishService.publishByPostId(postId);
+  }
 }
