@@ -23,7 +23,7 @@ public class ProductCrawlingExecutor implements PipelineStepExecutor {
   //    // todo: 실제 싸다구 정보 수집 매퍼 인터페이스로 변경
 
   @Override
-  public StepExecutionResultDTO execute(Long executionId) {
+  public StepExecutionResultDTO execute(int executionId) {
 
     /// test : 파이프라인 동작 테스트
     System.out.println("싸다구 정보 수집 메서드 호출/ 실행");

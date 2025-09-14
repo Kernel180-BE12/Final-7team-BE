@@ -5,5 +5,7 @@ import com.softlabs.aicontents.domain.scheduler.dto.pipeLineDTO.StepExecutionRes
 public interface PipelineStepExecutor {
   // 파이프라인 실행관련 공통 인터페이스
 
-  StepExecutionResultDTO execute(Long executionId);
+  StepExecutionResultDTO execute(int executionId);
+
+
 }

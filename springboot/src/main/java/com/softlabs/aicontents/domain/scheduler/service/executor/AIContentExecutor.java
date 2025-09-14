@@ -23,7 +23,7 @@ public class AIContentExecutor implements PipelineStepExecutor {
   //    // todo: 실제 LLM생성 매퍼 인터페이스로 변경
 
   @Override
-  public StepExecutionResultDTO execute(Long executionId) {
+  public StepExecutionResultDTO execute(int executionId) {
 
     /// test : 파이프라인 동작 테스트
     System.out.println("LLM생성 메서드 호출/ 실행");

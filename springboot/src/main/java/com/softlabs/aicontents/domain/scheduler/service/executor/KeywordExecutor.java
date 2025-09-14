@@ -22,7 +22,7 @@ public class KeywordExecutor implements PipelineStepExecutor {
   //    private KeywordMapper keywordMapper;  // DB 조회용
 
   @Override
-  public StepExecutionResultDTO execute(Long executionId) {
+  public StepExecutionResultDTO execute(int executionId) {
 
     /// test : 파이프라인 동작 테스트
     System.out.println("키워드 수집 메서드 호출/ 실행");
