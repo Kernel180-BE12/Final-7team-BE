@@ -1,4 +1,4 @@
-package com.softlabs.aicontents.domain.publish.dto.reponse;
+package com.softlabs.aicontents.domain.publish.dto.response;
 
 import lombok.Builder;
 import lombok.Data;
