@@ -157,9 +157,7 @@ class DashBoardControllerIntegrationTest {
     // When & Then
     mockMvc
         .perform(
-            post("/api/dashboard")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(invalidJson))
+            post("/api/dashboard").contentType(MediaType.APPLICATION_JSON).content(invalidJson))
         .andDo(print())
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.errorCode").value("INVALID_FORMAT"))
