@@ -33,7 +33,7 @@ public class ScheduleEngineController {
   /// 08. 스케줄 생성
   @Operation(summary = "스케줄 생성 API",description = "생성할 스케줄의 상세 정보입니다.")
   @PostMapping("/schedule")
-  public ApiResponseDTO<ScheduleTasksResponseDTO> setSchedule(ScheduleTasksRequestDTO scheduleTasksRequestDTO) {
+  public ApiResponseDTO<ScheduleTasksResponseDTO> setSchedule(@RequestBody ScheduleTasksRequestDTO scheduleTasksRequestDTO) {
 
     // 확인 메세지
     System.out.println("scheduleTasksRequestDTO를 전달받음.=>" + scheduleTasksRequestDTO.toString());

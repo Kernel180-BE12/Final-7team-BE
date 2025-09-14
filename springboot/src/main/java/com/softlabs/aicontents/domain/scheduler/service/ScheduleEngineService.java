@@ -41,24 +41,24 @@ public class ScheduleEngineService {
 
         SchedulerRequestVO schedulerRequestVO = new SchedulerRequestVO();
 
-        schedulerRequestVO.setTaskName(scheduleTasksRequestDTO.getTaskName());
-        schedulerRequestVO.setCronExpression(scheduleTasksRequestDTO.getCronExpression());
-        schedulerRequestVO.setScheduleType(scheduleTasksRequestDTO.getScheduleType());
+//        schedulerRequestVO.setTaskName(scheduleTasksRequestDTO.getTaskName());
+//        schedulerRequestVO.setCronExpression(scheduleTasksRequestDTO.getCronExpression());
+        schedulerRequestVO.setExecutionCycle(scheduleTasksRequestDTO.getExecutionCycle());
         schedulerRequestVO.setExecutionTime(scheduleTasksRequestDTO.getExecutionTime());
         schedulerRequestVO.setKeywordCount(scheduleTasksRequestDTO.getKeywordCount());
-        schedulerRequestVO.setContentCount(scheduleTasksRequestDTO.getContentCount());
+        schedulerRequestVO.setPublishCount(scheduleTasksRequestDTO.getPublishCount());
         schedulerRequestVO.setAiModel(scheduleTasksRequestDTO.getAiModel());
 
         return schedulerRequestVO;
     }
 
-
-    // DB 저장 로직
+    // 스케줄 생성
     public int createSchedule(ScheduleTasksRequestDTO scheduleTasksRequestDTO) {
 
         SchedulerRequestVO schedulerRequestVO = this.convertDTOtoVO(scheduleTasksRequestDTO);
 
         int resultInsert = scheduleEngineMapper.insertSchedule(schedulerRequestVO);
+
         log.info("DB 저장 메퍼 실행 완료");
 
 
@@ -66,6 +66,7 @@ public class ScheduleEngineService {
     }
 
 
+    // 스케줄 조회
     public ScheduleResponseVO selectSchedule() {
 
         ScheduleResponseVO resultSelect = scheduleEngineMapper.selectScheduleEngines();

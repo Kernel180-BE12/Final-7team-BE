@@ -15,8 +15,6 @@
 <insert id="insertSchedule" parameterType="com.softlabs.aicontents.domain.scheduler.vo.request.SchedulerRequestVO">
 /* ScheduleEngineMapper.insertSchedule*/
         INSERT INTO SCHEDULED_TASKS ( TASK_ID,
-                                        TASK_NAME,
-                                        CRON_EXPRESSION,
                                         SCHEDULE_TYPE,
                                         EXECUTION_TIME,
                                         KEYWORD_COUNT,
@@ -24,12 +22,10 @@
                                         AI_MODEL
         )
         VALUES ( SCHEDULE_TASK_SEQUENCES.NEXTVAL,
-                #{taskName},
-                #{cronExpression},
-                #{scheduleType},
+                #{executionCycle},
                 #{executionTime},
                 #{keywordCount},
-                #{contentCount},
+                #{publishCount},
                 #{aiModel}
         )
         </insert>

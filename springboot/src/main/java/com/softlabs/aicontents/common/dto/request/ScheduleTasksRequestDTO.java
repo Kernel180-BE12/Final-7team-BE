@@ -27,7 +27,7 @@ public class ScheduleTasksRequestDTO {
     private String cronExpression ;
 
     @Schema(description = "실행 주기", example="08:00")
-    private String scheduleType ;  // "매일 실행/ 주간 실행/ 월간 실행"
+    private String executionCycle;  // "매일 실행/ 주간 실행/ 월간 실행"
 
     @Schema(description ="실행 시간", example="08:00")
     private String executionTime ;   // "HH:MM" 자동 실행 시간
@@ -36,7 +36,7 @@ public class ScheduleTasksRequestDTO {
     private int keywordCount ;  // 추출 키워드 수량
 
     @Schema(description ="블로그 발행 개수", example="1")
-    private int contentCount ;  // 블로그 발행 수량
+    private int publishCount;  // 블로그 발행 수량
 
     @Schema(description ="AI 모델명", example="OpenAI GPT-4")
     private String aiModel ;    // AI 모델명 (예: "OpenAI GPT-4")

@@ -9,10 +9,10 @@ import lombok.Data;
 public class SchedulerRequestVO {
 
     /// 스케줄 관련 데이터
-    private String scheduleType;  // "매일(A)/ 주간 실행(B)/ 월간 실행(C)"
+    private String executionCycle;  // "매일(A)/ 주간 실행(B)/ 월간 실행(C)"
     private String executionTime;   // "HH:MM" 자동 실행 시간
     private int keywordCount;  // 추출 키워드 수량
-    private int contentCount;  // 블로그 발행 수량
+    private int publishCount;  // 블로그 발행 수량
     private String aiModel;    // AI 모델명 (예: "OpenAI GPT-4")
 
 
