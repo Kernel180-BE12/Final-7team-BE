@@ -13,6 +13,9 @@ public class SystemHealthService {
   private final DatabaseHealthCheckService dbService; // DB 헬스체크 서비스
   private final LlmHealthCheckService llmservice; // LLM(FastAPI) 헬스체크 서비스
   private final HealthCheckMapper healthCheckMapper;
+  private final ScheduleHealthCheckService scheduleHealthCheckService; //schedule 헬스 체크 서비스
+  private final CrawlerHealthCheckService crawlerHealthCheckService; //crawler 헬스 체크 서비스
+
 
   public SystemHealthDTO getSystemHealth() {
     // 1. 개별 서비스 상태 수집
@@ -20,6 +23,8 @@ public class SystemHealthService {
 
     services.put("database", dbService.isUp() ? "up" : "down");
     services.put("llm", llmservice.isUp() ? "up" : "down");
+    services.put("schedule",scheduleHealthCheckService.isUp() ? "up" : "down");
+    services.put("crawler",crawlerHealthCheckService.isUp() ? "up" : "down");
 
     // 2.통합 상태 집계
     String status = aggregateStatus(services);
