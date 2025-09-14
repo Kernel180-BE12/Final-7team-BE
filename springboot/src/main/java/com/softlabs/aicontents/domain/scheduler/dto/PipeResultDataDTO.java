@@ -8,10 +8,8 @@ import lombok.Data;
 
 import java.util.List;
 
-//최상위 응답
 @Data
 @Schema
-
 public class PipeResultDataDTO {
 
         // 실행정보
@@ -21,7 +19,6 @@ public class PipeResultDataDTO {
         String completedAt;
         String currentStage;
 
-
         // 각 단계별 진행 상황
         ProgressResult progressResult;
 
@@ -30,7 +27,6 @@ public class PipeResultDataDTO {
 
         // 로그 정보
         List<Logs> logs;
-
 
     }
 
