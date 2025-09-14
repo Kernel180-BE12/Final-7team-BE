@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -138,6 +139,19 @@ public class GlobalExceptionHandler {
       NoHandlerFoundException ex, HttpServletRequest request) {
 
     log.warn("No handler found exception occurred: {}", ex.getMessage());
+
+    ErrorResponseDTO errorResponse =
+        ErrorResponseDTO.of(ErrorCode.NOT_FOUND, request.getRequestURI());
+
+    return ResponseEntity.status(ErrorCode.NOT_FOUND.getHttpStatus()).body(errorResponse);
+  }
+
+  // Spring Boot 3.x에서 정적 리소스를 찾을 수 없을 때 발생.
+  @ExceptionHandler(NoResourceFoundException.class)
+  public ResponseEntity<ErrorResponseDTO> handleNoResourceFoundException(
+      NoResourceFoundException ex, HttpServletRequest request) {
+
+    log.warn("No resource found exception occurred: {}", ex.getMessage());
 
     ErrorResponseDTO errorResponse =
         ErrorResponseDTO.of(ErrorCode.NOT_FOUND, request.getRequestURI());

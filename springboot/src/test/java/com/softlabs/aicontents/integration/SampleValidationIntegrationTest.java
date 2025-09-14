@@ -67,7 +67,7 @@ public class SampleValidationIntegrationTest {
                 .content(objectMapper.writeValueAsString(invalidRequest)))
         .andDo(print())
         .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$.code", is("INVALID_INPUT")))
+        .andExpect(jsonPath("$.code", is("E002")))
         .andExpect(jsonPath("$.message", containsString("이름은 필수입니다")))
         .andExpect(jsonPath("$.traceId", notNullValue()))
         .andExpect(jsonPath("$.path", is("/api/sample/validate")))
@@ -91,7 +91,7 @@ public class SampleValidationIntegrationTest {
                 .content(objectMapper.writeValueAsString(invalidRequest)))
         .andDo(print())
         .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$.code", is("INVALID_INPUT")))
+        .andExpect(jsonPath("$.code", is("E002")))
         .andExpect(jsonPath("$.message", containsString("올바른 이메일 형식이 아닙니다")))
         .andExpect(jsonPath("$.traceId", notNullValue()));
   }
@@ -145,7 +145,7 @@ public class SampleValidationIntegrationTest {
         .perform(get("/api/sample/business-error/notfound"))
         .andDo(print())
         .andExpect(status().isNotFound())
-        .andExpect(jsonPath("$.code", is("USER_NOT_FOUND")))
+        .andExpect(jsonPath("$.code", is("E302")))
         .andExpect(jsonPath("$.traceId", notNullValue()));
 
     // when & then - UNAUTHORIZED (401)
@@ -153,14 +153,14 @@ public class SampleValidationIntegrationTest {
         .perform(get("/api/sample/business-error/unauthorized"))
         .andDo(print())
         .andExpect(status().isUnauthorized())
-        .andExpect(jsonPath("$.code", is("UNAUTHORIZED")));
+        .andExpect(jsonPath("$.code", is("E101")));
 
     // when & then - FORBIDDEN (403)
     mockMvc
         .perform(get("/api/sample/business-error/forbidden"))
         .andDo(print())
         .andExpect(status().isForbidden())
-        .andExpect(jsonPath("$.code", is("FORBIDDEN")));
+        .andExpect(jsonPath("$.code", is("E201")));
   }
 
   @Test
@@ -171,7 +171,7 @@ public class SampleValidationIntegrationTest {
         .perform(get("/api/sample/server-error"))
         .andDo(print())
         .andExpect(status().isInternalServerError())
-        .andExpect(jsonPath("$.code", is("INTERNAL_SERVER_ERROR")))
+        .andExpect(jsonPath("$.code", is("E901")))
         .andExpect(jsonPath("$.status", is(500)))
         .andExpect(jsonPath("$.traceId", notNullValue()));
   }
@@ -184,7 +184,7 @@ public class SampleValidationIntegrationTest {
         .perform(get("/api/sample/npe-error"))
         .andDo(print())
         .andExpect(status().isInternalServerError())
-        .andExpect(jsonPath("$.code", is("INTERNAL_SERVER_ERROR")));
+        .andExpect(jsonPath("$.code", is("E901")));
   }
 
   @Test
@@ -215,7 +215,7 @@ public class SampleValidationIntegrationTest {
         .perform(get("/api/sample/type-error/invalid-id"))
         .andDo(print())
         .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$.code", is("INVALID_FORMAT")))
+        .andExpect(jsonPath("$.code", is("E004")))
         .andExpect(jsonPath("$.message", containsString("잘못된 파라미터 타입")));
   }
 
