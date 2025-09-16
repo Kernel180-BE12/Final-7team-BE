@@ -57,6 +57,11 @@ dependencies {
 	
 	// dotenv-java for .env file support
 	implementation 'io.github.cdimascio:dotenv-java:3.0.0'
+
+	// 크롤링 기능 의존성
+	implementation 'com.microsoft.playwright:playwright:1.40.0'
+	implementation 'org.jsoup:jsoup:1.16.1'
+	implementation 'org.apache.httpcomponents:httpclient:4.5.14'
 }
 
 tasks.named('test') {
