@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.softlabs.aicontents.domain.datacollector.mapper.KeywordHistoryMapper">
+
+    <!-- 사용된 키워드 삽입 -->
+    <insert id="insertUsedKeyword">
+        INSERT INTO used_keyword (
+            product_id,
+            keyword,
+            source,
+            created_at
+        ) VALUES (
+            #{productId},
+            #{keyword},
+            #{source},
+            CURRENT_TIMESTAMP
+        )
+    </insert>
+
+    <!-- 키워드 최근 사용 여부 확인 -->
+    <select id="isKeywordUsedRecently" resultType="boolean">
+        SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END
+        FROM used_keyword
+        WHERE keyword = #{keyword}
+        AND created_at >= CURRENT_TIMESTAMP - INTERVAL '#{days}' DAY
+    </select>
+
+    <!-- 최근 사용된 키워드 조회 -->
+    <select id="selectRecentKeywords" resultType="com.softlabs.aicontents.domain.datacollector.vo.response.KeywordHistoryVo">
+        SELECT
+            keyword_id,
+            product_id,
+            keyword,
+            source,
+            TO_CHAR(created_at, 'YYYY-MM-DD HH24:MI:SS') as created_at
+        FROM used_keyword
+        ORDER BY created_at DESC
+        <if test="limit != null and limit > 0">
+            FETCH FIRST #{limit} ROWS ONLY
+        </if>
+    </select>
+
+    <!-- 상품 ID별 키워드 조회 -->
+    <select id="selectKeywordsByProductId" resultType="com.softlabs.aicontents.domain.datacollector.vo.response.KeywordHistoryVo">
+        SELECT
+            keyword_id,
+            product_id,
+            keyword,
+            source,
+            TO_CHAR(created_at, 'YYYY-MM-DD HH24:MI:SS') as created_at
+        FROM used_keyword
+        WHERE product_id = #{productId}
+        ORDER BY created_at DESC
+    </select>
+
+    <!-- 키워드 사용 횟수 조회 -->
+    <select id="countKeywordUsage" resultType="int">
+        SELECT COUNT(*)
+        FROM used_keyword
+        WHERE keyword = #{keyword}
+        <if test="days != null and days > 0">
+            AND created_at >= CURRENT_TIMESTAMP - INTERVAL '#{days}' DAY
+        </if>
+    </select>
+
+</mapper>
