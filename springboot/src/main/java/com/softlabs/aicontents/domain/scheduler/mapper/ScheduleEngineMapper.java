@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface ScheduleEngineMapper {
 
-    int insertSchedule( SchedulerRequestVO schedulerRequestVO);
+  int insertSchedule(SchedulerRequestVO schedulerRequestVO);
 
-    ScheduleResponseVO selectScheduleEngines();
+  ScheduleResponseVO selectScheduleEngines();
 }

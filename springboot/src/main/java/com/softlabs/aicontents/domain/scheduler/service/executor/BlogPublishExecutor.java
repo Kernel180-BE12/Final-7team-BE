@@ -1,8 +1,8 @@
 package com.softlabs.aicontents.domain.scheduler.service.executor;
 
-import com.softlabs.aicontents.domain.scheduler.vo.StepExecutionResultVO;
 import com.softlabs.aicontents.domain.scheduler.interfacePipe.PipelineStepExecutor;
 // import com.softlabs.aicontents.domain.testMapper.BlogPublishMapper;
+import com.softlabs.aicontents.domain.scheduler.vo.StepExecutionResultVO;
 import com.softlabs.aicontents.domain.testDomainService.BlogPublishService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +13,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 public class BlogPublishExecutor implements PipelineStepExecutor {
-  @Autowired
-  private BlogPublishService blogPublishService;
+  @Autowired private BlogPublishService blogPublishService;
 
   // todo: 실제 발행 클래스로 변경
 
@@ -44,7 +43,7 @@ public class BlogPublishExecutor implements PipelineStepExecutor {
 //    /// todo : 반환 값으로 이전 기능이 요구하는 파라메터를 반환하기.
 //  }
 //
-//}
+// }
 
 //        try {
 //            //키워드 수집 서비스 실행

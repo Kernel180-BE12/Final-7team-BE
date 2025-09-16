@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,33 +25,31 @@ public class ScheduleEngineController {
   private final int MAX_executionCount = 3;
   private boolean isCompleted = false;
 
-  @Autowired
-  private PipelineService pipelineService; //파이프라인(=오케스트레이션)
-  @Autowired
-  private ScheduleEngineService scheduleEngineService; //스케줄 엔진
-
+  @Autowired private PipelineService pipelineService; // 파이프라인(=오케스트레이션)
+  @Autowired private ScheduleEngineService scheduleEngineService; // 스케줄 엔진
 
   /// 08. 스케줄 생성
-  @Operation(summary = "스케줄 생성 API",description = "생성할 스케줄의 상세 정보입니다.")
+  @Operation(summary = "스케줄 생성 API", description = "생성할 스케줄의 상세 정보입니다.")
   @PostMapping("/schedule")
-  public ApiResponseDTO<ScheduleTasksResponseDTO> setSchedule(ScheduleTasksRequestDTO scheduleTasksRequestDTO) {
+  public ApiResponseDTO<ScheduleTasksResponseDTO> setSchedule(
+      ScheduleTasksRequestDTO scheduleTasksRequestDTO) {
 
     // 확인 메세지
     System.out.println("scheduleTasksRequestDTO를 전달받음.=>" + scheduleTasksRequestDTO.toString());
 
     try {
-      ScheduleTasksResponseDTO scheduleTasksResponseDTO = scheduleEngineService.scheduleEngine(scheduleTasksRequestDTO);
+      ScheduleTasksResponseDTO scheduleTasksResponseDTO =
+          scheduleEngineService.scheduleEngine(scheduleTasksRequestDTO);
 
-      return ApiResponseDTO.success(scheduleTasksResponseDTO,"새로운 스케줄 저장 완료");
+      return ApiResponseDTO.success(scheduleTasksResponseDTO, "새로운 스케줄 저장 완료");
     } catch (Exception e) {
 
-        return ApiResponseDTO.error("스케줄 저장 실패"+e.getMessage());
+      return ApiResponseDTO.error("스케줄 저장 실패" + e.getMessage());
     }
   }
 
-
   // 초 분 시 일 월 요일
-//   @Scheduled(cron = "1/5 * * * * *")
+  //   @Scheduled(cron = "1/5 * * * * *")
 
   /// 10. 파이프라인 실행
   @PostMapping("/execute")
@@ -63,8 +60,9 @@ public class ScheduleEngineController {
 
   /// 11. 파이프라인 상태 조회
   @GetMapping("/pipeline/status/{executionId}")
-  public ApiResponseDTO<PipeResultResponseDTO> checkStatus(@PathVariable String executionId, PipeStatusResponseVO  pipeStatusResponseVO) {
-    System.out.println("checkStatus 메서드 시작 - pipeStatusResponseVO: {}"+ pipeStatusResponseVO);
+  public ApiResponseDTO<PipeResultResponseDTO> checkStatus(
+      @PathVariable String executionId, PipeStatusResponseVO pipeStatusResponseVO) {
+    System.out.println("checkStatus 메서드 시작 - pipeStatusResponseVO: {}" + pipeStatusResponseVO);
 
     pipelineService.executionPipline();
     try {
@@ -74,7 +72,6 @@ public class ScheduleEngineController {
 
       String successMesg = "PipeStatusResponseVO(파이프라인 상태 조회)를 pipeResultResponseDTO 반환 완료";
       return ApiResponseDTO.success(pipeResultResponseDTO, successMesg);
-
 
     } catch (Exception e) {
       return ApiResponseDTO.error("파이프라인 상태 조회 실패");
@@ -101,8 +98,7 @@ public class ScheduleEngineController {
 
     return dto;
   }
-
-  }
+}
 //
 //  /// 12. 파이프라인 제어
 //  @PostMapping("/pipeline/control/{executionId}")
@@ -112,5 +108,3 @@ public class ScheduleEngineController {
 //
 //  }
 //
-
-

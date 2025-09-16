@@ -1,12 +1,11 @@
 package com.softlabs.aicontents.domain.orchestration;
 
 import com.softlabs.aicontents.domain.orchestration.vo.PipeStatusResponseVO;
-import com.softlabs.aicontents.domain.scheduler.dto.PipeResultResponseDTO;
-import com.softlabs.aicontents.domain.scheduler.vo.StepExecutionResultVO;
 import com.softlabs.aicontents.domain.scheduler.service.executor.AIContentExecutor;
 import com.softlabs.aicontents.domain.scheduler.service.executor.BlogPublishExecutor;
 import com.softlabs.aicontents.domain.scheduler.service.executor.KeywordExecutor;
 import com.softlabs.aicontents.domain.scheduler.service.executor.ProductCrawlingExecutor;
+import com.softlabs.aicontents.domain.scheduler.vo.StepExecutionResultVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -26,7 +25,6 @@ public class PipelineService {
 
   @Autowired private BlogPublishExecutor blogExecutor;
 
-
   public PipeStatusResponseVO executionPipline() {
 
     ///  동기 실행 테스트 코드
@@ -34,23 +32,22 @@ public class PipelineService {
     int executionId = createNewExecution();
 
     try {
-      System.out.println("executionId =" +executionId);
+      System.out.println("executionId =" + executionId);
 
       // step01 - 키워드 추출
       StepExecutionResultVO step01 = keywordExecutor.execute(executionId);
       // keyWordStatusCode 확인
       String keyWordStatusCode = step01.getKeyWordStatusCode();
       if ("SUCCESS".equals(keyWordStatusCode)) {
-        System.out.println("DB조회 결과) keyWordStatusCode = "+ keyWordStatusCode);
+        System.out.println("DB조회 결과) keyWordStatusCode = " + keyWordStatusCode);
         System.out.println("키워드 추출 성공 - 다음 단계 진행");
-
 
         // step02 - 상품정보 & URL 추출
         StepExecutionResultVO step02 = crawlingExecutor.execute(executionId);
         // productStatusCode 확인
         String productStatusCode = step02.getProductStatusCode();
         if ("SUCCESS".equals(productStatusCode)) {
-          System.out.println("DB조회 결과) productStatusCode = "+ productStatusCode);
+          System.out.println("DB조회 결과) productStatusCode = " + productStatusCode);
           System.out.println(" 상품정보 & URL 추출 성공 - 다음 단계 진행");
 
           // step03 - LLM 생성
@@ -58,7 +55,7 @@ public class PipelineService {
           // aIContentStatusCode 확인
           String aIContentStatusCode = step03.getAIContentStatusCode();
           if ("SUCCESS".equals(aIContentStatusCode)) {
-            System.out.println("DB조회 결과) aIContentStatusCode = "+ aIContentStatusCode);
+            System.out.println("DB조회 결과) aIContentStatusCode = " + aIContentStatusCode);
             System.out.println(" LLM 생성 성공 - 다음 단계 진행");
 
             // step04 - 블로그 발행
@@ -66,7 +63,7 @@ public class PipelineService {
             // publishStatusCode 확인
             String publishStatusCode = step04.getPublishStatusCode();
             if ("SUCCESS".equals(publishStatusCode)) {
-              System.out.println("DB조회 결과) publishStatusCode = "+ publishStatusCode);
+              System.out.println("DB조회 결과) publishStatusCode = " + publishStatusCode);
               System.out.println("블로그 발행 성공");
               System.out.println("================");
               System.out.println("자동 실행 프로그램 종료");
@@ -85,15 +82,13 @@ public class PipelineService {
         throw new RuntimeException("키워드 추출 실패: " + keyWordStatusCode);
       }
 
-
     } catch (Exception e) {
       log.error("파이프라인 실행 실패: {}", e.getMessage());
       e.printStackTrace();
       return null;
     }
 
-
-//
+    //
 
   }
 

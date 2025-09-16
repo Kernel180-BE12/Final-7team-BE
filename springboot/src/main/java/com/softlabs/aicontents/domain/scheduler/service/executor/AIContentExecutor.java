@@ -1,8 +1,8 @@
 package com.softlabs.aicontents.domain.scheduler.service.executor;
 
-import com.softlabs.aicontents.domain.scheduler.vo.StepExecutionResultVO;
 import com.softlabs.aicontents.domain.scheduler.interfacePipe.PipelineStepExecutor;
 // import com.softlabs.aicontents.domain.testMapper.AIContentMapper;
+import com.softlabs.aicontents.domain.scheduler.vo.StepExecutionResultVO;
 import com.softlabs.aicontents.domain.testDomainService.AIContentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +14,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class AIContentExecutor implements PipelineStepExecutor {
 
-  @Autowired
-  private AIContentService aiContentService;
+  @Autowired private AIContentService aiContentService;
 
   // todo: 실제 LLM생성 클래스로 변경
 
@@ -29,10 +28,8 @@ public class AIContentExecutor implements PipelineStepExecutor {
     StepExecutionResultVO result = new StepExecutionResultVO();
     result.setAIContentStatusCode("SUCCESS"); // 또는 적절한 값
     return result;
-
   }
 }
-
 
 //    /// test : 파이프라인 동작 테스트
 //    System.out.println("LLM생성 메서드 호출/ 실행");
@@ -64,7 +61,7 @@ public class AIContentExecutor implements PipelineStepExecutor {
 //      Thread.currentThread().interrupt();
 //    }
 //  }
-//}
+// }
 
 //        try {
 //            //키워드 수집 서비스 실행
