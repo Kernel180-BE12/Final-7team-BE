@@ -2,15 +2,21 @@ package com.softlabs.aicontents.domain.scheduler.controller;
 
 import com.softlabs.aicontents.common.dto.request.ScheduleTasksRequestDTO;
 import com.softlabs.aicontents.common.dto.response.ApiResponseDTO;
+import com.softlabs.aicontents.common.dto.response.PageResponseDTO;
 import com.softlabs.aicontents.common.dto.response.ScheduleTasksResponseDTO;
 import com.softlabs.aicontents.domain.orchestration.PipelineService;
+import com.softlabs.aicontents.domain.scheduler.dto.resultDTO.ScheduleResponseDTO;
 import com.softlabs.aicontents.domain.scheduler.service.ScheduleEngineService;
+import com.softlabs.aicontents.domain.scheduler.dto.ScheduleInfoResquestDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collections;
+import java.util.List;
 
 @Component
 @Slf4j
@@ -47,5 +53,29 @@ public class ScheduleEngineController {
         return ApiResponseDTO.error("스케줄 저장 실패"+e.getMessage());
     }
   }
-}
 
+  @Operation(summary = "스케줄 정보 출력 API",description = "스케줄 default 정보 출력값")
+  @GetMapping("/schedule/list")
+  public ApiResponseDTO<PageResponseDTO<ScheduleResponseDTO>> getScheduleList(ScheduleInfoResquestDTO scheduleInfoResquestDTO) {
+    try {
+      // 입력 파라미터 null 체크
+      if (scheduleInfoResquestDTO == null) {
+        return ApiResponseDTO.error("요청 파라미터가 필요합니다.");
+      }
+
+      PageResponseDTO<ScheduleResponseDTO> pageResponse = scheduleEngineService.getScheduleInfoList(scheduleInfoResquestDTO);
+
+      // 빈 결과 체크
+      if (pageResponse.getContent() == null || pageResponse.getContent().isEmpty()) {
+        return ApiResponseDTO.success(pageResponse, "조회된 스케줄이 없습니다.");
+      }
+
+      return ApiResponseDTO.success(pageResponse, "스케줄 정보 출력 완료");
+
+    }  catch (Exception e) {
+      System.out.println("예외 발생: " + e.getMessage());
+      e.printStackTrace();
+      return ApiResponseDTO.error("스케줄 정보 출력 실패: " + e.getMessage());
+    }
+  }
+}
