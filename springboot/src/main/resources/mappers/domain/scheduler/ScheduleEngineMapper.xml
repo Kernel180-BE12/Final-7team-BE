@@ -34,4 +34,33 @@
         )
         </insert>
 
+    <select id="selectScheduleInfo" parameterType="com.softlabs.aicontents.domain.scheduler.vo.request.PagingVO" resultType="com.softlabs.aicontents.domain.scheduler.vo.response.ScheduleInfoResponseVO">
+        <!-- DashBoardMapper.selectScheduleInfo -->
+        SELECT *
+        FROM (
+        SELECT ROWNUM rn, a.*
+        FROM (
+        SELECT TASK_ID as scheduleId
+        , SCHEDULE_TYPE as executionCycle
+        , EXECUTION_TIME as executionTime
+        , KEYWORD_COUNT as keywordCount
+        , CONTENT_COUNT as publishCount
+        , AI_MODEL as aiModel
+        , IS_ACTIVE as isActive
+        , CREATED_AT as createdAt
+        , CASE WHEN NEXT_EXECUTION IS NULL THEN 'N'
+        ELSE TO_CHAR(NEXT_EXECUTION, 'YYYY-MM-DD HH24:MI:SS')
+        END AS nextExecutionAt
+        FROM ADMIN.SCHEDULED_TASKS
+        ORDER BY TASK_ID
+        ) a
+        WHERE ROWNUM <![CDATA[<=]]> #{endRow}
+        )
+        WHERE rn > #{startRow}
+    </select>
+
+    <select id="selectScheduleInfoCount" resultType="int">
+        SELECT COUNT(*)
+        FROM ADMIN.SCHEDULED_TASKS
+    </select>
     </mapper>
