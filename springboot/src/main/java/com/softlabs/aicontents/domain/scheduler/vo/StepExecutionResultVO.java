@@ -1,13 +1,20 @@
-package com.softlabs.aicontents.domain.scheduler.dto.pipeLineDTO;
+package com.softlabs.aicontents.domain.scheduler.vo;
 
+import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
 
-@Getter
-public class StepExecutionResultDTO {
+@Data
+public class StepExecutionResultVO {
 
   private boolean success;
   private String resultData;
   private String errorMessage;
+  private String stepCode;
+  private String keyWordStatusCode;
+  private String productStatusCode;
+  private String aIContentStatusCode;
+  private String publishStatusCode;
 
   //    // 생성자를 private으로 막아서 외부에서 new로 생성하는 것을 방지
   //    private StepExecutionResultDTO(boolean success, String resultData, String errorMessage) {

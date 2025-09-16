@@ -10,7 +10,7 @@ import java.util.List;
 
 @Data
 @Schema
-public class PipeResultDataDTO {
+public class PipeResultResponseDTO {
 
         // 실행정보
         int executionId;

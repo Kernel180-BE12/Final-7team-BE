@@ -1,6 +1,6 @@
 package com.softlabs.aicontents.domain.scheduler.service.executor;
 
-import com.softlabs.aicontents.domain.scheduler.dto.pipeLineDTO.StepExecutionResultDTO;
+import com.softlabs.aicontents.domain.scheduler.vo.StepExecutionResultVO;
 import com.softlabs.aicontents.domain.scheduler.interfacePipe.PipelineStepExecutor;
 // import com.softlabs.aicontents.domain.testMapper.KeywordMapper;
 import com.softlabs.aicontents.domain.testDomainService.KeywordService;
@@ -22,23 +22,29 @@ public class KeywordExecutor implements PipelineStepExecutor {
   //    private KeywordMapper keywordMapper;  // DB 조회용
 
   @Override
-  public StepExecutionResultDTO execute(int executionId) {
+  public StepExecutionResultVO execute(int executionId) {
 
-    /// test : 파이프라인 동작 테스트
-    System.out.println("키워드 수집 메서드 호출/ 실행");
-    delayWithDots(3);
+    StepExecutionResultVO result = new StepExecutionResultVO();
+    result.setKeyWordStatusCode("SUCCESS"); // 또는 적절한 값
+    return result;
 
-    /// todo : 테스트용 RDS 조회 쿼리
-    System.out.println("키워드 수집 결과 DB에서 쿼리 조회");
-    delayWithDots(3);
-    System.out.println("키워드 수집 결과 DB 완료 확인 로직 실행");
-    delayWithDots(3);
-    System.out.println("키워드 수집 수집 상태 판단 -> 완료(success)");
-    System.out.println("키워드 수집 수집 상태 판단 -> 실패(failure)-> 재시도/예외처리");
-    delayWithDots(3);
-    System.out.println("[스케줄러]가 [키워드 수집] -> [싸다구 정보 수집] (요청)객체 전달");
-    delayWithDots(3);
-    return null;
+
+
+//    /// test : 파이프라인 동작 테스트
+//    System.out.println("키워드 수집 메서드 호출/ 실행");
+//    delayWithDots(3);
+//
+//    /// todo : 테스트용 RDS 조회 쿼리
+//    System.out.println("키워드 수집 결과 DB에서 쿼리 조회");
+//    delayWithDots(3);
+//    System.out.println("키워드 수집 결과 DB 완료 확인 로직 실행");
+//    delayWithDots(3);
+//    System.out.println("키워드 수집 수집 상태 판단 -> 완료(success)");
+//    System.out.println("키워드 수집 수집 상태 판단 -> 실패(failure)-> 재시도/예외처리");
+//    delayWithDots(3);
+//    System.out.println("[스케줄러]가 [키워드 수집] -> [싸다구 정보 수집] (요청)객체 전달");
+//    delayWithDots(3);
+
     /// todo : 반환 값으로 이전 기능이 요구하는 파라메터를 반환하기.
   }
 

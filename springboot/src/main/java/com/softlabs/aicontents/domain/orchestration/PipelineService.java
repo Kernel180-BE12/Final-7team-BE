@@ -1,7 +1,8 @@
 package com.softlabs.aicontents.domain.orchestration;
 
-import com.softlabs.aicontents.domain.scheduler.dto.PipeResultDataDTO;
-import com.softlabs.aicontents.domain.scheduler.dto.pipeLineDTO.StepExecutionResultDTO;
+import com.softlabs.aicontents.domain.orchestration.vo.PipeStatusResponseVO;
+import com.softlabs.aicontents.domain.scheduler.dto.PipeResultResponseDTO;
+import com.softlabs.aicontents.domain.scheduler.vo.StepExecutionResultVO;
 import com.softlabs.aicontents.domain.scheduler.service.executor.AIContentExecutor;
 import com.softlabs.aicontents.domain.scheduler.service.executor.BlogPublishExecutor;
 import com.softlabs.aicontents.domain.scheduler.service.executor.KeywordExecutor;
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Service;
 @Component
 public class PipelineService {
 
-  // 🎯 실행 인터페이스들만 주입
+  // 실행 인터페이스들만 주입
   @Autowired private KeywordExecutor keywordExecutor;
 
   @Autowired private ProductCrawlingExecutor crawlingExecutor;
@@ -25,42 +26,75 @@ public class PipelineService {
 
   @Autowired private BlogPublishExecutor blogExecutor;
 
-  public PipeResultDataDTO executionPipline() {
-    int executionId = createNewExecution();
-    // todo : executionId = (동일한 파이프라인인지 구분하는 용도)
-    // DB 에서 PIPELINE_EXECUTIONS 테이블의 execution_id
 
-    try { ///  파이프라인 전체 try-catch
-      // 각 단계를 순차적으로 실행 (실행과 검증이 포함되어 있음)
+  public PipeStatusResponseVO executionPipline() {
+
+    ///  동기 실행 테스트 코드
+    System.out.println("자동 실행 프로그램 시작");
+    int executionId = createNewExecution();
+
+    try {
+      System.out.println("executionId =" +executionId);
 
       // step01 - 키워드 추출
-      StepExecutionResultDTO step01 = keywordExecutor.execute(executionId);
-      // todo : if 추출 실패 시 3회 재시도 및 예외처리
-      // 예시 :
-      // if (!step1.isSuccess()) {
-      // throw new RuntimeException("1단계 실패: " + step1.getErrorMessage());
+      StepExecutionResultVO step01 = keywordExecutor.execute(executionId);
+      // keyWordStatusCode 확인
+      String keyWordStatusCode = step01.getKeyWordStatusCode();
+      if ("SUCCESS".equals(keyWordStatusCode)) {
+        System.out.println("DB조회 결과) keyWordStatusCode = "+ keyWordStatusCode);
+        System.out.println("키워드 추출 성공 - 다음 단계 진행");
 
-      // step02 - 상품정보 & URL 추출
-      StepExecutionResultDTO step02 = crawlingExecutor.execute(executionId);
-      // todo : if 추출 실패 시 3회 재시도 및 예외처리
 
-      // step03 - LLM 생성
-      StepExecutionResultDTO step03 = aiExecutor.execute(executionId);
-      // todo : if 추출 실패 시 3회 재시도 및 예외처리
+        // step02 - 상품정보 & URL 추출
+        StepExecutionResultVO step02 = crawlingExecutor.execute(executionId);
+        // productStatusCode 확인
+        String productStatusCode = step02.getProductStatusCode();
+        if ("SUCCESS".equals(productStatusCode)) {
+          System.out.println("DB조회 결과) productStatusCode = "+ productStatusCode);
+          System.out.println(" 상품정보 & URL 추출 성공 - 다음 단계 진행");
 
-      // step04 - 블로그 발행
-      StepExecutionResultDTO step04 = blogExecutor.execute(executionId);
-      // todo : if 추출 실패 시 3회 재시도 및 예외처리
+          // step03 - LLM 생성
+          StepExecutionResultVO step03 = aiExecutor.execute(executionId);
+          // aIContentStatusCode 확인
+          String aIContentStatusCode = step03.getAIContentStatusCode();
+          if ("SUCCESS".equals(aIContentStatusCode)) {
+            System.out.println("DB조회 결과) aIContentStatusCode = "+ aIContentStatusCode);
+            System.out.println(" LLM 생성 성공 - 다음 단계 진행");
 
-      log.info("파이프라인 성공");
+            // step04 - 블로그 발행
+            StepExecutionResultVO step04 = blogExecutor.execute(executionId);
+            // publishStatusCode 확인
+            String publishStatusCode = step04.getPublishStatusCode();
+            if ("SUCCESS".equals(publishStatusCode)) {
+              System.out.println("DB조회 결과) publishStatusCode = "+ publishStatusCode);
+              System.out.println("블로그 발행 성공");
+              System.out.println("================");
+              System.out.println("자동 실행 프로그램 종료");
 
-       return new PipeResultDataDTO();
+              return new PipeStatusResponseVO();
+            } else {
+              throw new RuntimeException("블로그 발행 실패: " + publishStatusCode);
+            }
+          } else {
+            throw new RuntimeException("LLM 생성 실패: " + aIContentStatusCode);
+          }
+        } else {
+          throw new RuntimeException("상품 크롤링 실패: " + productStatusCode);
+        }
+      } else {
+        throw new RuntimeException("키워드 추출 실패: " + keyWordStatusCode);
+      }
+
 
     } catch (Exception e) {
-      log.error("파이프라인 실행 실패:{}", e.getMessage());
-      updateExecutionStatus(executionId, "FAILED");
-    }
+      log.error("파이프라인 실행 실패: {}", e.getMessage());
+      e.printStackTrace();
       return null;
+    }
+
+
+//
+
   }
 
   private int createNewExecution() {

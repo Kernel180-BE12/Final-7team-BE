@@ -1,6 +1,6 @@
 package com.softlabs.aicontents.domain.scheduler.service.executor;
 
-import com.softlabs.aicontents.domain.scheduler.dto.pipeLineDTO.StepExecutionResultDTO;
+import com.softlabs.aicontents.domain.scheduler.vo.StepExecutionResultVO;
 import com.softlabs.aicontents.domain.scheduler.interfacePipe.PipelineStepExecutor;
 // import com.softlabs.aicontents.domain.testMapper.BlogPublishMapper;
 import com.softlabs.aicontents.domain.testDomainService.BlogPublishService;
@@ -23,22 +23,28 @@ public class BlogPublishExecutor implements PipelineStepExecutor {
   //    // todo: 실제 발행 매퍼 인터페이스로 변경
 
   @Override
-  public StepExecutionResultDTO execute(int executionId) {
+  public StepExecutionResultVO execute(int executionId) {
 
-    /// test : 파이프라인 동작 테스트
-    System.out.println("발행 메서드 호출/ 실행");
-
-    /// todo : 테스트용 RDS 조회 쿼리
-    System.out.println("발행 결과 DB에서 쿼리 조회");
-    System.out.println("발행 결과 DB 완료 확인 로직 실행");
-    System.out.println("발행 상태 판단 -> 완료(success)");
-    System.out.println("발행 상태 판단 -> 실패(failure)-> 재시도/예외처리");
-    System.out.println("[발행] 완료");
-    return null;
-    /// todo : 반환 값으로 이전 기능이 요구하는 파라메터를 반환하기.
+    StepExecutionResultVO result = new StepExecutionResultVO();
+    result.setPublishStatusCode("SUCCESS"); // 또는 적절한 값
+    return result;
   }
-
 }
+
+//    /// test : 파이프라인 동작 테스트
+//    System.out.println("발행 메서드 호출/ 실행");
+//
+//    /// todo : 테스트용 RDS 조회 쿼리
+//    System.out.println("발행 결과 DB에서 쿼리 조회");
+//    System.out.println("발행 결과 DB 완료 확인 로직 실행");
+//    System.out.println("발행 상태 판단 -> 완료(success)");
+//    System.out.println("발행 상태 판단 -> 실패(failure)-> 재시도/예외처리");
+//    System.out.println("[발행] 완료");
+//    return null;
+//    /// todo : 반환 값으로 이전 기능이 요구하는 파라메터를 반환하기.
+//  }
+//
+//}
 
 //        try {
 //            //키워드 수집 서비스 실행

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.softlabs.aicontents.domain.orchestration.mapper.PipelineMapper">
+
+    <select id="selectKeywordStatuscode" resultType="com.softlabs.aicontents.domain.scheduler.vo.StepExecutionResultVO">
+        SELECT status_code as keyWordStatusCode
+          FROM ADMIN.TREND_DATA
+         WHERE TREND_ID=1 ;
+
+
+    </select>
+
+    <select id="selectProductInfoStatuscode" resultType="String">
+        SELECT status_code as productStatusCode
+          FROM ADMIN.SSADAGU_CONTENT
+         WHERE CONTENT_ID =1;
+
+
+    </select>
+
+    <select id="selectAiContentStatuscode" resultType="String">
+        SELECT status_code as aIContentStatusCode
+          FROM ADMIN.AI_GENERATED_CONTENT
+         WHERE AI_CONTENT_ID=1;
+
+    </select>
+
+    <select id="selectPublishStatuscode" resultType="String">
+        SELECT status_code as publishStatusCode
+          FROM ADMIN.BLOG_PUBLISH
+         WHERE PUBLISH_ID =1 ;
+
+    </select>
+
+
+
+</mapper>
