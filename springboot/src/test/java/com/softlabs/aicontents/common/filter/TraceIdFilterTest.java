@@ -1,6 +1,8 @@
 package com.softlabs.aicontents.common.filter;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -45,7 +47,7 @@ class TraceIdFilterTest {
     filter.doFilter(request, response, filterChain);
 
     ArgumentCaptor<String> traceIdCaptor = ArgumentCaptor.forClass(String.class);
-    verify(response).setHeader("X-Trace-Id", traceIdCaptor.capture());
+    verify(response).setHeader(eq("X-Trace-Id"), traceIdCaptor.capture());
 
     String capturedTraceId = traceIdCaptor.getValue();
     assertThat(capturedTraceId).isNotNull();
@@ -63,7 +65,7 @@ class TraceIdFilterTest {
 
     filter.doFilter(request, response, filterChain);
 
-    verify(response).setHeader("X-Trace-Id", existingTraceId);
+    verify(response).setHeader(eq("X-Trace-Id"), eq(existingTraceId));
     verify(filterChain).doFilter(request, response);
   }
 
@@ -75,7 +77,7 @@ class TraceIdFilterTest {
     filter.doFilter(request, response, filterChain);
 
     ArgumentCaptor<String> traceIdCaptor = ArgumentCaptor.forClass(String.class);
-    verify(response).setHeader("X-Trace-Id", traceIdCaptor.capture());
+    verify(response).setHeader(eq("X-Trace-Id"), traceIdCaptor.capture());
 
     String capturedTraceId = traceIdCaptor.getValue();
     assertThat(capturedTraceId).isNotNull();
@@ -93,7 +95,7 @@ class TraceIdFilterTest {
     filter.doFilter(request, response, filterChain);
 
     ArgumentCaptor<String> traceIdCaptor = ArgumentCaptor.forClass(String.class);
-    verify(response).setHeader("X-Trace-Id", traceIdCaptor.capture());
+    verify(response).setHeader(eq("X-Trace-Id"), traceIdCaptor.capture());
 
     String capturedTraceId = traceIdCaptor.getValue();
     assertThat(capturedTraceId).isNotNull();
@@ -118,7 +120,7 @@ class TraceIdFilterTest {
   @DisplayName("필터 체인에서 예외 발생 시에도 TraceId가 정리됨")
   void doFilter_clearsTraceIdEvenOnException() throws ServletException, IOException {
     when(request.getHeader("X-Trace-Id")).thenReturn(null);
-    when(filterChain.doFilter(request, response)).thenThrow(new RuntimeException("Test exception"));
+    doThrow(new RuntimeException("Test exception")).when(filterChain).doFilter(request, response);
 
     try {
       filter.doFilter(request, response, filterChain);
