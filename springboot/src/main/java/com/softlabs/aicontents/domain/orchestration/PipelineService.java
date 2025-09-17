@@ -54,13 +54,13 @@ public class PipelineService {
 
       log.info("파이프라인 성공");
 
-       return new PipeResultDataDTO();
+      return new PipeResultDataDTO();
 
     } catch (Exception e) {
       log.error("파이프라인 실행 실패:{}", e.getMessage());
       updateExecutionStatus(executionId, "FAILED");
     }
-      return null;
+    return null;
   }
 
   private int createNewExecution() {

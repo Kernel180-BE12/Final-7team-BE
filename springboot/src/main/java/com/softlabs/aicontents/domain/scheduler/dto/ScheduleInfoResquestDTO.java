@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class ScheduleInfoResquestDTO {
 
-    private int page;
-    private int limit;
+  private int page;
+  private int limit;
 }

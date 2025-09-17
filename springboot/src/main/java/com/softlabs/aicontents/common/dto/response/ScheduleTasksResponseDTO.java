@@ -5,6 +5,5 @@ import lombok.Data;
 @Data
 public class ScheduleTasksResponseDTO {
 
-    private int taskId;
-
+  private int taskId;
 }
