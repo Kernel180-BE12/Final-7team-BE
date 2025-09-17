@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.softlabs.aicontents.domain.scheduler.mapper.ScheduleEngineMapper">
+
+    <select id="selectScheduleEngines" resultType="com.softlabs.aicontents.domain.scheduler.vo.response.ScheduleResponseVO">
+        /* ScheduleEngineMapper.selectScheduleEngines*/
+        SELECT MAX(TASK_ID) as taskId
+          FROM SCHEDULED_TASKS
+    </select>
+
+<insert id="insertSchedule" parameterType="com.softlabs.aicontents.domain.scheduler.vo.request.SchedulerRequestVO">
+/* ScheduleEngineMapper.insertSchedule*/
+        INSERT INTO SCHEDULED_TASKS ( TASK_ID,
+                                        SCHEDULE_TYPE,
+                                        EXECUTION_TIME,
+                                        KEYWORD_COUNT,
+                                        CONTENT_COUNT,
+                                        AI_MODEL
+        )
+        VALUES ( SCHEDULE_TASK_SEQUENCES.NEXTVAL,
+                #{executionCycle},
+                #{executionTime},
+                #{keywordCount},
+                #{publishCount},
+                #{aiModel}
+        )
+        </insert>
+
+    </mapper>
