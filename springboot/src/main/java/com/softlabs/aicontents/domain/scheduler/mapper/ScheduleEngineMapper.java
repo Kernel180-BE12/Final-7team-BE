@@ -11,9 +11,7 @@ import java.util.List;
 @Mapper
 public interface ScheduleEngineMapper {
 
-    int insertSchedule( SchedulerRequestVO schedulerRequestVO);
-
-    ScheduleResponseVO selectScheduleEngines();
+    int insertSchedule(SchedulerRequestVO schedulerRequestVO);
 
     List<ScheduleInfoResponseVO> selectScheduleInfo(PagingVO pagingVO);
 

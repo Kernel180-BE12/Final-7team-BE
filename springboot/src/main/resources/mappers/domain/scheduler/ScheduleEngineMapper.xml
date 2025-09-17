@@ -6,33 +6,31 @@
 
 <mapper namespace="com.softlabs.aicontents.domain.scheduler.mapper.ScheduleEngineMapper">
 
-    <select id="selectScheduleEngines" resultType="com.softlabs.aicontents.domain.scheduler.vo.response.ScheduleResponseVO">
-        /* ScheduleEngineMapper.selectScheduleEngines*/
-        SELECT MAX(TASK_ID) as taskId
-          FROM SCHEDULED_TASKS
-    </select>
-
-<insert id="insertSchedule" parameterType="com.softlabs.aicontents.domain.scheduler.vo.request.SchedulerRequestVO">
-/* ScheduleEngineMapper.insertSchedule*/
-        INSERT INTO SCHEDULED_TASKS ( TASK_ID,
-                                        TASK_NAME,
-                                        CRON_EXPRESSION,
-                                        SCHEDULE_TYPE,
-                                        EXECUTION_TIME,
-                                        KEYWORD_COUNT,
-                                        CONTENT_COUNT,
-                                        AI_MODEL
+    <insert id="insertSchedule" parameterType="com.softlabs.aicontents.domain.scheduler.vo.request.SchedulerRequestVO">
+        <!-- ScheduleEngineMapper.insertSchedule -->
+        INSERT INTO ADMIN.SCHEDULED_TASKS ( TASK_ID
+                                          , SCHEDULE_TYPE
+                                          , EXECUTION_TIME
+                                          , KEYWORD_COUNT
+                                          , CONTENT_COUNT
+                                          , AI_MODEL
+                                          , LAST_EXECUTION
+                                          , NEXT_EXECUTION
+                                          , CREATED_BY
+                                          , PIPELINE_CONFIG
         )
-        VALUES ( SCHEDULE_TASK_SEQUENCES.NEXTVAL,
-                #{taskName},
-                #{cronExpression},
-                #{scheduleType},
-                #{executionTime},
-                #{keywordCount},
-                #{contentCount},
-                #{aiModel}
-        )
-        </insert>
+        VALUES ( SCHEDULE_TASK_SEQUENCES.NEXTVAL
+               , #{scheduleType}
+               , #{executionTime}
+               , #{keywordCount}
+               , #{contentCount}
+               , #{aiModel}
+               , #{lastExecution}
+               , #{nextExecution}
+               , 'admin'
+               , #{pipelineConfig}
+               )
+    </insert>
 
     <select id="selectScheduleInfo" parameterType="com.softlabs.aicontents.domain.scheduler.vo.request.PagingVO" resultType="com.softlabs.aicontents.domain.scheduler.vo.response.ScheduleInfoResponseVO">
         <!-- DashBoardMapper.selectScheduleInfo -->
@@ -63,4 +61,4 @@
         SELECT COUNT(*)
         FROM ADMIN.SCHEDULED_TASKS
     </select>
-    </mapper>
+</mapper>

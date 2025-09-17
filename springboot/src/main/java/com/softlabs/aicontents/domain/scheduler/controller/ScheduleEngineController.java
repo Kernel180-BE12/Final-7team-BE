@@ -39,15 +39,12 @@ public class ScheduleEngineController {
   /// 08. 스케줄 생성
   @Operation(summary = "스케줄 생성 API",description = "생성할 스케줄의 상세 정보입니다.")
   @PostMapping("/schedule")
-  public ApiResponseDTO<ScheduleTasksResponseDTO> setSchedule(ScheduleTasksRequestDTO scheduleTasksRequestDTO) {
-
-    // 확인 메세지
-    System.out.println("scheduleTasksRequestDTO를 전달받음.=>" + scheduleTasksRequestDTO.toString());
+  public ApiResponseDTO<String> setSchedule(@RequestBody ScheduleTasksRequestDTO scheduleTasksRequestDTO) {
 
     try {
-      ScheduleTasksResponseDTO scheduleTasksResponseDTO = scheduleEngineService.scheduleEngine(scheduleTasksRequestDTO);
+      scheduleEngineService.scheduleEngine(scheduleTasksRequestDTO);
 
-      return ApiResponseDTO.success(scheduleTasksResponseDTO,"새로운 스케줄 저장 완료");
+      return ApiResponseDTO.success("새로운 스케줄 저장 완료");
     } catch (Exception e) {
 
         return ApiResponseDTO.error("스케줄 저장 실패"+e.getMessage());
