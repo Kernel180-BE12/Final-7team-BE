@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.softlabs.aicontents.domain.publish.mapper.AiPostMapper">
+    <resultMap id="AiPostMap" type="com.softlabs.aicontents.domain.publish.dto.request.AiPostDto">
+        <id     property="postId"         column="POST_ID" />
+        <result property="genId"          column="GEN_ID" />
+        <result property="title"          column="TITLE" />
+        <result property="metaDescription" column="META_DESCRIPTION" />
+        <!-- CLOB -> String -->
+        <result property="bodyMarkdown"   column="BODY_MARKDOWN" jdbcType="CLOB" />
+        <result property="hashtagsCsv"    column="HASHTAGS_CSV" />
+        <result property="evidenceCsv"    column="EVIDENCE_CSV" />
+        <result property="schemaVersion"  column="SCHEMA_VERSION" />
+        <!-- TIMESTAMP WITH TIME ZONE -> OffsetDateTime -->
+        <result property="createdAt"      column="CREATED_AT"     jdbcType="TIMESTAMP_WITH_TIMEZONE" />
+    </resultMap>
+
+    <select id="selectByPostId" parameterType="long" resultMap="AiPostMap">
+        SELECT
+            POST_ID,
+            GEN_ID,
+            TITLE,
+            META_DESCRIPTION,
+            BODY_MARKDOWN,
+            HASHTAGS_CSV,
+            EVIDENCE_CSV,
+            SCHEMA_VERSION,
+            CREATED_AT
+        FROM DEV_USER.AI_POST
+        WHERE POST_ID = #{postId}
+    </select>
+
+</mapper>
