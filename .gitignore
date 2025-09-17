@@ -155,3 +155,10 @@ yarn-error.log*
 
 
 .env
+
+# ==============================
+# 11. playwright 관련
+# ==============================
+storage/*.json
+*.state.json
+debug_*.png
