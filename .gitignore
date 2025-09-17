@@ -159,6 +159,7 @@ yarn-error.log*
 # ==============================
 # 11. playwright 관련
 # ==============================
-storage/*.json
+fastapi/storage/*.json
 *.state.json
 debug_*.png
+/storage/*.json
