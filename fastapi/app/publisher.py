@@ -99,21 +99,34 @@ class BlogPostPublisher:
 
             # 8) 발행 완료 확인 및 최종 URL 추출
             print("발행 완료 페이지 로딩을 기다립니다...")
-            await page.wait_for_load_state("networkidle", timeout=90_000)
+            final_url_pattern ="**/PostView.naver?*logNo=*"
+            print(f"URL 패턴 확인: {final_url_pattern}")
+            await page.wait_for_url(final_url_pattern, timeout=90_000)
+            # await page.wait_for_load_state("networkidle", timeout=90_000)
 
             blog_url = page.url
             print(f"[성공] 최종 발행된 URL: {blog_url}")
             # await page.screenshot(path="debug_06_final_page.png", full_page=True)
 
             post_id = self._extract_post_id(blog_url)
-            raw = {"url": blog_url, "postId": post_id}
 
-            return PublishResponse(
-                publishStatus=PublishStatus.SUCCESS,
-                blogPostId=post_id,
-                blogUrl=blog_url,
-                publishResponse=json.dumps(raw, ensure_ascii=False),
-            )
+            if post_id:
+                clean_blog_url = f"https://blog.naver.com/{config.BLOG_ID}/{post_id}"
+                print(f"직접 만든 깔끔한 URL: {clean_blog_url}")
+
+                raw = {"url": clean_blog_url, "postId": post_id}
+                return PublishResponse(
+                    publishStatus=PublishStatus.SUCCESS,
+                    blogPostId=post_id,
+                    blogUrl=clean_blog_url, # <--- 여기에 조립한 URL을 넣어줍니다.
+                    publishResponse=json.dumps(raw, ensure_ascii=False),
+                )
+            else:
+                # postId 추출에 실패한 경우의 예외 처리
+                return PublishResponse(
+                    publishStatus=PublishStatus.FAILED,
+                    errorMessage="게시물 ID를 URL에서 추출하지 못했습니다."
+                )
 
         except (PwTimeout, Exception) as e:
             error_message = f"발행 작업 중 오류 발생: {e}"
@@ -130,5 +143,7 @@ class BlogPostPublisher:
 
     def _extract_post_id(self, url: str):
         # 예시: https://blog.naver.com/{blogId}/{postId}
-        m = re.search(r"/(\d+)(?:\?.*)?$", url or "")
-        return m.group(1) if m else None
+        # m = re.search(r"/(\d+)(?:\?.*)?$", url or "")
+        # return m.group(1) if m else None
+        match = re.search(r"logNo=(\d+)", url or "")
+        return match.group(1) if match else None
