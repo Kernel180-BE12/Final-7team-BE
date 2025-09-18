@@ -17,15 +17,19 @@ public class LogMonitoringService {
 
   // 로그 목록 조회 서비스 메서드
   public LogListResponse getLogs(LogSearchRequest request) {
-      //System.out.println("파라미터"+ request);
+    // System.out.println("파라미터"+ request);
 
-      // 검색 조건을 Map으로 구성
+    // 검색 조건을 Map으로 구성
     Map<String, Object> param = new HashMap<>();
     param.put("executionId", request.getExecutionId()); // 실행 ID 조건
     param.put("startDate", request.getStartDate()); // 시작일 조건
     param.put("endDate", request.getEndDate()); // 종료일 조건
-    param.put("status", request.getStatus() != null ? request.getStatus().toUpperCase() : null); // 상태코드 조건
-    param.put("logLevel", request.getLogLevel() != null ? request.getLogLevel().toUpperCase() : null); // 로그 레벌 조건
+    param.put(
+        "status",
+        request.getStatus() != null ? request.getStatus().toUpperCase() : null); // 상태코드 조건
+    param.put(
+        "logLevel",
+        request.getLogLevel() != null ? request.getLogLevel().toUpperCase() : null); // 로그 레벌 조건
 
     // 조건에 맞는 로그 목록 조회
     List<LogEntryVO> logs = logMapper.findLogsByConditions(param);
