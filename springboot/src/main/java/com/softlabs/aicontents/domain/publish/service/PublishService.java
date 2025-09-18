@@ -4,9 +4,8 @@ import com.softlabs.aicontents.domain.publish.dto.request.AiPostDto;
 import com.softlabs.aicontents.domain.publish.dto.request.PublishReqDto;
 import com.softlabs.aicontents.domain.publish.dto.response.PublishResDto;
 import com.softlabs.aicontents.domain.publish.mapper.AiPostMapper;
-import java.time.Duration;
-
 import com.softlabs.aicontents.domain.publish.mapper.PublishResultMapper;
+import java.time.Duration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -48,6 +47,7 @@ public class PublishService {
         .hashtag(src.getHashtagsCsv())
         .build();
   }
+
   public Long saveFromResponse(PublishResDto res) {
     // enum → 문자열로 변환이 필요하면 여기서 처리
     // (아래 XML에서 #{publishStatusName}를 쓸 계획이라면 이 변환도 불필요)
@@ -55,6 +55,3 @@ public class PublishService {
     return res.getPublishId(); // selectKey로 PK가 세팅됨
   }
 }
-
-
-
