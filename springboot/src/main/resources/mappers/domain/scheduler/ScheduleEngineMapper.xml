@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.softlabs.aicontents.domain.scheduler.mapper.ScheduleEngineMapper">
+
+    <insert id="insertSchedule" parameterType="com.softlabs.aicontents.domain.scheduler.vo.request.SchedulerRequestVO">
+        <!-- ScheduleEngineMapper.insertSchedule -->
+        INSERT INTO ADMIN.SCHEDULED_TASKS ( TASK_ID
+                                          , SCHEDULE_TYPE
+                                          , EXECUTION_TIME
+                                          , KEYWORD_COUNT
+                                          , CONTENT_COUNT
+                                          , AI_MODEL
+                                          , LAST_EXECUTION
+                                          , NEXT_EXECUTION
+                                          , CREATED_BY
+                                          , PIPELINE_CONFIG
+        )
+        VALUES ( SCHEDULE_TASK_SEQUENCES.NEXTVAL
+               , #{scheduleType}
+               , #{executionTime}
+               , #{keywordCount}
+               , #{contentCount}
+               , #{aiModel}
+               , #{lastExecution}
+               , #{nextExecution}
+               , 'admin'
+               , #{pipelineConfig}
+               )
+    </insert>
+
+    <select id="selectScheduleInfo" parameterType="com.softlabs.aicontents.domain.scheduler.vo.request.PagingVO" resultType="com.softlabs.aicontents.domain.scheduler.vo.response.ScheduleInfoResponseVO">
+        <!-- DashBoardMapper.selectScheduleInfo -->
+        SELECT *
+        FROM (
+        SELECT ROWNUM rn, a.*
+        FROM (
+        SELECT TASK_ID as scheduleId
+        , SCHEDULE_TYPE as executionCycle
+        , EXECUTION_TIME as executionTime
+        , KEYWORD_COUNT as keywordCount
+        , CONTENT_COUNT as publishCount
+        , AI_MODEL as aiModel
+        , IS_ACTIVE as isActive
+        , CREATED_AT as createdAt
+        , CASE WHEN NEXT_EXECUTION IS NULL THEN 'N'
+        ELSE TO_CHAR(NEXT_EXECUTION, 'YYYY-MM-DD HH24:MI:SS')
+        END AS nextExecutionAt
+        FROM ADMIN.SCHEDULED_TASKS
+        ORDER BY TASK_ID
+        ) a
+        WHERE ROWNUM <![CDATA[<=]]> #{endRow}
+        )
+        WHERE rn > #{startRow}
+    </select>
+
+    <select id="selectScheduleInfoCount" resultType="int">
+        SELECT COUNT(*)
+        FROM ADMIN.SCHEDULED_TASKS
+    </select>
+</mapper>

@@ -155,6 +155,7 @@ yarn-error.log*
 
 
 .env
+nul
 
 # ==============================
 # 11. playwright 관련
