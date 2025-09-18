@@ -68,8 +68,6 @@ class BlogPostPublisher:
 
                 # 본문 내용 입력
                 await page.keyboard.type(req.markdown)
-
-                # 잠시 대기 후 결과 확인
                 await page.wait_for_timeout(2000)
 
                 # 결과 확인
@@ -82,7 +80,6 @@ class BlogPostPublisher:
 
             # 5) 발행 팝업 창이 나타날 때까지 대기
             print("발행 팝업 창을 기다립니다...")
-            # 팝업 창의 태그 입력란이 보일 때까지 기다리는 것이 가장 확실합니다.
             await page.wait_for_selector(config.MODAL_TAGS_SELECTOR)
             print("[성공] 발행 팝업 창 로드 완료")
             # await page.screenshot(path="debug_04_modal_opened.png", full_page=True)
