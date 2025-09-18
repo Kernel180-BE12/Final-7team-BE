@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/v1/monitoring")
 @RequiredArgsConstructor
 public class LogMonitoringController {
-    private final LogMonitoringService logMonitoringService;
+  private final LogMonitoringService logMonitoringService;
 
-    @GetMapping("/logs")
-    @Operation(summary = "작업 로그 조회 API", description = "해당하는 작업 ID의 로그를 조회합니다")
-    public ResponseEntity<LogListResponse> getLogs(LogSearchRequest request) {
-        //검색 요청 객체를 서비스에 넘겨 결과 반환
-        return ResponseEntity.ok(logMonitoringService.getLogs(request));
-    }
+  @GetMapping("/logs")
+  @Operation(summary = "작업 로그 조회 API", description = "해당하는 작업 ID의 로그를 조회합니다")
+  public ResponseEntity<LogListResponse> getLogs(LogSearchRequest request) {
+    // 검색 요청 객체를 서비스에 넘겨 결과 반환
+    return ResponseEntity.ok(logMonitoringService.getLogs(request));
+  }
 }
