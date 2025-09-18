@@ -1,5 +1,8 @@
 package com.softlabs.aicontents.domain.scheduler.service.executor;
 
+import com.softlabs.aicontents.domain.orchestration.mapper.PipelineMapper;
+import com.softlabs.aicontents.domain.orchestration.vo.StepExecutionResultVO;
+import com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.KeywordResult;
 import com.softlabs.aicontents.domain.scheduler.dto.pipeLineDTO.StepExecutionResultDTO;
 import com.softlabs.aicontents.domain.scheduler.interfacePipe.PipelineStepExecutor;
 // import com.softlabs.aicontents.domain.testMapper.KeywordMapper;
@@ -12,47 +15,29 @@ import org.springframework.stereotype.Service;
 @Component
 @Slf4j
 @Service
-public class KeywordExecutor implements PipelineStepExecutor {
+public class KeywordExecutor { // 인터페이스 제거
 
   @Autowired private KeywordService keywordService;
 
   /// todo :  실제 키워드 수집 기능 서비스
+      @Autowired
+      private PipelineMapper pipelineMapper;
 
-  //    @Autowired
-  //    private KeywordMapper keywordMapper;  // DB 조회용
 
-  @Override
-  public StepExecutionResultDTO execute(int executionId) {
+  public KeywordResult execute(int executionId) {
 
-    /// test : 파이프라인 동작 테스트
-    System.out.println("키워드 수집 메서드 호출/ 실행");
-    delayWithDots(3);
+    //1. 메서드 실행
+    System.out.println("키워드 수집 메서드 실행 - keywordService");
 
-    /// todo : 테스트용 RDS 조회 쿼리
-    System.out.println("키워드 수집 결과 DB에서 쿼리 조회");
-    delayWithDots(3);
-    System.out.println("키워드 수집 결과 DB 완료 확인 로직 실행");
-    delayWithDots(3);
-    System.out.println("키워드 수집 수집 상태 판단 -> 완료(success)");
-    System.out.println("키워드 수집 수집 상태 판단 -> 실패(failure)-> 재시도/예외처리");
-    delayWithDots(3);
-    System.out.println("[스케줄러]가 [키워드 수집] -> [싸다구 정보 수집] (요청)객체 전달");
-    delayWithDots(3);
-    return null;
-    /// todo : 반환 값으로 이전 기능이 요구하는 파라메터를 반환하기.
-  }
+    //2. 실행 결과를 DB 조회+ 객체 저장
+    KeywordResult statusCode = pipelineMapper.selectKeywordStatuscode();
+    System.out.println("여기 탔음"+ statusCode);
 
-  /// 테스트용 딜레이 메서드
-  private void delayWithDots(int seconds) {
-    try {
-      for (int i = 0; i < seconds; i++) {
-        Thread.sleep(200); // 1초마다
-        System.out.print(".");
-      }
-      System.out.println(); // 줄바꿈
-    } catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-    }
+//    String statusCode = result.getKeyWordStatusCode();
+//    System.out.println(statusCode);
+
+    return new KeywordResult();
+
   }
 }
 

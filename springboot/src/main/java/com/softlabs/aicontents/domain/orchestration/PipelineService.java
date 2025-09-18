@@ -1,5 +1,7 @@
 package com.softlabs.aicontents.domain.orchestration;
 
+import com.softlabs.aicontents.domain.orchestration.vo.StepExecutionResultVO;
+import com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.KeywordResult;
 import com.softlabs.aicontents.domain.scheduler.dto.PipeResultDataDTO;
 import com.softlabs.aicontents.domain.scheduler.dto.pipeLineDTO.StepExecutionResultDTO;
 import com.softlabs.aicontents.domain.scheduler.service.executor.AIContentExecutor;
@@ -25,32 +27,44 @@ public class PipelineService {
 
   @Autowired private BlogPublishExecutor blogExecutor;
 
-  public PipeResultDataDTO executionPipline() {
-    int executionId = createNewExecution();
-    // todo : executionId = (동일한 파이프라인인지 구분하는 용도)
-    // DB 에서 PIPELINE_EXECUTIONS 테이블의 execution_id
 
-    try { ///  파이프라인 전체 try-catch
-      // 각 단계를 순차적으로 실행 (실행과 검증이 포함되어 있음)
+
+  public PipeResultDataDTO executionPipline() {
+
+    //1. 파이프라인 테이블의 ID 생성
+    int executionId = createNewExecution();
+
+    // 상태 누적
+    PipeResultDataDTO pipeResultDataDTO = new PipeResultDataDTO();
+
+
+    try {
 
       // step01 - 키워드 추출
-      StepExecutionResultDTO step01 = keywordExecutor.execute(executionId);
+      KeywordResult keywordResult = keywordExecutor.execute(executionId);
+//      StepExecutionResultVO step01 = keywordExecutor.execute(executionId);
+      System.out.println("파이프라인 1단계 결과" +keywordResult);
       // todo : if 추출 실패 시 3회 재시도 및 예외처리
-      // 예시 :
-      // if (!step1.isSuccess()) {
-      // throw new RuntimeException("1단계 실패: " + step1.getErrorMessage());
+          // 예시 :
+          // if (!step1.isSuccess()) {
+          // throw new RuntimeException("1단계 실패: " + step1.getErrorMessage());
+
+          //PipeResultDataDTO에 결과물 저장 메서드
+
+
 
       // step02 - 상품정보 & URL 추출
-      StepExecutionResultDTO step02 = crawlingExecutor.execute(executionId);
-      // todo : if 추출 실패 시 3회 재시도 및 예외처리
-
-      // step03 - LLM 생성
-      StepExecutionResultDTO step03 = aiExecutor.execute(executionId);
-      // todo : if 추출 실패 시 3회 재시도 및 예외처리
-
-      // step04 - 블로그 발행
-      StepExecutionResultDTO step04 = blogExecutor.execute(executionId);
-      // todo : if 추출 실패 시 3회 재시도 및 예외처리
+      StepExecutionResultVO step02 = crawlingExecutor.execute(executionId);
+      System.out.println("파이프라인 2단계 결과" +step02);
+         // todo : if 추출 실패 시 3회 재시도 및 예외처리
+//
+//    // step03 - LLM 생성
+//    StepExecutionResultVO step03 = aiExecutor.execute(executionId);
+//          // todo : if 추출 실패 시 3회 재시도 및 예외처리
+//
+//    // step04 - 블로그 발행
+//    StepExecutionResultVO step04 = blogExecutor.execute(executionId);
+//          // todo : if 추출 실패 시 3회 재시도 및 예외처리
 
       log.info("파이프라인 성공");
 
@@ -60,7 +74,7 @@ public class PipelineService {
       log.error("파이프라인 실행 실패:{}", e.getMessage());
       updateExecutionStatus(executionId, "FAILED");
     }
-    return null;
+      return null;
   }
 
   private int createNewExecution() {
