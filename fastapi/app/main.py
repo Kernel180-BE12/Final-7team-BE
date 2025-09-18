@@ -4,7 +4,7 @@ from sqlalchemy import text
 from datetime import datetime
 from . import models, schemas
 from .database import SessionLocal, engine, get_db
-
+from ..app_test import app as ai_app
 # 데이터베이스 테이블 생성
 models.Base.metadata.create_all(bind=engine)
 
@@ -14,6 +14,7 @@ app = FastAPI(
     description="FastAPI + Docker + Nginx + Oracle RDS 프로젝트",
     version="1.0.0"
 )
+app.mount("/ai", ai_app)
 
 # 기본 헬스체크 API
 @app.get("/health")
