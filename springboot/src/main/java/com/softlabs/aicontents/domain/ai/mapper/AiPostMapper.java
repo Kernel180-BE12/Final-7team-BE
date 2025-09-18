@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface AiPostMapper {
-    int insertPost(AiPostEntity entity);
-    AiPostEntity selectByGenId(@Param("genId") Long genId);
+  int insertPost(AiPostEntity entity);
+
+  AiPostEntity selectByGenId(@Param("genId") Long genId);
 }

@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface AiRequestMapper {
-    AiRequestEntity findByHash(@Param("requestHash") String requestHash);
-    int insertRequest(AiRequestEntity  entity);
+  AiRequestEntity findByHash(@Param("requestHash") String requestHash);
+
+  int insertRequest(AiRequestEntity entity);
 }
