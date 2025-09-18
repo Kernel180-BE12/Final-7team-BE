@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.softlabs.aicontents.domain.ai.mapper.AiPostMapper">
+    <resultMap id="AiPostMap" type="com.softlabs.aicontents.domain.ai.entity.AiPostEntity">
+        <id property="postId" column="POST_ID"/>
+        <result property="genId" column="GEN_ID"/>
+        <result property="title" column="TITLE"/>
+        <result property="metaDescription" column="META_DESCRIPTION"/>
+        <result property="bodyMarkdown" column="BODY_MARKDOWN"/>
+        <result property="hashtagsCsv" column="HASHTAGS_CSV"/>
+        <result property="evidenceCsv" column="EVIDENCE_CSV"/>
+        <result property="schemaVersion" column="SCHEMA_VERSION"/>
+    </resultMap>
+
+<!--    <insert id="insertPost"-->
+<!--            parameterType="com.softlabs.aicontents.domain.ai.entity.AiPostEntity"-->
+<!--            useGeneratedKeys="true" keyProperty="postId">-->
+<!--        INSERT INTO AI_POST-->
+<!--        (GEN_ID, TITLE, META_DESCRIPTION, BODY_MARKDOWN, HASHTAGS_CSV, EVIDENCE_CSV, SCHEMA_VERSION)-->
+<!--        VALUES-->
+<!--            (#{genId}, #{title}, #{metaDescription}, #{bodyMarkdown}, #{hashtagsCsv}, #{evidenceCsv}, #{schemaVersion})-->
+<!--    </insert>-->
+    <insert id="insertPost" parameterType="com.softlabs.aicontents.domain.ai.entity.AiPostEntity">
+        <selectKey keyProperty="postId" resultType="long" order="BEFORE">
+            SELECT AI_POST_SEQ.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO AI_POST (
+        POST_ID, GEN_ID, TITLE, META_DESCRIPTION, BODY_MARKDOWN,
+        HASHTAGS_CSV, EVIDENCE_CSV, SCHEMA_VERSION
+        ) VALUES (
+        #{postId}, #{genId}, #{title}, #{metaDescription}, #{bodyMarkdown},
+        #{hashtagsCsv}, #{evidenceCsv}, #{schemaVersion}
+        )
+    </insert>
+
+
+    <select id="selectByGenId"  parameterType="long" resultMap="AiPostMap">
+        SELECT POST_ID, GEN_ID, TITLE, META_DESCRIPTION, BODY_MARKDOWN,
+               HASHTAGS_CSV, EVIDENCE_CSV, SCHEMA_VERSION
+        FROM AI_POST
+        WHERE GEN_ID = #{genId}
+    </select>
+</mapper>
