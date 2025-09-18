@@ -14,6 +14,8 @@ public class FilterConfig {
     registrationBean.setFilter(new TraceIdFilter());
     registrationBean.addUrlPatterns("/*");
     registrationBean.setOrder(1);
+
+    // OncePerRequestFilter의 shouldNotFilter로 제외 처리하므로 여기서는 모든 경로 허용
     return registrationBean;
   }
 }
