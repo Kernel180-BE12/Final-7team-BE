@@ -4,9 +4,8 @@ import com.softlabs.aicontents.domain.publish.dto.request.AiPostDto;
 import com.softlabs.aicontents.domain.publish.dto.request.PublishReqDto;
 import com.softlabs.aicontents.domain.publish.dto.response.PublishResDto;
 import com.softlabs.aicontents.domain.publish.mapper.AiPostMapper;
-import java.time.Duration;
-
 import com.softlabs.aicontents.domain.publish.mapper.PublishResultMapper;
+import java.time.Duration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -47,12 +46,12 @@ public class PublishService {
         .hashtag(src.getHashtagsCsv())
         .build();
   }
-//  public void savePublishResult(PublishResDto responseDto) {
-//    // FastAPI 응답 DTO를 DB 저장용 DTO로 변환
-//    PublishResDto resultToSave = new PublishResDto(...);
-//
-//    // Mapper 인터페이스의 메소드를 호출하여 DB에 저장
-//    publishResultMapper.insertPublishResult(resultToSave);
-//  }
+  //  public void savePublishResult(PublishResDto responseDto) {
+  //    // FastAPI 응답 DTO를 DB 저장용 DTO로 변환
+  //    PublishResDto resultToSave = new PublishResDto(...);
+  //
+  //    // Mapper 인터페이스의 메소드를 호출하여 DB에 저장
+  //    publishResultMapper.insertPublishResult(resultToSave);
+  //  }
 
 }
