@@ -16,7 +16,7 @@ public class AiClientConfig {
     @Bean
     public WebClient llmwebClient() {
         return WebClient.builder()
-                .baseUrl("http://127.0.0.1:8001")
+                .baseUrl("http://127.0.0.1:8001")//("http://13.124.8.131/fastapi")//("http://127.0.0.1:8001")
                 .build();
     }
 }
