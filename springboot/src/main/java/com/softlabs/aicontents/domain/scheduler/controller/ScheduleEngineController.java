@@ -2,10 +2,10 @@ package com.softlabs.aicontents.domain.scheduler.controller;
 
 import com.softlabs.aicontents.common.dto.request.ScheduleTasksRequestDTO;
 import com.softlabs.aicontents.common.dto.response.ApiResponseDTO;
-import com.softlabs.aicontents.common.dto.response.ScheduleTasksResponseDTO;
+import com.softlabs.aicontents.common.dto.response.PageResponseDTO;
 import com.softlabs.aicontents.domain.orchestration.PipelineService;
-import com.softlabs.aicontents.domain.orchestration.vo.PipeStatusResponseVO;
-import com.softlabs.aicontents.domain.scheduler.dto.PipeResultResponseDTO;
+import com.softlabs.aicontents.domain.scheduler.dto.ScheduleInfoResquestDTO;
+import com.softlabs.aicontents.domain.scheduler.dto.resultDTO.ScheduleResponseDTO;
 import com.softlabs.aicontents.domain.scheduler.service.ScheduleEngineService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
@@ -31,80 +31,43 @@ public class ScheduleEngineController {
   /// 08. 스케줄 생성
   @Operation(summary = "스케줄 생성 API", description = "생성할 스케줄의 상세 정보입니다.")
   @PostMapping("/schedule")
-  public ApiResponseDTO<ScheduleTasksResponseDTO> setSchedule(
-      ScheduleTasksRequestDTO scheduleTasksRequestDTO) {
-
-    // 확인 메세지
-    System.out.println("scheduleTasksRequestDTO를 전달받음.=>" + scheduleTasksRequestDTO.toString());
+  public ApiResponseDTO<String> setSchedule(
+      @RequestBody ScheduleTasksRequestDTO scheduleTasksRequestDTO) {
 
     try {
-      ScheduleTasksResponseDTO scheduleTasksResponseDTO =
-          scheduleEngineService.scheduleEngine(scheduleTasksRequestDTO);
+      scheduleEngineService.scheduleEngine(scheduleTasksRequestDTO);
 
-      return ApiResponseDTO.success(scheduleTasksResponseDTO, "새로운 스케줄 저장 완료");
+      return ApiResponseDTO.success("새로운 스케줄 저장 완료");
     } catch (Exception e) {
 
       return ApiResponseDTO.error("스케줄 저장 실패" + e.getMessage());
     }
   }
 
-  // 초 분 시 일 월 요일
-  //   @Scheduled(cron = "1/5 * * * * *")
-
-  /// 10. 파이프라인 실행
-  @PostMapping("/execute")
-  public void executePipline() {
-    /// 파이프라인 실행 메서드 호출
-    pipelineService.executionPipline();
-  }
-
-  /// 11. 파이프라인 상태 조회
-  @GetMapping("/pipeline/status/{executionId}")
-  public ApiResponseDTO<PipeResultResponseDTO> checkStatus(
-      @PathVariable String executionId, PipeStatusResponseVO pipeStatusResponseVO) {
-    System.out.println("checkStatus 메서드 시작 - pipeStatusResponseVO: {}" + pipeStatusResponseVO);
-
-    pipelineService.executionPipline();
+  @Operation(summary = "스케줄 정보 출력 API", description = "스케줄 default 정보 출력값")
+  @GetMapping("/schedule/list")
+  public ApiResponseDTO<PageResponseDTO<ScheduleResponseDTO>> getScheduleList(
+      ScheduleInfoResquestDTO scheduleInfoResquestDTO) {
     try {
-      System.out.println("convertVOtoDTO 호출 전");
-      PipeResultResponseDTO pipeResultResponseDTO = convertVOtoDTO(pipeStatusResponseVO);
-      System.out.println("PipeStatusResponseVO(파이프라인 상태 조회)를 pipeResultResponseDTO 저장 완료");
+      // 입력 파라미터 null 체크
+      if (scheduleInfoResquestDTO == null) {
+        return ApiResponseDTO.error("요청 파라미터가 필요합니다.");
+      }
 
-      String successMesg = "PipeStatusResponseVO(파이프라인 상태 조회)를 pipeResultResponseDTO 반환 완료";
-      return ApiResponseDTO.success(pipeResultResponseDTO, successMesg);
+      PageResponseDTO<ScheduleResponseDTO> pageResponse =
+          scheduleEngineService.getScheduleInfoList(scheduleInfoResquestDTO);
+
+      // 빈 결과 체크
+      if (pageResponse.getContent() == null || pageResponse.getContent().isEmpty()) {
+        return ApiResponseDTO.success(pageResponse, "조회된 스케줄이 없습니다.");
+      }
+
+      return ApiResponseDTO.success(pageResponse, "스케줄 정보 출력 완료");
 
     } catch (Exception e) {
-      return ApiResponseDTO.error("파이프라인 상태 조회 실패");
+      System.out.println("예외 발생: " + e.getMessage());
+      e.printStackTrace();
+      return ApiResponseDTO.error("스케줄 정보 출력 실패: " + e.getMessage());
     }
-    ///// todo : 상태 조회 로직
-  }
-
-  private PipeResultResponseDTO convertVOtoDTO(PipeStatusResponseVO pipeStatusResponseVO) {
-
-    if (pipeStatusResponseVO == null) {
-      return new PipeResultResponseDTO();
-    }
-
-    PipeResultResponseDTO dto = new PipeResultResponseDTO();
-
-    dto.setExecutionId(pipeStatusResponseVO.getExecutionId());
-    dto.setOverallStatus(pipeStatusResponseVO.getOverallStatus());
-    dto.setStartedAt(pipeStatusResponseVO.getStartedAt());
-    dto.setCompletedAt(pipeStatusResponseVO.getCompletedAt());
-    dto.setCurrentStage(pipeStatusResponseVO.getCurrentStage());
-    dto.setProgressResult(pipeStatusResponseVO.getProgressResult());
-    dto.setResults(pipeStatusResponseVO.getResults());
-    dto.setLogs(pipeStatusResponseVO.getLogs());
-
-    return dto;
   }
 }
-//
-//  /// 12. 파이프라인 제어
-//  @PostMapping("/pipeline/control/{executionId}")
-//  public void controlPipeline() {
-//    /// todo : 파이프라인 제어 로직
-//
-//
-//  }
-//

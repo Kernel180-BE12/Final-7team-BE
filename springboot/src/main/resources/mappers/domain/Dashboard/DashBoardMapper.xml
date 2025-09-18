@@ -4,7 +4,6 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.softlabs.aicontents.domain.dashboard.mapper.DashBoardMapper">
-
     <resultMap id="DashboardResultMap" type="com.softlabs.aicontents.domain.dashboard.vo.DashboardResponseVO">
         <constructor>
             <arg column="MENU_ID" javaType="int"/>
@@ -16,8 +15,8 @@
         </constructor>
     </resultMap>
 
-    <!-- DB 현재 시간 가져오기 -->
     <select id="selectMenu" resultMap="DashboardResultMap">
+        <!-- DashBoardMapper.selectMenu -->
         SELECT MENU_ID,
                MENU_NAME,
                MENU_URL,
@@ -25,8 +24,6 @@
                'admin' AS ROLE_REQUIRED,
                CASE WHEN IS_VISIBLE = 1 THEN 'true' ELSE 'false' END AS VISIBLE
           FROM ADMIN.NAVIGATION_MENUS
-         WHERE PARENT_MENU_ID IS NULL
-         ORDER BY SORT_ORDER
+         ORDER BY MENU_ID
     </select>
-
 </mapper>

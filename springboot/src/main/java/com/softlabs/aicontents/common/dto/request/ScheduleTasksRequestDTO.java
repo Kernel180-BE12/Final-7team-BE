@@ -18,10 +18,7 @@ import lombok.NoArgsConstructor;
 @Schema(description = "ScheduleTasksRequestDTO - 스케줄 작업 요청 객체")
 public class ScheduleTasksRequestDTO {
 
-  @Schema(
-      description = "스케줄러 명칭",
-      example = "Untitled Schedule",
-      requiredMode = Schema.RequiredMode.REQUIRED)
+  @Schema(description = "스케줄러 명칭", example = "Untitled Schedule")
   private String taskName;
 
   @Schema(description = "크론 표현식", example = "0 8 * * *")
