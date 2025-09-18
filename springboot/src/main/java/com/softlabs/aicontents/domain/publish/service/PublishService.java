@@ -17,6 +17,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class PublishService {
   private final AiPostMapper aiPostMapper;
   private final PublishResultMapper publishResultMapper;
+
   WebClient client = WebClient.builder().baseUrl("http://localhost:8000").build();
 
   public PublishResDto publishByPostId(Long postId) {
@@ -47,12 +48,13 @@ public class PublishService {
         .hashtag(src.getHashtagsCsv())
         .build();
   }
-//  public void savePublishResult(PublishResDto responseDto) {
-//    // FastAPI 응답 DTO를 DB 저장용 DTO로 변환
-//    PublishResDto resultToSave = new PublishResDto(...);
-//
-//    // Mapper 인터페이스의 메소드를 호출하여 DB에 저장
-//    publishResultMapper.insertPublishResult(resultToSave);
-//  }
-
+  public Long saveFromResponse(PublishResDto res) {
+    // enum → 문자열로 변환이 필요하면 여기서 처리
+    // (아래 XML에서 #{publishStatusName}를 쓸 계획이라면 이 변환도 불필요)
+    publishResultMapper.insertPublishResult(res);
+    return res.getPublishId(); // selectKey로 PK가 세팅됨
+  }
 }
+
+
+
