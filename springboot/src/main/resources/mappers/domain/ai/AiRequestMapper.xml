@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.softlabs.aicontents.domain.ai.mapper.AiRequestMapper">
+    <resultMap id="AiRequestMap" type="com.softlabs.aicontents.domain.ai.entity.AiRequestEntity">
+        <id property="requestId" column="REQUEST_ID"/>
+        <result property="productName" column="PRODUCT_NAME"/>
+        <result property="priceStr" column="PRICE_STR"/>
+        <result property="sourceUrl" column="SOURCE_URL"/>
+        <result property="requestJson" column="REQUEST_JSON"/>
+        <result property="requestHash" column="REQUEST_HASH"/>
+    </resultMap>
+
+    <select id="findByHash" parameterType="string" resultMap="AiRequestMap">
+        SELECT REQUEST_ID, PRODUCT_NAME, PRICE_STR, SOURCE_URL, REQUEST_JSON, REQUEST_HASH
+        FROM AI_REQUEST
+        WHERE REQUEST_HASH = #{requestHash}
+    </select>
+
+<!--    <insert id="insertRequest" parameterType="com.softlabs.aicontents.domain.ai.entity.AiRequestEntity"-->
+<!--            useGeneratedKeys="true" keyProperty="requestId">-->
+<!--        INSERT INTO AI_REQUEST-->
+<!--            (PRODUCT_NAME, PRICE_STR, SOURCE_URL, REQUEST_JSON, REQUEST_HASH)-->
+<!--        VALUES-->
+<!--            (#{productName}, #{priceStr}, #{sourceUrl}, #{requestJson}, #{requestHash})-->
+<!--    </insert>-->
+    <insert id="insertRequest" parameterType="com.softlabs.aicontents.domain.ai.entity.AiRequestEntity">
+        <!-- ✅ 사전 키 채우기 -->
+        <selectKey keyProperty="requestId" resultType="long" order="BEFORE">
+            SELECT AI_REQUEST_SEQ.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO AI_REQUEST (
+        REQUEST_ID, PRODUCT_NAME, PRICE_STR, SOURCE_URL, REQUEST_JSON, REQUEST_HASH
+        ) VALUES (
+        #{requestId}, #{productName}, #{priceStr}, #{sourceUrl}, #{requestJson}, #{requestHash}
+        )
+    </insert>
+
+
+</mapper>
