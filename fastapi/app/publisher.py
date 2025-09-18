@@ -62,7 +62,6 @@ class BlogPostPublisher:
                 await frame.wait_for_load_state("domcontentloaded")
 
                 # JavaScript로 직접 포커스 설정 후 입력
-                print("JavaScript로 포커스 설정 후 키보드 입력...")
                 await frame.evaluate("document.body.focus()")
                 await page.wait_for_timeout(500)
 
@@ -102,23 +101,22 @@ class BlogPostPublisher:
             final_url_pattern ="**/PostView.naver?*logNo=*"
             print(f"URL 패턴 확인: {final_url_pattern}")
             await page.wait_for_url(final_url_pattern, timeout=90_000)
-            # await page.wait_for_load_state("networkidle", timeout=90_000)
 
             blog_url = page.url
-            print(f"[성공] 최종 발행된 URL: {blog_url}")
+            print(f"[성공] 최종 발행 URL: {blog_url}")
             # await page.screenshot(path="debug_06_final_page.png", full_page=True)
 
             post_id = self._extract_post_id(blog_url)
 
             if post_id:
                 clean_blog_url = f"https://blog.naver.com/{config.BLOG_ID}/{post_id}"
-                print(f"직접 만든 깔끔한 URL: {clean_blog_url}")
+                print(f"게시글 URL: {clean_blog_url}")
 
                 raw = {"url": clean_blog_url, "postId": post_id}
                 return PublishResponse(
                     publishStatus=PublishStatus.SUCCESS,
                     blogPostId=post_id,
-                    blogUrl=clean_blog_url, # <--- 여기에 조립한 URL을 넣어줍니다.
+                    blogUrl=clean_blog_url,
                     publishResponse=json.dumps(raw, ensure_ascii=False),
                 )
             else:
