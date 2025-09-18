@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.softlabs.aicontents.domain.ai.mapper.AiGenerationMapper">
+<!--    <insert id="insertGeneration"-->
+<!--            parameterType="com.softlabs.aicontents.domain.ai.entity.AiGenerationEntity"-->
+<!--            useGeneratedKeys="true" keyProperty="genId">-->
+<!--    INSERT INTO AI_GENERATION-->
+<!--    (REQUEST_ID, STATUS, MODEL_NAME, TEMPERATURE, TIMEOUT_SEC, RETRIES,-->
+<!--     SYSTEM_MSG_SNAP, GEN_PROMPT_SNAP, FIX_PROMPT_SNAP)-->
+<!--    VALUES-->
+<!--        (#{requestId}, #{status}, #{modelName}, #{temperature}, #{timeoutSec}, #{retries},-->
+<!--         #{systemMsgSnap}, #{genPromptSnap}, #{fixPromptSnap})-->
+<!--    </insert>-->
+    <insert id="insertGeneration" parameterType="com.softlabs.aicontents.domain.ai.entity.AiGenerationEntity">
+        <selectKey keyProperty="genId" resultType="long" order="BEFORE">
+            SELECT AI_GENERATION_SEQ.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO AI_GENERATION (
+        GEN_ID, REQUEST_ID, STATUS, MODEL_NAME, TEMPERATURE, TIMEOUT_SEC, RETRIES,
+        LATENCY_MS, TOKENS_PROMPT, TOKENS_COMPLETION, FALLBACK_USED,
+        ERROR_MESSAGE, SYSTEM_MSG_SNAP, GEN_PROMPT_SNAP, FIX_PROMPT_SNAP
+        ) VALUES (
+        #{genId}, #{requestId}, #{status}, #{modelName}, #{temperature}, #{timeoutSec}, #{retries},
+        #{latencyMs}, #{tokensPrompt}, #{tokensCompletion}, #{fallbackUsed},
+        #{errorMessage}, #{systemMsgSnap}, #{genPromptSnap}, #{fixPromptSnap}
+        )
+    </insert>
+
+
+    <update id="markSuccess"
+            parameterType="com.softlabs.aicontents.domain.ai.entity.AiGenerationEntity">
+        UPDATE AI_GENERATION
+        SET STATUS = 'SUCCESS',
+            LATENCY_MS = #{latencyMs},
+            TOKENS_PROMPT = #{tokensPrompt},
+            TOKENS_COMPLETION = #{tokensCompletion},
+            RETRIES = #{retries},
+            FALLBACK_USED = #{fallbackUsed},
+            UPDATED_AT = SYSTIMESTAMP
+        WHERE GEN_ID = #{genId}
+    </update>
+
+    <update id="markError">
+        UPDATE AI_GENERATION
+        SET STATUS = 'ERROR',
+            ERROR_MESSAGE = #{errorMessage},
+            UPDATED_AT = SYSTIMESTAMP
+        WHERE GEN_ID = #{genId}
+    </update>
+
+</mapper>
