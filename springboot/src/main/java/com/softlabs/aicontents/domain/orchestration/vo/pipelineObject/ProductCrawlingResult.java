@@ -3,7 +3,7 @@ package com.softlabs.aicontents.domain.orchestration.vo.pipelineObject;
 import lombok.Data;
 
 @Data
-public class KeywordResult {
+public class ProductCrawlingResult {
 
     //공통
     private int executionId;
@@ -12,8 +12,11 @@ public class KeywordResult {
     private String errorMessage;
     private String stepCode;
 
-    //크롤링에 필요한 응답 객체
-    private String keyword;
-    private String keyWordStatusCode;
+    //LLM 생성에 필요한 응답 객체
+    private String productName;
+    private String sourceUrl;
+    private String price;
+    private String productStatusCode;
+
 
 }

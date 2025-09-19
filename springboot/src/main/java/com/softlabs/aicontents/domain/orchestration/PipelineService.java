@@ -1,7 +1,10 @@
 package com.softlabs.aicontents.domain.orchestration;
 
 import com.softlabs.aicontents.domain.orchestration.vo.StepExecutionResultVO;
+import com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.AIContentsResult;
+import com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.BlogPublishResult;
 import com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.KeywordResult;
+import com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.ProductCrawlingResult;
 import com.softlabs.aicontents.domain.scheduler.dto.PipeResultDataDTO;
 import com.softlabs.aicontents.domain.scheduler.dto.pipeLineDTO.StepExecutionResultDTO;
 import com.softlabs.aicontents.domain.scheduler.service.executor.AIContentExecutor;
@@ -31,44 +34,50 @@ public class PipelineService {
 
   public PipeResultDataDTO executionPipline() {
 
-    //1. 파이프라인 테이블의 ID 생성
+    //1. 파이프라인 테이블의 ID(executionId) 생성
     int executionId = createNewExecution();
 
-    // 상태 누적
+    // 파이프라인의 상태/결과 누적
     PipeResultDataDTO pipeResultDataDTO = new PipeResultDataDTO();
-
 
     try {
 
-      // step01 - 키워드 추출
-      KeywordResult keywordResult = keywordExecutor.execute(executionId);
-//      StepExecutionResultVO step01 = keywordExecutor.execute(executionId);
-      System.out.println("파이프라인 1단계 결과" +keywordResult);
+        // step01 - 키워드 추출
+        KeywordResult keywordResult01 = keywordExecutor.keywordExecute(executionId);
+        System.out.println("파이프라인 1단계 결과/  " +keywordResult01);
+        // todo : if 추출 실패 시 3회 재시도 및 예외처리
+            // if (!step1.isSuccess()) {
+            // throw new RuntimeException("1단계 실패: " + step1.getErrorMessage());
+
+        /// todo: PipeResultDataDTO에 결과물 저장 메서드
+
+
+        // step02 - 상품정보 & URL 추출
+      ProductCrawlingResult productCrawlingResult01 = crawlingExecutor.productCrawlingExecute(executionId,keywordResult01);
+      System.out.println("파이프라인 2단계 결과/  " +productCrawlingResult01);
       // todo : if 추출 실패 시 3회 재시도 및 예외처리
-          // 예시 :
-          // if (!step1.isSuccess()) {
-          // throw new RuntimeException("1단계 실패: " + step1.getErrorMessage());
+      // if (!step1.isSuccess()) {
+      // throw new RuntimeException("1단계 실패: " + step1.getErrorMessage());
 
-          //PipeResultDataDTO에 결과물 저장 메서드
-
+      /// todo: PipeResultDataDTO에 결과물 저장 메서드
 
 
-      // step02 - 상품정보 & URL 추출
-      StepExecutionResultVO step02 = crawlingExecutor.execute(executionId);
-      System.out.println("파이프라인 2단계 결과" +step02);
-         // todo : if 추출 실패 시 3회 재시도 및 예외처리
-//
-//    // step03 - LLM 생성
-//    StepExecutionResultVO step03 = aiExecutor.execute(executionId);
-//          // todo : if 추출 실패 시 3회 재시도 및 예외처리
-//
-//    // step04 - 블로그 발행
-//    StepExecutionResultVO step04 = blogExecutor.execute(executionId);
-//          // todo : if 추출 실패 시 3회 재시도 및 예외처리
+      // step03 - LLM 생성
+      AIContentsResult aIContentsResult01 = aiExecutor.aIContentsResultExecute(executionId,productCrawlingResult01);
+      System.out.println("파이프라인 3단계 결과/  " +aIContentsResult01);
 
-      log.info("파이프라인 성공");
+      // todo : if 추출 실패 시 3회 재시도 및 예외처리
+      /// todo: PipeResultDataDTO에 결과물 저장 메서드
 
-      return new PipeResultDataDTO();
+
+      // step04 - 블로그 발행
+      BlogPublishResult blogPublishResult01 = blogExecutor.blogPublishResultExecute(executionId,aIContentsResult01);
+      System.out.println("파이프라인 4단계 결과/  " +blogPublishResult01);
+      //          // todo : if 추출 실패 시 3회 재시도 및 예외처리
+
+        log.info("파이프라인 성공");
+
+        return pipeResultDataDTO;
 
     } catch (Exception e) {
       log.error("파이프라인 실행 실패:{}", e.getMessage());
@@ -77,9 +86,11 @@ public class PipelineService {
       return null;
   }
 
+
+
   private int createNewExecution() {
 
-    return 0; /// 일단은 Long타입의 기본값.
+    return 0;
     // todo: return 반환값으로,
     // PIPELINE_EXECUTIONS 테이블에서 executionId를 새로 생성하고,
     // 이것을 가져오는 메서드 구현

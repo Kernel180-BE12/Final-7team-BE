@@ -6,36 +6,44 @@
 
 <mapper namespace="com.softlabs.aicontents.domain.orchestration.mapper.PipelineMapper">
 
-    <select id="selectKeywordStatuscode" resultType="com.softlabs.aicontents.domain.orchestration.vo.StepExecutionResultVO">
-        SELECT STATUS_CODE as keyWordStatusCode
+    <select id="selectKeywordStatuscode" resultType="com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.KeywordResult">
+        SELECT STATUS_CODE as keyWordStatusCode,
+                   KEYWORD as keyword
           FROM ADMIN.TREND_DATA
          WHERE TREND_ID=1
     </select>
 
-
-
-    <select id="selectProductInfoStatuscode" resultType="com.softlabs.aicontents.domain.orchestration.vo.StepExecutionResultVO">
-        SELECT STATUS_CODE as productStatusCode
+    <select id="selctproductCrawlingStatuscode" resultType="com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.ProductCrawlingResult">
+        SELECT STATUS_CODE as productStatusCode,
+              PRODUCT_NAME as productName,
+                SOURCE_URL as sourceUrl,
+                     PRICE as price
         FROM ADMIN.SSADAGU_CONTENTS
         WHERE SSADAGU_CONTENT_ID =1
 
 
     </select>
 
-    <select id="selectAiContentStatuscode" resultType="String">
-        SELECT STATUS_CODE as aIContentStatusCode
+    <select id="selectAiContentStatuscode" resultType="com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.AIContentsResult">
+        SELECT STATUS_CODE as aIContentStatusCode,
+                     TITLE as title,
+                   SUMMARY as summary,
+                  HASHTAGS as hashtags,
+                   CONTENT as content,
+                SOURCE_URL as sourceUrl
         FROM ADMIN.AI_GENERATED_CONTENTS
         WHERE AI_CONTENT_ID=5
 
     </select>
 
-    <select id="selectPublishStatuscode" resultType="String">
-        SELECT STATUS_CODE as publishStatusCode
+    <select id="selectPublishStatuscode" resultType="com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.BlogPublishResult">
+        SELECT STATUS_CODE as publishStatusCode,
+             BLOG_PLATFORM as blogPlatfom,
+              BLOG_POST_ID as blogPostId,
+                  BLOG_URL as blogUrl
         FROM ADMIN.BLOG_PUBLISH_LOGS
         WHERE PUBLISH_ID =2
 
     </select>
-
-
 
 </mapper>

@@ -1,7 +1,10 @@
 package com.softlabs.aicontents.domain.orchestration.mapper;
 
 import com.softlabs.aicontents.domain.orchestration.vo.StepExecutionResultVO;
+import com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.AIContentsResult;
+import com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.BlogPublishResult;
 import com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.KeywordResult;
+import com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.ProductCrawlingResult;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
@@ -9,9 +12,9 @@ public interface PipelineMapper {
 
   KeywordResult selectKeywordStatuscode();
 
-  StepExecutionResultVO selectProductInfoStatuscode();
+  ProductCrawlingResult selctproductCrawlingStatuscode();
 
-  StepExecutionResultVO selectAiContentStatuscode();
+  AIContentsResult selectAiContentStatuscode();
 
-  StepExecutionResultVO selectPublishStatuscode();
+  BlogPublishResult selectPublishStatuscode();
 }

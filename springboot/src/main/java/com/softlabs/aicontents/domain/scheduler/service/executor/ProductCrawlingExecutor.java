@@ -2,6 +2,8 @@ package com.softlabs.aicontents.domain.scheduler.service.executor;
 
 import com.softlabs.aicontents.domain.orchestration.mapper.PipelineMapper;
 import com.softlabs.aicontents.domain.orchestration.vo.StepExecutionResultVO;
+import com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.KeywordResult;
+import com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.ProductCrawlingResult;
 import com.softlabs.aicontents.domain.scheduler.dto.pipeLineDTO.StepExecutionResultDTO;
 import com.softlabs.aicontents.domain.scheduler.interfacePipe.PipelineStepExecutor;
 // import com.softlabs.aicontents.domain.testMapper.ProductCrawlingMapper;
@@ -14,7 +16,7 @@ import org.springframework.stereotype.Service;
 @Component
 @Slf4j
 @Service
-public class ProductCrawlingExecutor implements PipelineStepExecutor {
+public class ProductCrawlingExecutor {
 
   @Autowired private ProductCrawlingService productCrawlingService;
   // todo: 실제 싸다구 정보 수집 서비스 클래스로 변경
@@ -22,18 +24,38 @@ public class ProductCrawlingExecutor implements PipelineStepExecutor {
   @Autowired
   private PipelineMapper pipelineMapper;
 
-  @Override
-  public StepExecutionResultVO execute(int executionId) {
+  public ProductCrawlingResult productCrawlingExecute(int executionId, KeywordResult keywordResult) {
 
-    System.out.println("상품정보 수집 메서드 실행 - keywordService");
+    //1. 이전 단계 검증 (더블 체크 용도)
+    System.out.println("싸다구 내부 진입함. 단계 검증 들어옴"+keywordResult);
+    //=> 키워드들 저장된 체로 살아 있음.
 
-    StepExecutionResultVO  statusCode = pipelineMapper.selectProductInfoStatuscode();
-    System.out.println("여기 탔음"+ statusCode);
+    //2. 메서드 실행
+    System.out.println("keywordResult에 기반한 크롤링-상품 정보 수집 메서드 실행 - productCrawlingService(keywordResult)");
 
-//    String statusCode = result.getKeyWordStatusCode();
-//    System.out.println(statusCode);
+    //3. 실행 결과를 DB 조회+ 객체 저장
+    ProductCrawlingResult productCrawlingResult = pipelineMapper.selctproductCrawlingStatuscode();
 
-    return statusCode;
+    //4.null 체크
+    if (productCrawlingResult == null) {
+      System.out.println("NullPointerException 감지");
+      productCrawlingResult = new ProductCrawlingResult();
+      productCrawlingResult.setSuccess(false);
+      productCrawlingResult.setExecutionId(executionId);
+    }
+
+    //5. 완료 판단 =
+    //  (product_name, source_url, price)!= null && productStatusCode = "SUCCEDSS"
+    if(productCrawlingResult.getProductName() != null && productCrawlingResult.getSourceUrl()!= null &&
+            productCrawlingResult.getPrice()!= null && "SUCCESS".equals(productCrawlingResult.getProductStatusCode())){
+      productCrawlingResult.setSuccess(true);
+    }else {
+      productCrawlingResult.setSuccess(false);
+    }
+    System.out.println("여기 탔음" + productCrawlingResult);
+
+
+    return productCrawlingResult;
 
   }
 

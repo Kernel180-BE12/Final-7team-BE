@@ -20,23 +20,35 @@ public class KeywordExecutor { // 인터페이스 제거
   @Autowired private KeywordService keywordService;
 
   /// todo :  실제 키워드 수집 기능 서비스
-      @Autowired
-      private PipelineMapper pipelineMapper;
+  @Autowired private PipelineMapper pipelineMapper;
 
 
-  public KeywordResult execute(int executionId) {
+  public KeywordResult keywordExecute(int executionId) {
 
     //1. 메서드 실행
-    System.out.println("키워드 수집 메서드 실행 - keywordService");
+        System.out.println("크롤링-트랜드 키워드 수집 메서드 실행 - keywordService");
 
     //2. 실행 결과를 DB 조회+ 객체 저장
-    KeywordResult statusCode = pipelineMapper.selectKeywordStatuscode();
-    System.out.println("여기 탔음"+ statusCode);
+        KeywordResult keywordResult = pipelineMapper.selectKeywordStatuscode();
 
-//    String statusCode = result.getKeyWordStatusCode();
-//    System.out.println(statusCode);
+    //3. null 체크
+    if (keywordResult == null) {
+        System.out.println("NullPointerException 감지");
+        keywordResult = new KeywordResult();
+        keywordResult.setSuccess(false);
+        keywordResult.setExecutionId(executionId);
+    }
 
-    return new KeywordResult();
+    //4. 완료 판단 = keyword !=null, keyWordStatusCode =="SUCCESS"
+    if (keywordResult.getKeyword() != null && "SUCCESS".equals(keywordResult.getKeyWordStatusCode())) {
+        keywordResult.setSuccess(true);
+    } else {
+        keywordResult.setSuccess(false);
+    }
+
+    System.out.println("여기 탔음" + keywordResult);
+
+        return keywordResult;
 
   }
 }
