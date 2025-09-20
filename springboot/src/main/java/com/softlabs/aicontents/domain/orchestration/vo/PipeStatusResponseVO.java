@@ -1,17 +1,15 @@
-package com.softlabs.aicontents.domain.scheduler.dto;
+package com.softlabs.aicontents.domain.orchestration.vo;
 
 import com.softlabs.aicontents.domain.scheduler.dto.resultDTO.ExecutionResults;
 import com.softlabs.aicontents.domain.scheduler.dto.resultDTO.Logs;
 import com.softlabs.aicontents.domain.scheduler.dto.resultDTO.ProgressResult;
-import io.swagger.v3.oas.annotations.media.Schema;
-import java.util.List;
 import lombok.Data;
 
-@Data
-@Schema
-public class PipeResultDataDTO {
+import java.util.List;
 
-  // 실행정보
+@Data
+public class PipeStatusResponseVO {
+
   int executionId;
   String overallStatus;
   String startedAt;

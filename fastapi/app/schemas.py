@@ -2,6 +2,9 @@ from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional
 
+from enum import Enum
+
+
 class UserBase(BaseModel):
     username: str
     email: str
@@ -21,3 +24,23 @@ class HealthCheckResponse(BaseModel):
     status: str
     database_status: str
     timestamp: datetime
+
+# publish Pydantic model, Enum
+class PublishStatus(str, Enum):
+    SUCCESS = "SUCCESS"
+    FAILED = "FAILED"
+    PENDING = "PENDING"
+
+class PublishRequest(BaseModel):
+    aiContentId: int
+    title: Optional[str] = None
+    metaDescription: Optional[str] = None
+    markdown: Optional[str] = None
+    hashtag: Optional[str] = None
+
+class PublishResponse(BaseModel):
+    publishStatus: PublishStatus
+    blogPostId: Optional[str] = None
+    blogUrl: Optional[str] = None
+    publishResponse: Optional[str] = None
+    errorMessage: Optional[str] = None

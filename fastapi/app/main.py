@@ -1,12 +1,18 @@
-from fastapi import FastAPI, Depends, HTTPException
+import asyncio, sys
+if sys.platform.startswith("win"):
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
+from fastapi import FastAPI, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 from datetime import datetime
-from . import models, schemas
+from . import models, schemas, config
 from .database import SessionLocal, engine, get_db
+from playwright.async_api import async_playwright
+from .schemas import PublishRequest, PublishResponse
+from .publisher import BlogPostPublisher
 
-# 데이터베이스 테이블 생성
-models.Base.metadata.create_all(bind=engine)
+
 
 # FastAPI 앱 생성
 app = FastAPI(
@@ -57,3 +63,36 @@ def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
 @app.get("/hello")
 async def hello():
     return {"message": "Hello, FastAPI with Oracle RDS!"}
+
+# 발행 API
+@app.post("/publish/healthy")
+async def publish_check(req: Request):
+    raw = await req.body()
+    print("=== FASTAPI REQ BODY ===")
+    print(raw.decode("utf-8"))
+    return {"publishStatus": "SUCCESS"}
+
+@app.on_event("startup")
+async def startup():
+    print("데이터베이스 테이블을 생성합니다...")
+    # 동기 함수를 비동기 환경에서 안전하게 실행
+    await asyncio.to_thread(models.Base.metadata.create_all, bind=engine)
+    print("테이블 생성 완료.")
+
+# Playwright 시작
+    print("Playwright를 시작합니다...")
+    app.state.playwright = await async_playwright().start()
+    app.state.browser = await app.state.playwright.chromium.launch(headless=True)
+    print("Playwright 시작 완료.")
+@app.on_event("shutdown")
+async def shutdown():
+    await app.state.browser.close()
+    await app.state.playwright.stop()
+
+@app.post("/publish", response_model=PublishResponse)
+async def publish(req: PublishRequest):
+    if not req.aiContentId:
+        raise HTTPException(status_code=400, detail="aiContentId is required")
+
+    publisher = BlogPostPublisher(browser=app.state.browser)
+    return await publisher.publish(req)
