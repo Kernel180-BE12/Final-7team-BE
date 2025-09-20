@@ -15,28 +15,27 @@ import org.springframework.stereotype.Service;
 @Component
 @Slf4j
 @Service
-public class KeywordExecutor { // 인터페이스 제거
+public class KeywordExecutor {
 
   @Autowired private KeywordService keywordService;
-
   /// todo :  실제 키워드 수집 기능 서비스
-  @Autowired private PipelineMapper pipelineMapper;
 
+  @Autowired private PipelineMapper pipelineMapper;
 
   public KeywordResult keywordExecute(int executionId) {
 
     //1. 메서드 실행
-        System.out.println("크롤링-트랜드 키워드 수집 메서드 실행 - keywordService");
+        System.out.println("executionId를 받아서, 크롤링-트랜드 키워드 수집 메서드 실행 - keywordService");
 
     //2. 실행 결과를 DB 조회+ 객체 저장
         KeywordResult keywordResult = pipelineMapper.selectKeywordStatuscode();
+         keywordResult.setExecutionId(executionId);
 
     //3. null 체크
     if (keywordResult == null) {
         System.out.println("NullPointerException 감지");
         keywordResult = new KeywordResult();
         keywordResult.setSuccess(false);
-        keywordResult.setExecutionId(executionId);
     }
 
     //4. 완료 판단 = keyword !=null, keyWordStatusCode =="SUCCESS"

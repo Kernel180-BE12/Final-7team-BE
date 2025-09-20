@@ -1,6 +1,6 @@
 package com.softlabs.aicontents.domain.orchestration.mapper;
 
-import com.softlabs.aicontents.domain.orchestration.vo.StepExecutionResultVO;
+import com.softlabs.aicontents.domain.orchestration.dto.PipeExecuteData;
 import com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.AIContentsResult;
 import com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.BlogPublishResult;
 import com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.KeywordResult;
@@ -17,4 +17,8 @@ public interface PipelineMapper {
   AIContentsResult selectAiContentStatuscode();
 
   BlogPublishResult selectPublishStatuscode();
+
+  void insertNewExecutionId();
+
+  PipeExecuteData selectNewExecutionId();
 }

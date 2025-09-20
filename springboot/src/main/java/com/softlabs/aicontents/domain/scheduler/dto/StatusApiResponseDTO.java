@@ -9,7 +9,9 @@ import lombok.Data;
 
 @Data
 @Schema
-public class PipeResultDataDTO {
+public class StatusApiResponseDTO {
+
+//@GetMapping("/pipeline/status/{executionId}")
 
   // 실행정보
   int executionId;

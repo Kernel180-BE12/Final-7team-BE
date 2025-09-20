@@ -46,4 +46,15 @@
 
     </select>
 
+    <insert id="insertNewExecutionId" parameterType="com.softlabs.aicontents.domain.orchestration.dto.PipeExecuteData">
+        INSERT INTO ADMIN.PIPELINE_EXECUTIONS (execution_id)
+             VALUES (sequence_pipeline_executions.NEXTVAL)
+    </insert>
+
+    <select id="selectNewExecutionId" resultType="com.softlabs.aicontents.domain.orchestration.dto.PipeExecuteData">
+        SELECT execution_id as executionId
+          FROM ADMIN.PIPELINE_EXECUTIONS
+         WHERE execution_id = (SELECT MAX(execution_id) FROM ADMIN.PIPELINE_EXECUTIONS)
+    </select>
+
 </mapper>
