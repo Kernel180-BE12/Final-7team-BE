@@ -1,8 +1,6 @@
 package com.softlabs.aicontents.domain.health.service;
 
 import com.softlabs.aicontents.domain.health.mapper.HealthCheckMapper;
-import java.util.List;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
