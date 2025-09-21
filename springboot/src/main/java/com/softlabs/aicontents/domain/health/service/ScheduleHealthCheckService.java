@@ -11,8 +11,8 @@ public class ScheduleHealthCheckService {
 
   public boolean isUp() {
     try {
-      int cnt = healthCheckMapper.selectScheduledStatus();
-      return cnt < 3;
+      String isActive = healthCheckMapper.selectScheduledStatus();
+      return isActive.equals("Y");
     } catch (Exception e) {
       e.printStackTrace();
       return false;

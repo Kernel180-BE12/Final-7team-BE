@@ -20,18 +20,18 @@
     </select>
 
     <!-- 키워드 상태 조회  -->
-    <select id="selectKeywordStatus" resultType="map">
-        select status, count(*) as cnt
-        from TEST_TREND_DATA
-        where execution_id =(
-            select MAX(execution_id) from TEST_TREND_DATA
+    <select id="selectKeywordStatus" resultType="string">
+        select IS_ACTIVE
+        from TREND_DATA
+        where task_id=(
+            select MAX(task_id)
+            from TREND_DATA
         )
-        group by status
     </select>
 
     <!-- 스케줄 상태 조회  -->
-    <select id="selectScheduledStatus" resultType="int">
-        select MAX_RETRY_COUNT
+    <select id="selectScheduledStatus" resultType="string">
+        select IS_ACTIVE
         from SCHEDULED_TASKS
         where task_id=(
             select MAX(task_id)

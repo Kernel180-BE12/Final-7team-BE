@@ -15,7 +15,7 @@ public interface HealthCheckMapper {
 
   // 최신 execution_id에 해당하는 키워드 상태별 카운트 조회
   // 결과 예시: [{STATUS=FAILED, CNT=3}, {STATUS=SUCCESS, CNT=1}]
-  List<Map<String, Object>> selectKeywordStatus();
+  String selectKeywordStatus();
 
-  int selectScheduledStatus();
+  String selectScheduledStatus();
 }
