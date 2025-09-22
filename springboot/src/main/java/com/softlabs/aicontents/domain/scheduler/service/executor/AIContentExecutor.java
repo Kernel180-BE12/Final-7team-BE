@@ -1,11 +1,8 @@
 package com.softlabs.aicontents.domain.scheduler.service.executor;
 
 import com.softlabs.aicontents.domain.orchestration.mapper.PipelineMapper;
-import com.softlabs.aicontents.domain.orchestration.vo.StepExecutionResultVO;
 import com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.AIContentsResult;
 import com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.ProductCrawlingResult;
-import com.softlabs.aicontents.domain.scheduler.dto.pipeLineDTO.StepExecutionResultDTO;
-import com.softlabs.aicontents.domain.scheduler.interfacePipe.PipelineStepExecutor;
 // import com.softlabs.aicontents.domain.testMapper.AIContentMapper;
 import com.softlabs.aicontents.domain.testDomainService.AIContentService;
 import lombok.extern.slf4j.Slf4j;
@@ -18,27 +15,25 @@ import org.springframework.stereotype.Service;
 @Service
 public class AIContentExecutor {
 
-  @Autowired
-  private AIContentService aiContentService;
+  @Autowired private AIContentService aiContentService;
 
   // todo: 실제 LLM생성 클래스로 변경
 
-  @Autowired
-  private PipelineMapper pipelineMapper;
+  @Autowired private PipelineMapper pipelineMapper;
 
-  public AIContentsResult aIContentsResultExecute(int executionId, ProductCrawlingResult productCrawlingResult) {
+  public AIContentsResult aIContentsResultExecute(
+      int executionId, ProductCrawlingResult productCrawlingResult) {
 
-    //1. 메서드 실행
+    // 1. 메서드 실행
     System.out.println("LLM 생성 메서드 실행 - aiContentService(productCrawlingResult)");
 
-    aiContentService.aIContentsResultExecute(executionId,productCrawlingResult);
+    aiContentService.aIContentsResultExecute(executionId, productCrawlingResult);
     System.out.println("\n\n 3단계 메서드 실행됐고, 결과를 DB에 저장했다.\n\n");
 
-
-    //2. 실행 결과를 DB 조회 + 객체에 저장
+    // 2. 실행 결과를 DB 조회 + 객체에 저장
     AIContentsResult aiContentsResult = pipelineMapper.selectAiContentStatuscode(executionId);
 
-    //3. null 체크
+    // 3. null 체크
     if (aiContentsResult == null) {
       System.out.println("NullPointerException 감지");
       aiContentsResult = new AIContentsResult();
@@ -46,27 +41,24 @@ public class AIContentExecutor {
       aiContentsResult.setExecutionId(executionId);
     }
 
-    //4. 완료 판단
-    if (aiContentsResult.getTitle() != null && aiContentsResult.getSummary() != null &&
-            aiContentsResult.getHashtags() != null && aiContentsResult.getContent() != null &&
-            aiContentsResult.getSourceUrl() != null && "SUCCESS".equals(aiContentsResult.getAIContentStatusCode())) {
+    // 4. 완료 판단
+    if (aiContentsResult.getTitle() != null
+        && aiContentsResult.getSummary() != null
+        && aiContentsResult.getHashtags() != null
+        && aiContentsResult.getContent() != null
+        && aiContentsResult.getSourceUrl() != null
+        && "SUCCESS".equals(aiContentsResult.getAIContentStatusCode())) {
 
       aiContentsResult.setSuccess(true);
     } else {
       aiContentsResult.setSuccess(false);
     }
 
-
     System.out.println("여기 탔음" + aiContentsResult);
 
     return aiContentsResult;
-
   }
 }
-
-
-
-
 
 //        try {
 //            //키워드 수집 서비스 실행

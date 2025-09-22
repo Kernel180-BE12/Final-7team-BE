@@ -1,10 +1,7 @@
 package com.softlabs.aicontents.common.dto.response;
 
 // 공통 응답 DTO
-public record ApiResponseDTO<T>(
-        boolean success,
-        T data,
-        String message) {
+public record ApiResponseDTO<T>(boolean success, T data, String message) {
 
   // 성공 응답 생성
   public static <T> ApiResponseDTO<T> success(T data) {

@@ -1,6 +1,5 @@
 package com.softlabs.aicontents.domain.testDomainService;
 
-import com.softlabs.aicontents.domain.orchestration.mapper.PipelineMapper;
 import com.softlabs.aicontents.domain.testDomain.TestDomainMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,13 +9,9 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class KeywordService {
 
-  @Autowired
-  private TestDomainMapper testDomainMapper;
+  @Autowired private TestDomainMapper testDomainMapper;
 
-  /**
-   * 프로토타입용 키워드 수집 서비스
-   * executionId를 받아서 샘플 키워드를 DB에 저장
-   */
+  /** 프로토타입용 키워드 수집 서비스 executionId를 받아서 샘플 키워드를 DB에 저장 */
   public void collectKeywordAndSave(int executionId) {
     try {
       log.info("키워드 수집 시작 - executionId: {}", executionId);
@@ -37,13 +32,11 @@ public class KeywordService {
     }
   }
 
-  /**
-   * 프로토타입용 샘플 키워드 생성
-   */
+  /** 프로토타입용 샘플 키워드 생성 */
   private String generateSampleKeyword() {
     String[] sampleKeywords = {
-            "에어컨", "선풍기", "아이스크림", "수박", "비타민",
-            "운동화", "백팩", "노트북", "스마트폰", "이어폰"
+      "에어컨", "선풍기", "아이스크림", "수박", "비타민",
+      "운동화", "백팩", "노트북", "스마트폰", "이어폰"
     };
 
     // 랜덤하게 키워드 선택
@@ -51,14 +44,15 @@ public class KeywordService {
     return sampleKeywords[randomIndex];
   }
 
-  /**
-   * 키워드 결과를 DB에 저장
-   */
+  /** 키워드 결과를 DB에 저장 */
   private void saveKeywordResult(int executionId, String keyword, String statusCode) {
     try {
       testDomainMapper.insertKeywordData(executionId, keyword, statusCode);
-      log.debug("키워드 데이터 저장 완료 - executionId: {}, keyword: {}, status: {}",
-              executionId, keyword, statusCode);
+      log.debug(
+          "키워드 데이터 저장 완료 - executionId: {}, keyword: {}, status: {}",
+          executionId,
+          keyword,
+          statusCode);
     } catch (Exception e) {
       log.error("키워드 데이터 저장 실패 - executionId: {}", executionId, e);
       throw e;
