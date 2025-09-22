@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.softlabs.aicontents.domain.health.mapper.HealthCheckMapper">
+
+    <!-- 상태 insert -->
+    <insert id="insertHealthCheck">
+        INSERT INTO health_check (status, last_checked_at)
+        VALUES (#{status}, CURRENT_TIMESTAMP AT TIME ZONE 'Asia/Seoul')
+    </insert>
+
+    <!-- 최신 checked_at 조회 -->
+    <select id="selectLatestCheckedAt" resultType="string">
+        SELECT TO_CHAR(last_checked_at)
+        FROM health_check
+        ORDER BY last_checked_at DESC
+            FETCH FIRST 1 ROWS ONLY
+    </select>
+
+    <!-- 키워드 상태 조회  -->
+    <select id="selectKeywordStatus" resultType="string">
+        select IS_ACTIVE
+        from TREND_DATA
+        where task_id=(
+            select MAX(task_id)
+            from TREND_DATA
+        )
+    </select>
+
+    <!-- 스케줄 상태 조회  -->
+    <select id="selectScheduledStatus" resultType="string">
+        select IS_ACTIVE
+        from SCHEDULED_TASKS
+        where task_id=(
+            select MAX(task_id)
+            from SCHEDULED_TASKS
+        )
+    </select>
+</mapper>
