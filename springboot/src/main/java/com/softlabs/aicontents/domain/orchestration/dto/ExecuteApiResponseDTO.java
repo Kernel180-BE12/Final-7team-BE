@@ -8,5 +8,5 @@ public class ExecuteApiResponseDTO {
   // @PostMapping("/execute")
   private boolean success;
   private String message;
-  private PipeExecuteData pipeExecuteData;
+  private PipeExecuteData data;
 }

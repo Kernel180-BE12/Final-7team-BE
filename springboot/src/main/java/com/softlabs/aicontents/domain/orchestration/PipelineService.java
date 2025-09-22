@@ -41,16 +41,20 @@ public class PipelineService {
 
     // 1. 파이프라인 테이블의 ID(executionId) 생성
     int executionId = createNewExecution();
-
-    // 2. PipeExecuteData 채우기
     PipeExecuteData pipeExecuteData = new PipeExecuteData();
+    ExecuteApiResponseDTO executeApiResponseDTO = new ExecuteApiResponseDTO();
+
+    System.out.println("executionId=" + executionId);
+    // 2. PipeExecuteData 채우기
+
     pipeExecuteData.setExecutionId(executionId);
+    System.out.println(pipeExecuteData.getExecutionId()+"생성된 ID는 여기 있다.");
     pipeExecuteData.setStatus("started");
-    pipeExecuteData.setEstimatedDuration("약 45분");
-    pipeExecuteData.setStages(List.of("키워드 추출", "상품 크롤링", "컨텐츠 생성", "컨텐츠 배포"));
+    pipeExecuteData.setEstimatedDuration("약 35분");
+    pipeExecuteData.setStages(List.of("keyword_extraction", "product_crawling", "content_generation", "content_publishing"));
+    executeApiResponseDTO.setData(pipeExecuteData);
 
     // 3. ExecuteApiResponseDTO 채우기
-    ExecuteApiResponseDTO executeApiResponseDTO = new ExecuteApiResponseDTO();
     executeApiResponseDTO.setSuccess(true);
     executeApiResponseDTO.setMessage("파이프라인 실행이 시작되었습니다");
 

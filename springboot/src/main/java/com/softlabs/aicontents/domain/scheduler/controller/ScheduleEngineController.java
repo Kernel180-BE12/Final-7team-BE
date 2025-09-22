@@ -12,6 +12,7 @@ import com.softlabs.aicontents.domain.scheduler.service.ScheduleEngineService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +30,8 @@ public class ScheduleEngineController {
 
   @Autowired private PipelineService pipelineService; // 파이프라인(=오케스트레이션)
   @Autowired private ScheduleEngineService scheduleEngineService; // 스케줄 엔진
+
+
 
   /// 08. 스케줄 생성
   @Operation(summary = "스케줄 생성 API", description = "생성할 스케줄의 상세 정보입니다.")
@@ -79,15 +82,15 @@ public class ScheduleEngineController {
   //
   //  / 10. 파이프라인 실행
   @PostMapping("/pipeline/execute")
-  public ApiResponseDTO<ExecuteApiResponseDTO> executePipline() {
+  public ExecuteApiResponseDTO executePipline() {
 
     try {
       ExecuteApiResponseDTO executeApiResponseDTO = pipelineService.executionPipline();
 
-      return ApiResponseDTO.success(executeApiResponseDTO);
+      return executeApiResponseDTO;
 
     } catch (Exception e) {
-      return ApiResponseDTO.error("파이프라인 상태 조회 실패");
+      return null;
     }
   }
 

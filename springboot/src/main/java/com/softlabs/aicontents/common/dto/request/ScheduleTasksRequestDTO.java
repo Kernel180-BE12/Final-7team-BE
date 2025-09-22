@@ -24,7 +24,7 @@ public class ScheduleTasksRequestDTO {
   @Schema(description = "크론 표현식", example = "0 8 * * *")
   private String cronExpression;
 
-  @Schema(description = "실행 주기", example = "08:00")
+  @Schema(description = "실행 주기", example = "매일 실행")
   private String scheduleType; // "매일 실행/ 주간 실행/ 월간 실행"
 
   @Schema(description = "실행 시간", example = "08:00")
@@ -38,4 +38,8 @@ public class ScheduleTasksRequestDTO {
 
   @Schema(description = "AI 모델명", example = "OpenAI GPT-4")
   private String aiModel; // AI 모델명 (예: "OpenAI GPT-4")
+
+  @Schema(description = "즉시 실행 여부", example = "false")
+  private boolean executeImmediately; // 즉시 실행 플래그
+
 }
