@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @Component
-
 public class PipelineService {
 
   // 실행 인터페이스들만 주입
@@ -294,7 +293,7 @@ public class PipelineService {
     stageResults.setPublishingStatus(publishingStatus);
 
     statusApiResponseDTO.setStageResults(stageResults);
-    System.out.println("statusApiResponseDTO 반환 ="+statusApiResponseDTO);
+    System.out.println("statusApiResponseDTO 반환 =" + statusApiResponseDTO);
 
     // 4. 로그 정보
 
