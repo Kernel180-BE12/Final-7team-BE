@@ -1,7 +1,8 @@
 package com.softlabs.aicontents.domain.scheduler.service.executor;
 
-import com.softlabs.aicontents.domain.scheduler.dto.pipeLineDTO.StepExecutionResultDTO;
-import com.softlabs.aicontents.domain.scheduler.interfacePipe.PipelineStepExecutor;
+import com.softlabs.aicontents.domain.orchestration.mapper.PipelineMapper;
+import com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.AIContentsResult;
+import com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.ProductCrawlingResult;
 // import com.softlabs.aicontents.domain.testMapper.AIContentMapper;
 import com.softlabs.aicontents.domain.testDomainService.AIContentService;
 import lombok.extern.slf4j.Slf4j;
@@ -12,48 +13,50 @@ import org.springframework.stereotype.Service;
 @Component
 @Slf4j
 @Service
-public class AIContentExecutor implements PipelineStepExecutor {
+public class AIContentExecutor {
 
   @Autowired private AIContentService aiContentService;
 
   // todo: 실제 LLM생성 클래스로 변경
 
-  //    @Autowired
-  //    private AIContentMapper aiContentMapper;
-  //    // todo: 실제 LLM생성 매퍼 인터페이스로 변경
+  @Autowired private PipelineMapper pipelineMapper;
 
-  @Override
-  public StepExecutionResultDTO execute(int executionId) {
+  public AIContentsResult aIContentsResultExecute(
+      int executionId, ProductCrawlingResult productCrawlingResult) {
 
-    /// test : 파이프라인 동작 테스트
-    System.out.println("LLM생성 메서드 호출/ 실행");
-    delayWithDots(3);
+    // 1. 메서드 실행
+    System.out.println("LLM 생성 메서드 실행 - aiContentService(productCrawlingResult)");
 
-    /// todo : 테스트용 RDS 조회 쿼리
-    System.out.println("LLM생성 결과 DB에서 쿼리 조회");
-    delayWithDots(3);
-    System.out.println("LLM생성 결과 DB 완료 확인 로직 실행");
-    delayWithDots(3);
-    System.out.println("LLM생성 수집 상태 판단 -> 완료(success)");
-    System.out.println("LLM생성 수집 상태 판단 -> 실패(failure)-> 재시도/예외처리");
-    delayWithDots(3);
-    System.out.println("[스케줄러]가 [LLM] -> [발행] (요청)객체 전달");
-    delayWithDots(3);
-    return null;
-    /// todo : 반환 값으로 이전 기능이 요구하는 파라메터를 반환하기.
-  }
+    aiContentService.aIContentsResultExecute(executionId, productCrawlingResult);
+    System.out.println("\n\n 3단계 메서드 실행됐고, 결과를 DB에 저장했다.\n\n");
 
-  /// 테스트용 딜레이 메서드
-  private void delayWithDots(int seconds) {
-    try {
-      for (int i = 0; i < seconds; i++) {
-        Thread.sleep(200); // 1초마다
-        System.out.print(".");
-      }
-      System.out.println(); // 줄바꿈
-    } catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
+    // 2. 실행 결과를 DB 조회 + 객체에 저장
+    AIContentsResult aiContentsResult = pipelineMapper.selectAiContentStatuscode(executionId);
+
+    // 3. null 체크
+    if (aiContentsResult == null) {
+      System.out.println("NullPointerException 감지");
+      aiContentsResult = new AIContentsResult();
+      aiContentsResult.setSuccess(false);
+      aiContentsResult.setExecutionId(executionId);
     }
+
+    // 4. 완료 판단
+    if (aiContentsResult.getTitle() != null
+        && aiContentsResult.getSummary() != null
+        && aiContentsResult.getHashtags() != null
+        && aiContentsResult.getContent() != null
+        && aiContentsResult.getSourceUrl() != null
+        && "SUCCESS".equals(aiContentsResult.getAIContentStatusCode())) {
+
+      aiContentsResult.setSuccess(true);
+    } else {
+      aiContentsResult.setSuccess(false);
+    }
+
+    System.out.println("여기 탔음" + aiContentsResult);
+
+    return aiContentsResult;
   }
 }
 
