@@ -3,9 +3,8 @@ package com.softlabs.aicontents.domain.orchestration.vo;
 import com.softlabs.aicontents.domain.scheduler.dto.resultDTO.ExecutionResults;
 import com.softlabs.aicontents.domain.scheduler.dto.resultDTO.Logs;
 import com.softlabs.aicontents.domain.scheduler.dto.resultDTO.ProgressResult;
-import lombok.Data;
-
 import java.util.List;
+import lombok.Data;
 
 @Data
 public class PipeStatusResponseVO {

@@ -11,10 +11,10 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class ProductCrawlingService {
 
-  @Autowired
-  private TestDomainMapper testDomainMapper;
+  @Autowired private TestDomainMapper testDomainMapper;
 
-  public ProductCrawlingResult productCrawlingExecute(int executionId, KeywordResult keywordResult) {
+  public ProductCrawlingResult productCrawlingExecute(
+      int executionId, KeywordResult keywordResult) {
 
     ProductCrawlingResult result = new ProductCrawlingResult();
     result.setExecutionId(executionId);
@@ -37,7 +37,8 @@ public class ProductCrawlingService {
       // DB에 저장
       saveProductResult(executionId, result);
 
-      log.info("상품 크롤링 완료 - executionId: {}, productName: {}", executionId, result.getProductName());
+      log.info(
+          "상품 크롤링 완료 - executionId: {}, productName: {}", executionId, result.getProductName());
 
     } catch (Exception e) {
       log.error("상품 크롤링 중 오류 발생 - executionId: {}", executionId, e);
@@ -56,41 +57,34 @@ public class ProductCrawlingService {
     return result;
   }
 
-  /**
-   * 프로토타입용 샘플 상품 정보 생성
-   */
+  /** 프로토타입용 샘플 상품 정보 생성 */
   private ProductInfo generateSampleProduct(String keyword) {
     // 키워드별 샘플 상품 매핑
-    String productName = "제품명: 최상의["+keyword + "] ";
+    String productName = "제품명: 최상의[" + keyword + "] ";
     String sourceUrl = "https://ssadagu.kr/product/" + keyword.toLowerCase() + "_premium";
     int price = generateRandomPrice();
 
     return new ProductInfo(productName, sourceUrl, price);
   }
 
-  /**
-   * 랜덤 가격 생성 (프로토타입용)
-   */
+  /** 랜덤 가격 생성 (프로토타입용) */
   private int generateRandomPrice() {
     int basePrice = (int) (Math.random() * 500000) + 50000; // 5만원~55만원
     return basePrice;
   }
 
-  /**
-   * 상품 크롤링 결과를 DB에 저장
-   */
+  /** 상품 크롤링 결과를 DB에 저장 */
   private void saveProductResult(int executionId, ProductCrawlingResult result) {
     try {
       testDomainMapper.insertProductData(
-              executionId,
-              result.getProductName(),
-              result.getSourceUrl(),
-              result.getPrice(),
-              result.getProductStatusCode()
-      );
+          executionId,
+          result.getProductName(),
+          result.getSourceUrl(),
+          result.getPrice(),
+          result.getProductStatusCode());
 
-      log.debug("상품 데이터 저장 완료 - executionId: {}, productName: {}",
-              executionId, result.getProductName());
+      log.debug(
+          "상품 데이터 저장 완료 - executionId: {}, productName: {}", executionId, result.getProductName());
 
     } catch (Exception e) {
       log.error("상품 데이터 저장 실패 - executionId: {}", executionId, e);
@@ -111,8 +105,16 @@ public class ProductCrawlingService {
     }
 
     // getters
-    public String getProductName() { return productName; }
-    public String getSourceUrl() { return sourceUrl; }
-    public int getPrice() { return price; }
+    public String getProductName() {
+      return productName;
+    }
+
+    public String getSourceUrl() {
+      return sourceUrl;
+    }
+
+    public int getPrice() {
+      return price;
+    }
   }
 }

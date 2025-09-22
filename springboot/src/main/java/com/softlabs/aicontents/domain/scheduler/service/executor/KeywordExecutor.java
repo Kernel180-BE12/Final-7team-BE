@@ -1,10 +1,7 @@
 package com.softlabs.aicontents.domain.scheduler.service.executor;
 
 import com.softlabs.aicontents.domain.orchestration.mapper.PipelineMapper;
-import com.softlabs.aicontents.domain.orchestration.vo.StepExecutionResultVO;
 import com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.KeywordResult;
-import com.softlabs.aicontents.domain.scheduler.dto.pipeLineDTO.StepExecutionResultDTO;
-import com.softlabs.aicontents.domain.scheduler.interfacePipe.PipelineStepExecutor;
 // import com.softlabs.aicontents.domain.testMapper.KeywordMapper;
 import com.softlabs.aicontents.domain.testDomainService.KeywordService;
 import lombok.extern.slf4j.Slf4j;
@@ -24,34 +21,33 @@ public class KeywordExecutor {
 
   public KeywordResult keywordExecute(int executionId) {
 
-    //1. 메서드 실행
-        System.out.println("executionId를 받아서, 크롤링-트랜드 키워드 수집 메서드 실행 - keywordService");
-      keywordService.collectKeywordAndSave(executionId);
-      System.out.println("\n\n 1단계 메서드 실행됐고, 결과를 DB에 저장했다.\n\n");
+    // 1. 메서드 실행
+    System.out.println("executionId를 받아서, 크롤링-트랜드 키워드 수집 메서드 실행 - keywordService");
+    keywordService.collectKeywordAndSave(executionId);
+    System.out.println("\n\n 1단계 메서드 실행됐고, 결과를 DB에 저장했다.\n\n");
 
+    // 2. 실행 결과를 DB 조회+ 객체 저장
+    KeywordResult keywordResult = pipelineMapper.selectKeywordStatuscode(executionId);
+    keywordResult.setExecutionId(executionId);
 
-    //2. 실행 결과를 DB 조회+ 객체 저장
-        KeywordResult keywordResult = pipelineMapper.selectKeywordStatuscode(executionId);
-         keywordResult.setExecutionId(executionId);
-
-    //3. null 체크
+    // 3. null 체크
     if (keywordResult == null) {
-        System.out.println("\n\n\n\n\n\nNullPointerException 감지\n\n\n\n\n\n");
-        keywordResult = new KeywordResult();
-        keywordResult.setSuccess(false);
+      System.out.println("\n\n\n\n\n\nNullPointerException 감지\n\n\n\n\n\n");
+      keywordResult = new KeywordResult();
+      keywordResult.setSuccess(false);
     }
 
-    //4. 완료 판단 = keyword !=null, keyWordStatusCode =="SUCCESS"
-    if (keywordResult.getKeyword() != null && "SUCCESS".equals(keywordResult.getKeyWordStatusCode())) {
-        keywordResult.setSuccess(true);
+    // 4. 완료 판단 = keyword !=null, keyWordStatusCode =="SUCCESS"
+    if (keywordResult.getKeyword() != null
+        && "SUCCESS".equals(keywordResult.getKeyWordStatusCode())) {
+      keywordResult.setSuccess(true);
     } else {
-        keywordResult.setSuccess(false);
+      keywordResult.setSuccess(false);
     }
 
     System.out.println("여기 탔음" + keywordResult);
 
-        return keywordResult;
-
+    return keywordResult;
   }
 }
 

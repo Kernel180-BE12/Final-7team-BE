@@ -8,16 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-
 @Component
 @Slf4j
 @Service
 public class BlogPublishService {
 
-  @Autowired
-  private TestDomainMapper testDomainMapper;
+  @Autowired private TestDomainMapper testDomainMapper;
 
-  public BlogPublishResult extractBlogPublish(int executionId,  AIContentsResult aIContentsResult) {
+  public BlogPublishResult extractBlogPublish(int executionId, AIContentsResult aIContentsResult) {
 
     BlogPublishResult result = new BlogPublishResult();
     result.setExecutionId(executionId);
@@ -27,7 +25,8 @@ public class BlogPublishService {
       log.info("블로그 발행 시작 - executionId: {}", executionId);
 
       // DB에서 AI 콘텐츠 정보 조회
-      AIContentsResult aiContentData = testDomainMapper.selectAIContentDataByExecutionId(executionId);
+      AIContentsResult aiContentData =
+          testDomainMapper.selectAIContentDataByExecutionId(executionId);
       if (aiContentData == null) {
         throw new RuntimeException("executionId " + executionId + "에 해당하는 AI 콘텐츠 정보를 찾을 수 없습니다.");
       }
@@ -46,12 +45,7 @@ public class BlogPublishService {
 
       // DB에 저장
       testDomainMapper.insertBlogPublishResult(
-              executionId,
-              blogPlatform,
-              blogPostId,
-              blogUrl,
-              result.getPublishStatusCode()
-      );
+          executionId, blogPlatform, blogPostId, blogUrl, result.getPublishStatusCode());
 
       log.info("블로그 발행 완료 - executionId: {}, blogUrl: {}", executionId, blogUrl);
 
