@@ -27,6 +27,8 @@ public class ScheduleEngineService {
 
   @Autowired private ScheduleEngineMapper scheduleEngineMapper;
 
+  //  @Autowired private DynamicSchedulerService dynamicSchedulerService;
+
   @Transactional
   public void scheduleEngine(ScheduleTasksRequestDTO scheduleTasksRequestDTO) {
 
@@ -52,6 +54,9 @@ public class ScheduleEngineService {
       if (resultInsert <= 0) {
         throw new RuntimeException("스케줄 저장 실패");
       }
+      //
+      //      // 5. 동적 스케줄링 등록
+      //      registerDynamicSchedule(schedulerRequestVO);
 
     } catch (Exception e) {
       throw new RuntimeException("스케줄 저장 중 오류 발생: " + e.getMessage(), e);
