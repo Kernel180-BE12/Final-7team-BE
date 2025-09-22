@@ -20,4 +20,5 @@ public class ProductCrawlingResult {
   private String sourceUrl;
   private Integer price;
   private String productStatusCode;
+  private String platform = "싸다구몰";
 }
