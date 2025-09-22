@@ -1,5 +1,6 @@
 package com.softlabs.aicontents.domain.sample.service;
 
+import com.softlabs.aicontents.common.annotation.Loggable;
 import com.softlabs.aicontents.common.enums.ErrorCode;
 import com.softlabs.aicontents.common.exception.BusinessException;
 import com.softlabs.aicontents.domain.sample.dto.SampleRequestDTO;
@@ -7,6 +8,7 @@ import com.softlabs.aicontents.domain.sample.dto.SampleResponseDTO;
 import org.springframework.stereotype.Service;
 
 @Service
+@Loggable
 public class SampleValidationService {
 
   public SampleResponseDTO processValidData(SampleRequestDTO request) {
