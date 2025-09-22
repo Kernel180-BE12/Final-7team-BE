@@ -12,10 +12,13 @@ public class ProductCrawlingResult {
     private String errorMessage;
     private String stepCode;
 
+    // 상품 수집 크롤링 실행 객체
+    private String keyword;
+
     //LLM 생성에 필요한 응답 객체
     private String productName;
     private String sourceUrl;
-    private String price;
+    private Integer price;
     private String productStatusCode;
 
 

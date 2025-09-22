@@ -31,8 +31,12 @@ public class AIContentExecutor {
     //1. 메서드 실행
     System.out.println("LLM 생성 메서드 실행 - aiContentService(productCrawlingResult)");
 
+    aiContentService.aIContentsResultExecute(executionId,productCrawlingResult);
+    System.out.println("\n\n 3단계 메서드 실행됐고, 결과를 DB에 저장했다.\n\n");
+
+
     //2. 실행 결과를 DB 조회 + 객체에 저장
-    AIContentsResult aiContentsResult = pipelineMapper.selectAiContentStatuscode();
+    AIContentsResult aiContentsResult = pipelineMapper.selectAiContentStatuscode(executionId);
 
     //3. null 체크
     if (aiContentsResult == null) {

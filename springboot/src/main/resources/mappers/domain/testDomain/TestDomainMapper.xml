@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.softlabs.aicontents.domain.testDomain.TestDomainMapper">
+
+    <insert id="insertKeywordData">
+        INSERT INTO ADMIN.TREND_DATA (
+            EXECUTION_ID,
+            KEYWORD,
+            STATUS_CODE,
+            CREATED_AT,
+            UPDATED_AT
+        ) VALUES (
+                     #{executionId},
+                     #{keyword},
+                     #{statusCode},
+                     SYSTIMESTAMP,
+                     SYSTIMESTAMP
+                 )
+    </insert>
+
+    <insert id="insertProductData">
+        INSERT INTO ADMIN.SSADAGU_CONTENTS (
+            EXECUTION_ID,
+            PRODUCT_NAME,
+            SOURCE_URL,
+            PRICE,
+            STATUS_CODE,
+            IS_PROCESSED,
+            CREATED_AT
+        ) VALUES (
+                     #{executionId},
+                     #{productName},
+                     #{sourceUrl},
+                     #{price},
+                     #{statusCode},
+                     'N',
+                     SYSTIMESTAMP
+                 )
+    </insert>
+
+
+    <select id="selectProductDataByExecutionId" resultType="com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.AIContentsResult">
+        SELECT PRODUCT_NAME as productName,
+               SOURCE_URL as sourceUrl,
+               PRICE as price
+        FROM ADMIN.SSADAGU_CONTENTS
+        WHERE EXECUTION_ID = #{executionId}
+        ORDER BY SSADAGU_CONTENT_ID DESC
+            FETCH FIRST 1 ROWS ONLY
+    </select>
+
+    <insert id="insertAIContentResult">
+        INSERT INTO ADMIN.AI_GENERATED_CONTENTS (
+            EXECUTION_ID,
+            SOURCE_URL,
+            TITLE,
+            CONTENT,
+            SUMMARY,
+            HASHTAGS,
+            STATUS_CODE,
+            AI_MODEL,
+            CREATED_AT,
+            UPDATED_AT
+        ) VALUES (
+                     #{executionId},
+                     #{sourceUrl},
+                     #{title},
+                     #{content},
+                     #{summary},
+                     #{hashtags},
+                     #{statusCode},
+                     'PROTOTYPE_AI',
+                     SYSTIMESTAMP,
+                     SYSTIMESTAMP
+                 )
+    </insert>
+
+
+    <select id="selectAIContentDataByExecutionId" resultType="com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.AIContentsResult">
+        SELECT TITLE as title,
+               CONTENT as content,
+               SUMMARY as summary,
+               HASHTAGS as hashtags,
+               SOURCE_URL as sourceUrl
+        FROM ADMIN.AI_GENERATED_CONTENTS
+        WHERE EXECUTION_ID = #{executionId}
+        ORDER BY CREATED_AT DESC
+            FETCH FIRST 1 ROWS ONLY
+    </select>
+
+    <insert id="insertBlogPublishResult">
+        INSERT INTO ADMIN.BLOG_PUBLISH_LOGS (
+            EXECUTION_ID,
+            BLOG_PLATFORM,
+            BLOG_POST_ID,
+            BLOG_URL,
+            STATUS_CODE,
+            CREATED_AT,
+            UPDATED_AT,
+            PUBLISH_STATUS
+        ) VALUES (
+                     #{executionId},
+                     #{blogPlatform},
+                     #{blogPostId},
+                     #{blogUrl},
+                     #{statusCode},
+                     SYSTIMESTAMP,
+                     SYSTIMESTAMP,
+                     'SUCCESS'
+                 )
+    </insert>
+
+</mapper>

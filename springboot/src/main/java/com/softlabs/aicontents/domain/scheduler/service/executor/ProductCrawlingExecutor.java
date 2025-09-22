@@ -26,17 +26,16 @@ public class ProductCrawlingExecutor {
 
   public ProductCrawlingResult productCrawlingExecute(int executionId, KeywordResult keywordResult) {
 
-    //1. 이전 단계 검증 (더블 체크 용도)
-    System.out.println("싸다구 내부 진입함. 단계 검증 들어옴"+keywordResult);
-    //=> 키워드들 저장된 체로 살아 있음.
+    //1. 메서드 실행
+    System.out.println("\n\nkeywordResult에 기반한 크롤링-상품 정보 수집 메서드 실행 - productCrawlingService(keywordResult)");
 
-    //2. 메서드 실행
-    System.out.println("keywordResult에 기반한 크롤링-상품 정보 수집 메서드 실행 - productCrawlingService(keywordResult)");
+    productCrawlingService.productCrawlingExecute(executionId, keywordResult);
+    System.out.println("\n\n 2단계 메서드 실행됐고, 결과를 DB에 저장했다.\n\n");
 
-    //3. 실행 결과를 DB 조회+ 객체 저장
-    ProductCrawlingResult productCrawlingResult = pipelineMapper.selctproductCrawlingStatuscode();
+    //2. 실행 결과를 DB 조회+ 객체 저장
+    ProductCrawlingResult productCrawlingResult = pipelineMapper.selctproductCrawlingStatuscode(executionId);
 
-    //4.null 체크
+    //3.null 체크
     if (productCrawlingResult == null) {
       System.out.println("NullPointerException 감지");
       productCrawlingResult = new ProductCrawlingResult();
@@ -44,7 +43,7 @@ public class ProductCrawlingExecutor {
       productCrawlingResult.setExecutionId(executionId);
     }
 
-    //5. 완료 판단 =
+    //4. 완료 판단 =
     //  (product_name, source_url, price)!= null && productStatusCode = "SUCCEDSS"
     if(productCrawlingResult.getProductName() != null && productCrawlingResult.getSourceUrl()!= null &&
             productCrawlingResult.getPrice()!= null && "SUCCESS".equals(productCrawlingResult.getProductStatusCode())){

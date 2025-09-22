@@ -8,9 +8,11 @@
 
     <select id="selectKeywordStatuscode" resultType="com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.KeywordResult">
         SELECT STATUS_CODE as keyWordStatusCode,
-                   KEYWORD as keyword
+                   KEYWORD as keyword,
+              EXECUTION_ID as executionId
           FROM ADMIN.TREND_DATA
-         WHERE TREND_ID=1
+         WHERE EXECUTION_ID =#{executionId}
+
     </select>
 
     <select id="selctproductCrawlingStatuscode" resultType="com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.ProductCrawlingResult">
@@ -19,7 +21,7 @@
                 SOURCE_URL as sourceUrl,
                      PRICE as price
         FROM ADMIN.SSADAGU_CONTENTS
-        WHERE SSADAGU_CONTENT_ID =1
+        WHERE EXECUTION_ID =#{executionId}
 
 
     </select>
@@ -32,17 +34,17 @@
                    CONTENT as content,
                 SOURCE_URL as sourceUrl
         FROM ADMIN.AI_GENERATED_CONTENTS
-        WHERE AI_CONTENT_ID=5
+        WHERE EXECUTION_ID =#{executionId}
 
     </select>
 
     <select id="selectPublishStatuscode" resultType="com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.BlogPublishResult">
         SELECT STATUS_CODE as publishStatusCode,
-             BLOG_PLATFORM as blogPlatfom,
+             BLOG_PLATFORM as blogPlatform,
               BLOG_POST_ID as blogPostId,
                   BLOG_URL as blogUrl
         FROM ADMIN.BLOG_PUBLISH_LOGS
-        WHERE PUBLISH_ID =2
+        WHERE EXECUTION_ID =#{executionId}
 
     </select>
 

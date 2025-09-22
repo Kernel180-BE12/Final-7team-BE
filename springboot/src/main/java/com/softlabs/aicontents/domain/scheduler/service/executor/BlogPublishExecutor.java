@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 public class BlogPublishExecutor {
   @Autowired
   private BlogPublishService blogPublishService;
-
   // todo: 실제 발행 클래스로 변경
 
   @Autowired
@@ -29,10 +28,15 @@ public class BlogPublishExecutor {
   public BlogPublishResult blogPublishResultExecute(int executionId, AIContentsResult aIContentsResult) {
 
     //1. 메서드 실행
-    System.out.println("발행 메서드 실행 - blogPublishService(aIContentsResult)");
+    System.out.println("\n\n발행 메서드 실행 - blogPublishService(aIContentsResult)\n\n");
+
+    blogPublishService.extractBlogPublish(executionId,aIContentsResult);
+    System.out.println("\n\n 4단계 메서드 실행됐고, 결과를 DB에 저장했다.\n\n");
+
+
 
     //2. 실행결과를 DB 조회 +객체 저장
-    BlogPublishResult  blogPublishResult = pipelineMapper.selectPublishStatuscode();
+    BlogPublishResult  blogPublishResult = pipelineMapper.selectPublishStatuscode(executionId);
 
     //3. null 체크
     if(blogPublishResult ==null){
@@ -43,7 +47,7 @@ public class BlogPublishExecutor {
     }
 
     //4. 완료 판단
-    if (blogPublishResult.getBlogPlatfom() != null && blogPublishResult.getBlogPostId() != null &&
+    if (blogPublishResult.getBlogPlatform() != null && blogPublishResult.getBlogPostId() != null &&
             blogPublishResult.getBlogUrl() != null && "SUCCESS".equals(blogPublishResult.getPublishStatusCode())) {
 
       blogPublishResult.setSuccess(true);

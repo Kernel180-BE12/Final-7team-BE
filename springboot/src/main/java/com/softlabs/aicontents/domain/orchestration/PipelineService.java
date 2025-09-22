@@ -47,7 +47,6 @@ public class PipelineService {
 
         //1. 파이프라인 테이블의 ID(executionId) 생성
         int executionId = createNewExecution();
-        System.out.println("2. executionId가 저장되었다.="+executionId);
 
         //2. PipeExecuteData 채우기
         PipeExecuteData pipeExecuteData = new PipeExecuteData();
@@ -55,21 +54,18 @@ public class PipelineService {
         pipeExecuteData.setStatus("started");
         pipeExecuteData.setEstimatedDuration("약 45분");
         pipeExecuteData.setStages(List.of("키워드 추출","상품 크롤링","컨텐츠 생성","컨텐츠 배포"));
-        System.out.println(pipeExecuteData);
 
         //3. ExecuteApiResponseDTO 채우기
         ExecuteApiResponseDTO executeApiResponseDTO = new ExecuteApiResponseDTO();
         executeApiResponseDTO.setSuccess(true);
         executeApiResponseDTO.setMessage("파이프라인 실행이 시작되었습니다");
-        executeApiResponseDTO.setPipeExecuteData(pipeExecuteData);
 
-        System.out.println(executeApiResponseDTO);
 
         System.out.println("파이프라인 시작점"+executionId);
 
         try {
 
-    // step01 - 키워드 추출
+        // step01 - 키워드 추출
             KeywordResult keywordResult01 = keywordExecutor.keywordExecute(executionId);
             System.out.println("파이프라인 1단계 결과/  " + keywordResult01);
             // todo : if 추출 실패 시 3회 재시도 및 예외처리
@@ -79,7 +75,7 @@ public class PipelineService {
             /// todo: PipeResultDataDTO에 결과물 저장 메서드
             /// todo: 파이프라인 테이블에 상태 저장
 
-    // step02 - 상품정보 & URL 추출
+        // step02 - 상품정보 & URL 추출
             ProductCrawlingResult productCrawlingResult01 = crawlingExecutor.productCrawlingExecute(executionId, keywordResult01);
             System.out.println("파이프라인 2단계 결과/  " + productCrawlingResult01);
             // todo : if 추출 실패 시 3회 재시도 및 예외처리
@@ -88,14 +84,14 @@ public class PipelineService {
 
             /// todo: PipeResultDataDTO에 결과물 저장 메서드
 
-    // step03 - LLM 생성
+        // step03 - LLM 생성
             AIContentsResult aIContentsResult01 = aiExecutor.aIContentsResultExecute(executionId, productCrawlingResult01);
             System.out.println("파이프라인 3단계 결과/  " + aIContentsResult01);
 
             // todo : if 추출 실패 시 3회 재시도 및 예외처리
             /// todo: PipeResultDataDTO에 결과물 저장 메서드
 
-    // step04 - 블로그 발행
+        // step04 - 블로그 발행
             BlogPublishResult blogPublishResult01 = blogExecutor.blogPublishResultExecute(executionId, aIContentsResult01);
             System.out.println("파이프라인 4단계 결과/  " + blogPublishResult01);
             //          // todo : if 추출 실패 시 3회 재시도 및 예외처리
@@ -113,12 +109,31 @@ public class PipelineService {
         return null;
     }
 
-// @GetMapping("/pipeline/status/{executionId}")
 
-    public StatusApiResponseDTO statusPipline() {
+
+// @GetMapping("/pipeline/status/{executionId}")
+    public StatusApiResponseDTO getStatusPipline( int executionId) {
 
         // 파이프라인의 상태/결과 누적
         StatusApiResponseDTO statusApiResponseDTO = new StatusApiResponseDTO();
+
+
+
+        //1. 실행정보
+        statusApiResponseDTO.setExecutionId(executionId);
+        statusApiResponseDTO.setOverallStatus("running");
+        statusApiResponseDTO.setCurrentStage("product_crawling");
+
+        //기존 쿼리로 데이터 조회
+        KeywordResult keywordResult = pipelineMapper.selectKeywordStatuscode(executionId);
+        ProductCrawlingResult productResult = pipelineMapper.selctproductCrawlingStatuscode(executionId);
+
+
+        //2. 각 단계별 진행 상황
+
+        //3. 단계별 결과 데이터
+
+        //4. 로그 정보
 
         return statusApiResponseDTO;
     }

@@ -26,14 +26,17 @@ public class KeywordExecutor {
 
     //1. 메서드 실행
         System.out.println("executionId를 받아서, 크롤링-트랜드 키워드 수집 메서드 실행 - keywordService");
+      keywordService.collectKeywordAndSave(executionId);
+      System.out.println("\n\n 1단계 메서드 실행됐고, 결과를 DB에 저장했다.\n\n");
+
 
     //2. 실행 결과를 DB 조회+ 객체 저장
-        KeywordResult keywordResult = pipelineMapper.selectKeywordStatuscode();
+        KeywordResult keywordResult = pipelineMapper.selectKeywordStatuscode(executionId);
          keywordResult.setExecutionId(executionId);
 
     //3. null 체크
     if (keywordResult == null) {
-        System.out.println("NullPointerException 감지");
+        System.out.println("\n\n\n\n\n\nNullPointerException 감지\n\n\n\n\n\n");
         keywordResult = new KeywordResult();
         keywordResult.setSuccess(false);
     }

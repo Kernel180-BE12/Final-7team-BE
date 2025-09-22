@@ -10,13 +10,13 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface PipelineMapper {
 
-  KeywordResult selectKeywordStatuscode();
+  KeywordResult selectKeywordStatuscode(int executionId);
 
-  ProductCrawlingResult selctproductCrawlingStatuscode();
+  ProductCrawlingResult selctproductCrawlingStatuscode(int executionId);
 
-  AIContentsResult selectAiContentStatuscode();
+  AIContentsResult selectAiContentStatuscode(int executionId);
 
-  BlogPublishResult selectPublishStatuscode();
+  BlogPublishResult selectPublishStatuscode(int executionId);
 
   void insertNewExecutionId();
 

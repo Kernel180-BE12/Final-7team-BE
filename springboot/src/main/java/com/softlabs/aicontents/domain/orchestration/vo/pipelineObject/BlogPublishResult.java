@@ -13,11 +13,9 @@ public class BlogPublishResult {
     private String stepCode;
 
     // 발행
-    private String blogPlatfom;
+    private String blogPlatform;
     private String blogPostId;
     private String blogUrl;
     private String publishStatusCode;
-
-
 
 }
