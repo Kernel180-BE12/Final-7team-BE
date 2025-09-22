@@ -1,5 +1,9 @@
 package com.softlabs.aicontents.domain.scheduler.service.executor;
 
+import com.softlabs.aicontents.domain.orchestration.mapper.PipelineMapper;
+import com.softlabs.aicontents.domain.orchestration.vo.StepExecutionResultVO;
+import com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.KeywordResult;
+import com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.ProductCrawlingResult;
 import com.softlabs.aicontents.domain.scheduler.dto.pipeLineDTO.StepExecutionResultDTO;
 import com.softlabs.aicontents.domain.scheduler.interfacePipe.PipelineStepExecutor;
 // import com.softlabs.aicontents.domain.testMapper.ProductCrawlingMapper;
@@ -12,49 +16,48 @@ import org.springframework.stereotype.Service;
 @Component
 @Slf4j
 @Service
-public class ProductCrawlingExecutor implements PipelineStepExecutor {
+public class ProductCrawlingExecutor {
 
   @Autowired private ProductCrawlingService productCrawlingService;
-
   // todo: 실제 싸다구 정보 수집 서비스 클래스로 변경
 
-  //    @Autowired
-  //    private ProductCrawlingMapper productCrawlingMapper;
-  //    // todo: 실제 싸다구 정보 수집 매퍼 인터페이스로 변경
+  @Autowired
+  private PipelineMapper pipelineMapper;
 
-  @Override
-  public StepExecutionResultDTO execute(int executionId) {
+  public ProductCrawlingResult productCrawlingExecute(int executionId, KeywordResult keywordResult) {
 
-    /// test : 파이프라인 동작 테스트
-    System.out.println("싸다구 정보 수집 메서드 호출/ 실행");
-    delayWithDots(3);
+    //1. 메서드 실행
+    System.out.println("\n\nkeywordResult에 기반한 크롤링-상품 정보 수집 메서드 실행 - productCrawlingService(keywordResult)");
 
-    /// todo : 테스트용 RDS 조회 쿼리
-    System.out.println("싸다구 정보 수집 결과 DB에서 쿼리 조회");
-    delayWithDots(3);
-    System.out.println("싸다구 정보 수집 결과 DB 완료 확인 로직 실행");
-    delayWithDots(3);
-    System.out.println("싸다구 정보 수집 상태 판단 -> 완료(success)");
-    System.out.println("싸다구 정보 수집 상태 판단 -> 실패(failure)-> 재시도/예외처리");
-    delayWithDots(3);
-    System.out.println("[스케줄러]가 [싸다구 정보 수집] -> [LLM] (요청)객체 전달");
-    delayWithDots(3);
-    return null;
-    /// todo : 반환 값으로 이전 기능이 요구하는 파라메터를 반환하기.
-  }
+    productCrawlingService.productCrawlingExecute(executionId, keywordResult);
+    System.out.println("\n\n 2단계 메서드 실행됐고, 결과를 DB에 저장했다.\n\n");
 
-  /// 테스트용 딜레이 메서드
-  private void delayWithDots(int seconds) {
-    try {
-      for (int i = 0; i < seconds; i++) {
-        Thread.sleep(200); // 1초마다
-        System.out.print(".");
-      }
-      System.out.println(); // 줄바꿈
-    } catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
+    //2. 실행 결과를 DB 조회+ 객체 저장
+    ProductCrawlingResult productCrawlingResult = pipelineMapper.selctproductCrawlingStatuscode(executionId);
+
+    //3.null 체크
+    if (productCrawlingResult == null) {
+      System.out.println("NullPointerException 감지");
+      productCrawlingResult = new ProductCrawlingResult();
+      productCrawlingResult.setSuccess(false);
+      productCrawlingResult.setExecutionId(executionId);
     }
+
+    //4. 완료 판단 =
+    //  (product_name, source_url, price)!= null && productStatusCode = "SUCCEDSS"
+    if(productCrawlingResult.getProductName() != null && productCrawlingResult.getSourceUrl()!= null &&
+            productCrawlingResult.getPrice()!= null && "SUCCESS".equals(productCrawlingResult.getProductStatusCode())){
+      productCrawlingResult.setSuccess(true);
+    }else {
+      productCrawlingResult.setSuccess(false);
+    }
+    System.out.println("여기 탔음" + productCrawlingResult);
+
+
+    return productCrawlingResult;
+
   }
+
 }
 
 //        try {

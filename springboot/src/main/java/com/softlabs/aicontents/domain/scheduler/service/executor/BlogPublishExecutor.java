@@ -1,5 +1,9 @@
 package com.softlabs.aicontents.domain.scheduler.service.executor;
 
+import com.softlabs.aicontents.domain.orchestration.mapper.PipelineMapper;
+import com.softlabs.aicontents.domain.orchestration.vo.StepExecutionResultVO;
+import com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.AIContentsResult;
+import com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.BlogPublishResult;
 import com.softlabs.aicontents.domain.scheduler.dto.pipeLineDTO.StepExecutionResultDTO;
 import com.softlabs.aicontents.domain.scheduler.interfacePipe.PipelineStepExecutor;
 // import com.softlabs.aicontents.domain.testMapper.BlogPublishMapper;
@@ -12,30 +16,49 @@ import org.springframework.stereotype.Service;
 @Component
 @Slf4j
 @Service
-public class BlogPublishExecutor implements PipelineStepExecutor {
-  @Autowired private BlogPublishService blogPublishService;
-
+public class BlogPublishExecutor {
+  @Autowired
+  private BlogPublishService blogPublishService;
   // todo: 실제 발행 클래스로 변경
 
-  //    @Autowired
-  //    private BlogPublishMapper blogPublishMapper;
-  //    // todo: 실제 발행 매퍼 인터페이스로 변경
+  @Autowired
+  private PipelineMapper pipelineMapper;
 
-  @Override
-  public StepExecutionResultDTO execute(int executionId) {
 
-    /// test : 파이프라인 동작 테스트
-    System.out.println("발행 메서드 호출/ 실행");
+  public BlogPublishResult blogPublishResultExecute(int executionId, AIContentsResult aIContentsResult) {
 
-    /// todo : 테스트용 RDS 조회 쿼리
-    System.out.println("발행 결과 DB에서 쿼리 조회");
-    System.out.println("발행 결과 DB 완료 확인 로직 실행");
-    System.out.println("발행 상태 판단 -> 완료(success)");
-    System.out.println("발행 상태 판단 -> 실패(failure)-> 재시도/예외처리");
-    System.out.println("[발행] 완료");
-    return null;
-    /// todo : 반환 값으로 이전 기능이 요구하는 파라메터를 반환하기.
-  }
+    //1. 메서드 실행
+    System.out.println("\n\n발행 메서드 실행 - blogPublishService(aIContentsResult)\n\n");
+
+    blogPublishService.extractBlogPublish(executionId,aIContentsResult);
+    System.out.println("\n\n 4단계 메서드 실행됐고, 결과를 DB에 저장했다.\n\n");
+
+
+
+    //2. 실행결과를 DB 조회 +객체 저장
+    BlogPublishResult  blogPublishResult = pipelineMapper.selectPublishStatuscode(executionId);
+
+    //3. null 체크
+    if(blogPublishResult ==null){
+      System.out.println("NullPointerException 감지");
+      blogPublishResult =new BlogPublishResult();
+      blogPublishResult.setSuccess(false);
+      blogPublishResult.setExecutionId(executionId);
+    }
+
+    //4. 완료 판단
+    if (blogPublishResult.getBlogPlatform() != null && blogPublishResult.getBlogPostId() != null &&
+            blogPublishResult.getBlogUrl() != null && "SUCCESS".equals(blogPublishResult.getPublishStatusCode())) {
+
+      blogPublishResult.setSuccess(true);
+    } else {
+      blogPublishResult.setSuccess(false);
+    }
+
+    System.out.println("여기 탔음" + blogPublishResult);
+    return blogPublishResult;
+
+    }
 }
 
 //        try {
