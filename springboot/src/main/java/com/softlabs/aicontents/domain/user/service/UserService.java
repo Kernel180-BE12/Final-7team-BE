@@ -34,4 +34,8 @@ public class UserService {
   public boolean isLoginIdDuplicate(String loginId) {
     return userMapper.existsByLoginId(loginId);
   }
+
+  public boolean isEmailDuplicate(String email) {
+    return userMapper.existsByEmail(email);
+  }
 }

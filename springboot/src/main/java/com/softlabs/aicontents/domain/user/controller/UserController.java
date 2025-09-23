@@ -33,4 +33,16 @@ public class UserController {
       return ResponseEntity.ok(ApiResponseDTO.success(false, "사용 가능한 아이디입니다."));
     }
   }
+
+  @GetMapping("/check-email")
+  public ResponseEntity<ApiResponseDTO<Boolean>> checkEmailDuplicate(
+      @RequestParam String email) {
+    boolean isDuplicate = userService.isEmailDuplicate(email);
+
+    if (isDuplicate) {
+      return ResponseEntity.ok(ApiResponseDTO.success(true, "중복된 이메일입니다."));
+    } else {
+      return ResponseEntity.ok(ApiResponseDTO.success(false, "사용 가능한 이메일입니다."));
+    }
+  }
 }
