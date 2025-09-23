@@ -35,8 +35,7 @@ public class UserController {
   }
 
   @GetMapping("/check-email")
-  public ResponseEntity<ApiResponseDTO<Boolean>> checkEmailDuplicate(
-      @RequestParam String email) {
+  public ResponseEntity<ApiResponseDTO<Boolean>> checkEmailDuplicate(@RequestParam String email) {
     boolean isDuplicate = userService.isEmailDuplicate(email);
 
     if (isDuplicate) {
