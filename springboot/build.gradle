@@ -37,7 +37,7 @@ spotless {
 }
 
 dependencies {
-	// implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web' //SLF4J, Logback, AOP 의존성 포함
 	implementation 'org.springframework.boot:spring-boot-starter-aop' // AspectJ 지원
 	compileOnly 'org.projectlombok:lombok'
