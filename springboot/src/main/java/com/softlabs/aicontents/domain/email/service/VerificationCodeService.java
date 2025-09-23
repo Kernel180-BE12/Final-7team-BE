@@ -18,7 +18,8 @@ public class VerificationCodeService {
 
   public String generateVerificationCode(String email) {
     String code = String.format("%06d", random.nextInt(1000000));
-    VerificationData data = new VerificationData(code, LocalDateTime.now().plusMinutes(EXPIRY_MINUTES));
+    VerificationData data =
+        new VerificationData(code, LocalDateTime.now().plusMinutes(EXPIRY_MINUTES));
     verificationCodes.put(email, data);
 
     log.info("인증코드 생성 완료: {}", email);
