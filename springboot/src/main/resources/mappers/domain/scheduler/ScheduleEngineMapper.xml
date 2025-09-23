@@ -18,6 +18,7 @@
                                           , NEXT_EXECUTION
                                           , CREATED_BY
                                           , PIPELINE_CONFIG
+                                          , EXECUTE_IMMEDIATELY
         )
         VALUES ( SCHEDULE_TASK_SEQUENCES.NEXTVAL
                , #{scheduleType}
@@ -29,6 +30,7 @@
                , #{nextExecution}
                , 'admin'
                , #{pipelineConfig}
+               , #{executeImmediately}
                )
     </insert>
 
@@ -61,4 +63,11 @@
         SELECT COUNT(*)
         FROM ADMIN.SCHEDULED_TASKS
     </select>
+
+    <select id="selectTaskid" resultType="int">
+        SELECT TASK_ID as taskId
+        FROM ADMIN.SCHEDULED_TASKS
+
+    </select>
+
 </mapper>

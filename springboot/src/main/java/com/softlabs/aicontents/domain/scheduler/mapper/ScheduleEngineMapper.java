@@ -14,4 +14,6 @@ public interface ScheduleEngineMapper {
   List<ScheduleInfoResponseVO> selectScheduleInfo(PagingVO pagingVO);
 
   int selectScheduleInfoCount();
+
+  int selectTaskid();
 }

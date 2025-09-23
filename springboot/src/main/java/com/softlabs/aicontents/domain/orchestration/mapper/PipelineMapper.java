@@ -5,6 +5,7 @@ import com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.AIContents
 import com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.BlogPublishResult;
 import com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.KeywordResult;
 import com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.ProductCrawlingResult;
+import com.softlabs.aicontents.domain.scheduler.vo.response.ScheduleResponseVO;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
@@ -21,4 +22,6 @@ public interface PipelineMapper {
   void insertNewExecutionId();
 
   PipeExecuteData selectNewExecutionId();
+
+  ScheduleResponseVO selectScheduleResponseVO();
 }

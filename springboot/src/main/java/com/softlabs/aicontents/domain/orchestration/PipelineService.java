@@ -300,6 +300,7 @@ public class PipelineService {
     System.out.println("statusApiResponseDTO 반환 =" + statusApiResponseDTO);
 
     // 4. 로그 정보
+    //todo
 
     return statusApiResponseDTO;
   }

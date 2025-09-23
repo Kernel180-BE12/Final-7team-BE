@@ -15,6 +15,8 @@ public class SchedulerRequestVO {
   private LocalDateTime lastExecution; // 마지막 실행 시간
   private LocalDateTime nextExecution; // 다음 실행 시간
   private String pipelineConfig; // 파이프라인 설정 JSON
+  private String executeImmediately;
+
 
   /// 파이프라인 관련 데이터
 

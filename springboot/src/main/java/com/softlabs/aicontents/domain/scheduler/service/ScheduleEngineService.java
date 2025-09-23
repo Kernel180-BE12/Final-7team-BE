@@ -88,8 +88,10 @@ public class ScheduleEngineService {
     schedulerRequestVO.setKeywordCount(scheduleTasksRequestDTO.getKeywordCount());
     schedulerRequestVO.setContentCount(scheduleTasksRequestDTO.getContentCount());
     schedulerRequestVO.setAiModel(scheduleTasksRequestDTO.getAiModel());
+    schedulerRequestVO.setExecuteImmediately(scheduleTasksRequestDTO.isExecuteImmediately()?"Y":"N");
 
     return schedulerRequestVO;
+
   }
 
   public PageResponseDTO<ScheduleResponseDTO> getScheduleInfoList(

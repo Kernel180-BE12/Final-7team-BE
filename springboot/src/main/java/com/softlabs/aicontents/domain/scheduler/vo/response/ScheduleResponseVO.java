@@ -6,5 +6,7 @@ import lombok.Data;
 public class ScheduleResponseVO {
 
   // TASK 식별자
-  public int taskId;
+  private int taskId;
+  private String executeImmediately;
+
 }
