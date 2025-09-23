@@ -1,6 +1,7 @@
 package com.softlabs.aicontents.domain.user.service;
 
 import com.softlabs.aicontents.domain.user.dto.UserSignupDto;
+import com.softlabs.aicontents.domain.user.mapper.UserMapper;
 import com.softlabs.aicontents.domain.user.vo.User;
 import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +11,12 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
   private final PasswordService passwordService;
+  private final UserMapper userMapper;
 
   @Autowired
-  public UserService(PasswordService passwordService) {
+  public UserService(PasswordService passwordService, UserMapper userMapper) {
     this.passwordService = passwordService;
+    this.userMapper = userMapper;
   }
 
   public User createUser(UserSignupDto signupDto) {
@@ -26,5 +29,9 @@ public class UserService {
 
   public boolean validatePassword(String plainPassword, String hashedPassword) {
     return passwordService.matches(plainPassword, hashedPassword);
+  }
+
+  public boolean isLoginIdDuplicate(String loginId) {
+    return userMapper.existsByLoginId(loginId);
   }
 }
