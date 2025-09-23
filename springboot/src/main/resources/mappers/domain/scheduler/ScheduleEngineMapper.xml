@@ -18,6 +18,7 @@
                                           , NEXT_EXECUTION
                                           , CREATED_BY
                                           , PIPELINE_CONFIG
+                                          , EXECUTE_IMMEDIATELY
         )
         VALUES ( SCHEDULE_TASK_SEQUENCES.NEXTVAL
                , #{scheduleType}
@@ -29,8 +30,37 @@
                , #{nextExecution}
                , 'admin'
                , #{pipelineConfig}
+               , #{executeImmediately}
                )
     </insert>
+
+    <select id="selectTask" resultType="com.softlabs.aicontents.domain.scheduler.vo.response.ScheduleResponseVO">
+        SELECT TASK_ID as taskId,
+               EXECUTE_IMMEDIATELY as executeImmediately
+        FROM ADMIN.SCHEDULED_TASKS
+        WHERE TASK_ID = (SELECT MAX(TASK_ID) FROM ADMIN.SCHEDULED_TASKS)
+    </select>
+
+
+    <select id="selectScheduleResponseVO" resultType="com.softlabs.aicontents.domain.scheduler.vo.response.ScheduleResponseVO">
+
+        SELECT TASK_ID as taskId
+                , SCHEDULE_TYPE as scheduleType
+                , EXECUTION_TIME as executionTime
+                , KEYWORD_COUNT as keywordCount
+                , CONTENT_COUNT as contentCount
+                , AI_MODEL as aiModel
+                , LAST_EXECUTION as lastExecution
+                , NEXT_EXECUTION as nextExecution
+                , PIPELINE_CONFIG as pipelineConfig
+                , EXECUTE_IMMEDIATELY as executeImmediately
+                , TASK_NAME as taskName
+        FROM ADMIN.SCHEDULED_TASKS
+        WHERE TASK_ID = #{taskId}
+
+
+    </select>
+
 
     <select id="selectScheduleInfo" parameterType="com.softlabs.aicontents.domain.scheduler.vo.request.PagingVO" resultType="com.softlabs.aicontents.domain.scheduler.vo.response.ScheduleInfoResponseVO">
         <!-- DashBoardMapper.selectScheduleInfo -->
@@ -61,4 +91,18 @@
         SELECT COUNT(*)
         FROM ADMIN.SCHEDULED_TASKS
     </select>
+
+    <select id="selectActiveSchedules" resultType="ScheduleResponseVO">
+        SELECT
+            task_id as taskId,
+            task_name as taskName,
+            schedule_type as scheduleType,
+            execution_time as executionTime,
+            execute_immediately as executeImmediately
+        FROM ADMIN.SCHEDULED_TASKS
+        WHERE execute_immediately = 'N'
+    </select>
+
+
+
 </mapper>
