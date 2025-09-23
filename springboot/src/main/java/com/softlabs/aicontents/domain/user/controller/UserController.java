@@ -23,7 +23,8 @@ public class UserController {
   }
 
   @GetMapping("/check-login-id")
-  public ResponseEntity<ApiResponseDTO<Boolean>> checkLoginIdDuplicate(@RequestParam String loginId) {
+  public ResponseEntity<ApiResponseDTO<Boolean>> checkLoginIdDuplicate(
+      @RequestParam String loginId) {
     boolean isDuplicate = userService.isLoginIdDuplicate(loginId);
 
     if (isDuplicate) {
