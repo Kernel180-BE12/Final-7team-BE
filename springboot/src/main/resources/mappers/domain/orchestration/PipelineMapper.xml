@@ -59,10 +59,11 @@
          WHERE execution_id = (SELECT MAX(execution_id) FROM ADMIN.PIPELINE_EXECUTIONS)
     </select>
 
-    <select id="selectScheduleResponseVO" resultType="com.softlabs.aicontents.domain.scheduler.vo.response.ScheduleResponseVO">
+    <select id="selectScheduleTaskData" resultType="com.softlabs.aicontents.domain.scheduler.vo.response.ScheduleTaskData">
         SELECT TASK_ID as taskId,
                EXECUTE_IMMEDIATELY as executeImmediately
           FROM ADMIN.SCHEDULED_TASKS
+         WHERE TASK_ID = (SELECT MAX(TASK_ID) FROM ADMIN.SCHEDULED_TASKS)
     </select>
 
 </mapper>

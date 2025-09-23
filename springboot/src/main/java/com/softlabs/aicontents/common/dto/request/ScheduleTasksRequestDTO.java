@@ -41,5 +41,4 @@ public class ScheduleTasksRequestDTO {
 
   @Schema(description = "즉시 실행 여부", example = "false")
   private boolean executeImmediately; // 즉시 실행 플래그
-
 }

@@ -48,10 +48,12 @@ public class PipelineService {
     // 2. PipeExecuteData 채우기
 
     pipeExecuteData.setExecutionId(executionId);
-    System.out.println(pipeExecuteData.getExecutionId()+"생성된 ID는 여기 있다.");
+    System.out.println(pipeExecuteData.getExecutionId() + "생성된 ID는 여기 있다.");
     pipeExecuteData.setStatus("started");
     pipeExecuteData.setEstimatedDuration("약 35분");
-    pipeExecuteData.setStages(List.of("keyword_extraction", "product_crawling", "content_generation", "content_publishing"));
+    pipeExecuteData.setStages(
+        List.of(
+            "keyword_extraction", "product_crawling", "content_generation", "content_publishing"));
     executeApiResponseDTO.setData(pipeExecuteData);
 
     // 3. ExecuteApiResponseDTO 채우기
@@ -300,7 +302,7 @@ public class PipelineService {
     System.out.println("statusApiResponseDTO 반환 =" + statusApiResponseDTO);
 
     // 4. 로그 정보
-    //todo
+    // todo
 
     return statusApiResponseDTO;
   }

@@ -4,12 +4,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softlabs.aicontents.common.dto.request.ScheduleTasksRequestDTO;
 import com.softlabs.aicontents.common.dto.response.PageResponseDTO;
 import com.softlabs.aicontents.domain.orchestration.PipelineService;
+import com.softlabs.aicontents.domain.orchestration.mapper.PipelineMapper;
 import com.softlabs.aicontents.domain.scheduler.dto.ScheduleInfoResquestDTO;
 import com.softlabs.aicontents.domain.scheduler.dto.resultDTO.ScheduleResponseDTO;
 import com.softlabs.aicontents.domain.scheduler.mapper.ScheduleEngineMapper;
 import com.softlabs.aicontents.domain.scheduler.vo.request.PagingVO;
 import com.softlabs.aicontents.domain.scheduler.vo.request.SchedulerRequestVO;
 import com.softlabs.aicontents.domain.scheduler.vo.response.ScheduleInfoResponseVO;
+import com.softlabs.aicontents.domain.scheduler.vo.response.ScheduleResponseVO;
+import com.softlabs.aicontents.domain.scheduler.vo.response.ScheduleTaskData;
+import jakarta.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Collections;
@@ -28,19 +32,23 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class ScheduleEngineService {
 
-  @Autowired
-  private ScheduleEngineMapper scheduleEngineMapper;
-  @Autowired
-  private TaskScheduler taskScheduler; //동적 스케줄 시간
-
+  @Autowired private ScheduleEngineMapper scheduleEngineMapper;
+  @Autowired private PipelineMapper pipelineMapper;
+  @Autowired private TaskScheduler taskScheduler; // 동적 스케줄 시간
   @Autowired private PipelineService pipelineService;
 
+  /// @PostMapping("/schedule")
   @Transactional
   public void scheduleEngine(ScheduleTasksRequestDTO scheduleTasksRequestDTO) {
 
     try {
       // 1. DTO -> VO 변환
       SchedulerRequestVO schedulerRequestVO = this.convertDTOtoVO(scheduleTasksRequestDTO);
+      ScheduleTaskData ScheduleTaskData = pipelineMapper.selectScheduleTaskData();
+      //      // 1-1. VO - Request-> Response 저장
+      //      ScheduleResponseVO scheduleResponseVO =
+      // scheduleEngineMapper.selectScheduleResponseVO(ScheduleTaskData.getTaskId());
+      //      System.out.println("scheduleResponseVO에 저장된 결과 = "+scheduleResponseVO);
 
       // 2. PIPELINE_CONFIG는 그냥 전체 객체를 JSON으로
       ObjectMapper objectMapper = new ObjectMapper();
@@ -50,7 +58,7 @@ public class ScheduleEngineService {
       // 3. NEXT_EXCCUTION, LAST_EXCCUTION
       String scheduleType = schedulerRequestVO.getScheduleType();
       LocalDateTime nextExecution =
-              calculateNextExecution(scheduleType, schedulerRequestVO.getExecutionTime());
+          calculateNextExecution(scheduleType, schedulerRequestVO.getExecutionTime());
       LocalDateTime lastExecution = calculateLastExecution(scheduleType, nextExecution);
       schedulerRequestVO.setNextExecution(nextExecution);
       schedulerRequestVO.setLastExecution(lastExecution);
@@ -61,14 +69,23 @@ public class ScheduleEngineService {
         throw new RuntimeException("스케줄 저장 실패");
       }
 
-      // 5. 동적 스케줄 등록 추가
-      registerDynamicSchedule(schedulerRequestVO);
-
-      // 6. executeImmediately 플래그 확인 후 즉시 실행
+      // 5. executeImmediately 플래그 확인
       if (scheduleTasksRequestDTO.isExecuteImmediately()) {
+        // 즉시 실행
         log.info("ExecuteImmediately=true, 즉시 실행");
         pipelineService.executionPipline();
-        log.info(" 즉시 실행 완료");
+        log.info("즉시 실행 완료");
+      } else {
+        // 스케줄된 시간에 실행을 위한 동적 스케줄 등록
+        log.info("ExecuteImmediately=false, 스케줄 등록");
+
+        // 방금 저장된 스케줄 정보를 다시 조회
+        ScheduleTaskData scheduleTaskData = pipelineMapper.selectScheduleTaskData();
+        ScheduleResponseVO scheduleResponseVO =
+            scheduleEngineMapper.selectScheduleResponseVO(scheduleTaskData.getTaskId());
+
+        registerDynamicSchedule(scheduleResponseVO);
+        log.info("동적 스케줄 등록 완료");
       }
 
     } catch (Exception e) {
@@ -88,14 +105,14 @@ public class ScheduleEngineService {
     schedulerRequestVO.setKeywordCount(scheduleTasksRequestDTO.getKeywordCount());
     schedulerRequestVO.setContentCount(scheduleTasksRequestDTO.getContentCount());
     schedulerRequestVO.setAiModel(scheduleTasksRequestDTO.getAiModel());
-    schedulerRequestVO.setExecuteImmediately(scheduleTasksRequestDTO.isExecuteImmediately()?"Y":"N");
+    schedulerRequestVO.setExecuteImmediately(
+        scheduleTasksRequestDTO.isExecuteImmediately() ? "Y" : "N");
 
     return schedulerRequestVO;
-
   }
 
   public PageResponseDTO<ScheduleResponseDTO> getScheduleInfoList(
-          ScheduleInfoResquestDTO scheduleInfoResquestDTO) {
+      ScheduleInfoResquestDTO scheduleInfoResquestDTO) {
 
     int pageNumber = Optional.ofNullable(scheduleInfoResquestDTO.getPage()).orElse(1);
     int pageSize = Optional.ofNullable(scheduleInfoResquestDTO.getLimit()).orElse(10);
@@ -111,7 +128,7 @@ public class ScheduleEngineService {
 
     // 페이징된 데이터 조회
     List<ScheduleInfoResponseVO> scheduleResList =
-            scheduleEngineMapper.selectScheduleInfo(pagingVO);
+        scheduleEngineMapper.selectScheduleInfo(pagingVO);
 
     if (scheduleResList == null) {
       scheduleResList = Collections.emptyList();
@@ -119,10 +136,10 @@ public class ScheduleEngineService {
 
     // DTO 변환
     List<ScheduleResponseDTO> scheduleResponseDTOList =
-            scheduleResList.stream()
-                    .filter(Objects::nonNull)
-                    .map(ScheduleResponseDTO::new)
-                    .collect(Collectors.toList());
+        scheduleResList.stream()
+            .filter(Objects::nonNull)
+            .map(ScheduleResponseDTO::new)
+            .collect(Collectors.toList());
 
     // 페이징 정보 포함해서 반환
     return new PageResponseDTO<>(scheduleResponseDTOList, pageNumber, pageSize, totalCount);
@@ -161,7 +178,7 @@ public class ScheduleEngineService {
     }
   }
 
-  public String createCronExpression(String executionTime, String scheduleType) {
+  public static String createCronExpression(String executionTime, String scheduleType) {
 
     String[] timeparts = executionTime.split(":");
     int hour = Integer.parseInt(timeparts[0]);
@@ -171,7 +188,7 @@ public class ScheduleEngineService {
       case "매일 실행":
         return String.format("0 %d %d * * *", minute, hour);
       case "주간 실행":
-        return String.format("0 %d %d * * MON", hour, minute); //(임시) 매주 월요일 고정
+        return String.format("0 %d %d * * MON", hour, minute); // (임시) 매주 월요일 고정
       case "월간 실행":
         return String.format("0 %d %d 1 * *", hour, minute); // (임시)매월 1일
       default:
@@ -179,30 +196,50 @@ public class ScheduleEngineService {
     }
   }
 
-
-  private void registerDynamicSchedule(SchedulerRequestVO schedulerRequestVO) {
+  public void registerDynamicSchedule(ScheduleResponseVO scheduleResponseVO) {
     try {
-      //크론식 생성
-      String cronExpression = createCronExpression(schedulerRequestVO.getExecutionTime()
-              , schedulerRequestVO.getScheduleType());
+      // 크론식 생성
+      String cronExpression =
+          createCronExpression(
+              scheduleResponseVO.getExecutionTime(), scheduleResponseVO.getScheduleType());
 
       CronTrigger cronTrigger = new CronTrigger(cronExpression);
 
-      Runnable task = () -> {
-        try {
-          pipelineService.executionPipline();
-          log.info("스케줄 실행 완료: {}", schedulerRequestVO.getTaskName());
-        } catch (Exception e) {
-          log.error("스케줄 실행 실패: {}", e.getMessage());
-        }
-      };
+      Runnable task =
+          () -> {
+            try {
+              pipelineService.executionPipline();
+              log.info("스케줄 실행 완료: {}", scheduleResponseVO.getTaskName());
+            } catch (Exception e) {
+              log.error("스케줄 실행 실패: {}", e.getMessage());
+            }
+          };
       taskScheduler.schedule(task, cronTrigger);
-      log.info("동적 스케줄 등록 완료: {}", schedulerRequestVO.getTaskName());
+      log.info("동적 스케줄 등록 완료: {}", scheduleResponseVO.getTaskName());
     } catch (Exception e) {
       log.error("동적 스케줄 등록 실패: {}", e.getMessage());
       throw new RuntimeException("스케줄 등록 실패", e);
+    }
+  }
 
+  @PostConstruct
+  public void loadExistingSchedules() {
+    try {
+      log.info("기존 스케줄 로드 시작");
+
+      // SCHEDULED_TASKS 테이블에서 활성화된 스케줄들 조회
+      List<ScheduleResponseVO> activeSchedules = scheduleEngineMapper.selectActiveSchedules();
+
+      for (ScheduleResponseVO schedule : activeSchedules) {
+        if ("N".equals(schedule.getExecuteImmediately())) {
+          registerDynamicSchedule(schedule);
+          log.info("기존 스케줄 등록 완료: {}", schedule.getTaskName());
+        }
+      }
+
+      log.info("기존 스케줄 로드 완료: {}개", activeSchedules.size());
+    } catch (Exception e) {
+      log.error("기존 스케줄 로드 실패: " + e.getMessage());
     }
   }
 }
-

@@ -17,7 +17,6 @@ public class SchedulerRequestVO {
   private String pipelineConfig; // 파이프라인 설정 JSON
   private String executeImmediately;
 
-
   /// 파이프라인 관련 데이터
 
   private int taskId;
