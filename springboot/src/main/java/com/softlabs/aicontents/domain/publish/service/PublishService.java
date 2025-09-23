@@ -29,19 +29,28 @@ public class PublishService {
     PublishReqDto req = toPublishReq(post);
 
     // 3) FastAPI 호출 (에러바디 보존)
-    PublishResDto res = client.post()
+    PublishResDto res =
+        client
+            .post()
             .uri("/publish")
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(req)
-            .exchangeToMono(resp -> {
-              var st = resp.statusCode();
-              if (st.is2xxSuccessful()) {
-                return resp.bodyToMono(PublishResDto.class);
-              }
-              return resp.bodyToMono(String.class).defaultIfEmpty("")
-                      .flatMap(body -> Mono.error(new RuntimeException(
-                              "FastAPI error " + st.value() + (body.isEmpty() ? "" : ": " + body))));
-            })
+            .exchangeToMono(
+                resp -> {
+                  var st = resp.statusCode();
+                  if (st.is2xxSuccessful()) {
+                    return resp.bodyToMono(PublishResDto.class);
+                  }
+                  return resp.bodyToMono(String.class)
+                      .defaultIfEmpty("")
+                      .flatMap(
+                          body ->
+                              Mono.error(
+                                  new RuntimeException(
+                                      "FastAPI error "
+                                          + st.value()
+                                          + (body.isEmpty() ? "" : ": " + body))));
+                })
             .timeout(Duration.ofSeconds(120))
             .block();
 
@@ -56,7 +65,6 @@ public class PublishService {
 
     return res;
   }
-
 
   private PublishReqDto toPublishReq(AiPostDto src) {
     return PublishReqDto.builder()
