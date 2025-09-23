@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.softlabs.aicontents.domain.publish.mapper.PublishResultMapper">
+
+    <insert id="insertPublishResult" parameterType="com.softlabs.aicontents.domain.publish.dto.response.PublishResDto">
+        INSERT INTO ADMIN.BLOG_PUBLISH_LOGS (
+            AI_CONTENT_ID,
+            BLOG_PLATFORM,
+            BLOG_POST_ID,
+            BLOG_URL,
+            PUBLISH_STATUS,
+            ERROR_MESSAGE,
+            RETRY_COUNT,
+            PUBLISHED_AT,
+            CREATED_AT,
+            UPDATED_AT
+        ) VALUES (
+            #{aiContentId},
+            #{blogPlatform},
+            #{blogPostId},
+            #{blogUrl},
+            #{publishStatus},
+            #{errorMessage,    jdbcType=CLOB},
+            #{attemptCount},
+            #{publishedAt,     jdbcType=TIMESTAMP},
+            COALESCE(#{createdAt, jdbcType=TIMESTAMP}, SYSTIMESTAMP),
+            COALESCE(#{updatedAt, jdbcType=TIMESTAMP}, SYSTIMESTAMP)
+                )
+    </insert>
+</mapper>
