@@ -64,7 +64,10 @@ dependencies {
 
 	// WebClient
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
-  
+
+	// Email
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
 	// H2 Database for testing
 	testRuntimeOnly 'com.h2database:h2'
 }
