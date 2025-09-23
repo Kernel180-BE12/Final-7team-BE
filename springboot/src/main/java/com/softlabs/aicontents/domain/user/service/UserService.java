@@ -21,13 +21,7 @@ public class UserService {
 
     LocalDateTime now = LocalDateTime.now();
     return new User(
-        null,
-        signupDto.getLoginId(),
-        signupDto.getEmail(),
-        hashedPassword,
-        now,
-        now,
-        null);
+        null, signupDto.getLoginId(), signupDto.getEmail(), hashedPassword, now, now, null);
   }
 
   public boolean validatePassword(String plainPassword, String hashedPassword) {
