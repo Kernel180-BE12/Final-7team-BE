@@ -6,6 +6,7 @@ import com.softlabs.aicontents.domain.user.vo.User;
 import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserService {
@@ -37,5 +38,12 @@ public class UserService {
 
   public boolean isEmailDuplicate(String email) {
     return userMapper.existsByEmail(email);
+  }
+
+  @Transactional
+  public User signupUser(UserSignupDto signupDto) {
+    User user = createUser(signupDto);
+    userMapper.insertUser(user);
+    return user;
   }
 }

@@ -42,7 +42,6 @@ public class VerificationCodeService {
 
     boolean isValid = data.getCode().equals(inputCode);
     if (isValid) {
-      verificationCodes.remove(email);
       log.info("인증코드 검증 성공: {}", email);
     } else {
       log.warn("인증코드 불일치: {}", email);

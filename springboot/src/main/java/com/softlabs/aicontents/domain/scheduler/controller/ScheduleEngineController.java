@@ -5,9 +5,11 @@ import com.softlabs.aicontents.common.dto.response.ApiResponseDTO;
 import com.softlabs.aicontents.common.dto.response.PageResponseDTO;
 import com.softlabs.aicontents.domain.orchestration.PipelineService;
 import com.softlabs.aicontents.domain.orchestration.dto.ExecuteApiResponseDTO;
+import com.softlabs.aicontents.domain.orchestration.mapper.PipelineMapper;
 import com.softlabs.aicontents.domain.scheduler.dto.ScheduleInfoResquestDTO;
 import com.softlabs.aicontents.domain.scheduler.dto.StatusApiResponseDTO;
 import com.softlabs.aicontents.domain.scheduler.dto.resultDTO.ScheduleResponseDTO;
+import com.softlabs.aicontents.domain.scheduler.mapper.ScheduleEngineMapper;
 import com.softlabs.aicontents.domain.scheduler.service.ScheduleEngineService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +31,8 @@ public class ScheduleEngineController {
 
   @Autowired private PipelineService pipelineService; // 파이프라인(=오케스트레이션)
   @Autowired private ScheduleEngineService scheduleEngineService; // 스케줄 엔진
+  @Autowired private PipelineMapper pipelineMapper;
+  @Autowired private ScheduleEngineMapper scheduleEngineMapper;
 
   /// 08. 스케줄 생성
   @Operation(summary = "스케줄 생성 API", description = "생성할 스케줄의 상세 정보입니다.")
@@ -79,15 +83,15 @@ public class ScheduleEngineController {
   //
   //  / 10. 파이프라인 실행
   @PostMapping("/pipeline/execute")
-  public ApiResponseDTO<ExecuteApiResponseDTO> executePipline() {
+  public ExecuteApiResponseDTO executePipline() {
 
     try {
+      // 수동실행일 경우,
       ExecuteApiResponseDTO executeApiResponseDTO = pipelineService.executionPipline();
-
-      return ApiResponseDTO.success(executeApiResponseDTO);
-
+      return executeApiResponseDTO;
     } catch (Exception e) {
-      return ApiResponseDTO.error("파이프라인 상태 조회 실패");
+      log.error("파이프라인 실행 실패: " + e.getMessage());
+      throw new RuntimeException("파이프라인 실행 실패", e);
     }
   }
 
