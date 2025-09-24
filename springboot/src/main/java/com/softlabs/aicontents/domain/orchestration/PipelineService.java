@@ -13,6 +13,7 @@ import com.softlabs.aicontents.domain.scheduler.service.executor.AIContentExecut
 import com.softlabs.aicontents.domain.scheduler.service.executor.BlogPublishExecutor;
 import com.softlabs.aicontents.domain.scheduler.service.executor.KeywordExecutor;
 import com.softlabs.aicontents.domain.scheduler.service.executor.ProductCrawlingExecutor;
+// import com.softlabs.aicontents.domain.orchestration.refreshCache.CacheRefreshService;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +36,8 @@ public class PipelineService {
   @Autowired private BlogPublishExecutor blogExecutor;
 
   @Autowired private PipelineMapper pipelineMapper;
+
+  //  @Autowired private CacheRefreshService cacheRefreshService;
 
   // @PostMapping("/execute")
   public ExecuteApiResponseDTO executionPipline() {
@@ -63,6 +66,8 @@ public class PipelineService {
     System.out.println("파이프라인 시작점" + executionId);
 
     try {
+      // 캐시 초기화 - 동일한 키워드가 반복해서 생성되는 것을 방지(효과없음)
+      //      cacheRefreshService.clearAllCaches(executionId);
 
       // step01 - 키워드 추출
       KeywordResult keywordResultExecution = keywordExecutor.keywordExecute(executionId);
