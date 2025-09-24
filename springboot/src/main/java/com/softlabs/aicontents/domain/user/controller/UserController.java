@@ -90,13 +90,10 @@ public class UserController {
 
   @PostMapping("/signup")
   public ResponseEntity<ApiResponseDTO<Boolean>> signup(
-      @Valid @RequestBody UserSignupDto signupDto,
-      @RequestParam String verificationCode) {
+      @Valid @RequestBody UserSignupDto signupDto, @RequestParam String verificationCode) {
 
     signupValidationService.validateSignupConditions(
-        signupDto.getLoginId(),
-        signupDto.getEmail(),
-        verificationCode);
+        signupDto.getLoginId(), signupDto.getEmail(), verificationCode);
 
     User user = userService.signupUser(signupDto);
     log.info("회원가입 완료: loginId={}, email={}", user.getLoginId(), user.getEmail());
