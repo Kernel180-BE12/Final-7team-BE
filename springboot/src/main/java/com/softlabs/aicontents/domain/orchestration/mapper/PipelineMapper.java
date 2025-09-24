@@ -1,0 +1,27 @@
+package com.softlabs.aicontents.domain.orchestration.mapper;
+
+import com.softlabs.aicontents.domain.orchestration.dto.PipeExecuteData;
+import com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.AIContentsResult;
+import com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.BlogPublishResult;
+import com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.KeywordResult;
+import com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.ProductCrawlingResult;
+import com.softlabs.aicontents.domain.scheduler.vo.response.ScheduleTaskData;
+import org.apache.ibatis.annotations.Mapper;
+
+@Mapper
+public interface PipelineMapper {
+
+  KeywordResult selectKeywordStatuscode(int executionId);
+
+  ProductCrawlingResult selctproductCrawlingStatuscode(int executionId);
+
+  AIContentsResult selectAiContentStatuscode(int executionId);
+
+  BlogPublishResult selectPublishStatuscode(int executionId);
+
+  void insertNewExecutionId();
+
+  PipeExecuteData selectNewExecutionId();
+
+  ScheduleTaskData selectScheduleTaskData();
+}

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.softlabs.aicontents.domain.orchestration.mapper.PipelineMapper">
+
+    <select id="selectKeywordStatuscode" resultType="com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.KeywordResult">
+        SELECT STATUS_CODE as keyWordStatusCode,
+               KEYWORD as keyword,
+               EXECUTION_ID as executionId
+          FROM ADMIN.TREND_DATA
+         WHERE EXECUTION_ID =#{executionId}
+
+    </select>
+
+    <select id="selctproductCrawlingStatuscode" resultType="com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.ProductCrawlingResult">
+        SELECT STATUS_CODE as productStatusCode,
+               PRODUCT_NAME as productName,
+               SOURCE_URL as sourceUrl,
+               PRICE as price
+        FROM ADMIN.SSADAGU_CONTENTS
+        WHERE EXECUTION_ID =#{executionId}
+
+
+    </select>
+
+    <select id="selectAiContentStatuscode" resultType="com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.AIContentsResult">
+        SELECT STATUS_CODE as aIContentStatusCode,
+               TITLE as title,
+               SUMMARY as summary,
+               HASHTAGS as hashtags,
+               CONTENT as content,
+               SOURCE_URL as sourceUrl
+        FROM ADMIN.AI_GENERATED_CONTENTS
+        WHERE EXECUTION_ID =#{executionId}
+
+    </select>
+
+    <select id="selectPublishStatuscode" resultType="com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.BlogPublishResult">
+        SELECT STATUS_CODE as publishStatusCode,
+               BLOG_PLATFORM as blogPlatform,
+               BLOG_POST_ID as blogPostId,
+               BLOG_URL as blogUrl
+        FROM ADMIN.BLOG_PUBLISH_LOGS
+        WHERE EXECUTION_ID =#{executionId}
+
+    </select>
+
+    <insert id="insertNewExecutionId" parameterType="com.softlabs.aicontents.domain.orchestration.dto.PipeExecuteData">
+        INSERT INTO ADMIN.PIPELINE_EXECUTIONS (execution_id)
+             VALUES (sequence_pipeline_executions.NEXTVAL)
+    </insert>
+
+    <select id="selectNewExecutionId" resultType="com.softlabs.aicontents.domain.orchestration.dto.PipeExecuteData">
+        SELECT execution_id as executionId
+          FROM ADMIN.PIPELINE_EXECUTIONS
+         WHERE execution_id = (SELECT MAX(execution_id) FROM ADMIN.PIPELINE_EXECUTIONS)
+    </select>
+
+    <select id="selectScheduleTaskData" resultType="com.softlabs.aicontents.domain.scheduler.vo.response.ScheduleTaskData">
+        SELECT TASK_ID as taskId,
+               EXECUTE_IMMEDIATELY as executeImmediately
+          FROM ADMIN.SCHEDULED_TASKS
+         WHERE TASK_ID = (SELECT MAX(TASK_ID) FROM ADMIN.SCHEDULED_TASKS)
+    </select>
+
+</mapper>
