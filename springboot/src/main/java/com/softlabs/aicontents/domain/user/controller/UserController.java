@@ -69,7 +69,7 @@ public class UserController {
       String verificationCode = verificationCodeService.generateVerificationCode(email);
       emailService.sendVerificationEmail(email, verificationCode);
 
-      return ResponseEntity.ok(ApiResponseDTO.success(null, "인증코드가 이메일로 발송되었습니다."));
+      return ResponseEntity.ok(ApiResponseDTO.success(null, "인증코드가 메일로 발송되었습니다. 인증코드는 5분간 유효합니다."));
     } catch (Exception e) {
       log.error("인증코드 발송 실패: {}", e.getMessage());
       return ResponseEntity.internalServerError().body(ApiResponseDTO.error("인증코드 발송에 실패했습니다."));
