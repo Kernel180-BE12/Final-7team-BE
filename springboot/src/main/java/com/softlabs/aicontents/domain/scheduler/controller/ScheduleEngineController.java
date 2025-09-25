@@ -77,8 +77,6 @@ public class ScheduleEngineController {
     }
   }
 
-  //  @Scheduled(cron = "0 23 14 * * *")
-
   /** 파이프라인 */
   //
   //  / 10. 파이프라인 실행

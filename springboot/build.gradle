@@ -37,7 +37,7 @@ spotless {
 }
 
 dependencies {
-	// implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web' //SLF4J, Logback, AOP 의존성 포함
 	implementation 'org.springframework.boot:spring-boot-starter-aop' // AspectJ 지원
 	compileOnly 'org.projectlombok:lombok'
@@ -49,7 +49,7 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	// Swagger
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.0'
-	
+
 	// 검증 관련 의존성
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
@@ -64,7 +64,7 @@ dependencies {
 
 	// WebClient
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
-  
+
 	// H2 Database for testing
 	testRuntimeOnly 'com.h2database:h2'
 }
