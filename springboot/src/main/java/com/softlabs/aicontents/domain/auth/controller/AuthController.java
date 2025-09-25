@@ -30,7 +30,8 @@ public class AuthController {
     @ApiResponse(responseCode = "400", description = "잘못된 요청"),
     @ApiResponse(responseCode = "401", description = "인증 실패")
   })
-  public ResponseEntity<ApiResponseDTO<LoginResponseDto>> login(@Valid @RequestBody LoginRequestDto loginRequestDto) {
+  public ResponseEntity<ApiResponseDTO<LoginResponseDto>> login(
+      @Valid @RequestBody LoginRequestDto loginRequestDto) {
     LoginResponseDto response = authService.login(loginRequestDto);
     return ResponseEntity.ok(ApiResponseDTO.success(response, "로그인이 완료되었습니다."));
   }
