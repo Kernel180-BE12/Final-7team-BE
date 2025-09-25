@@ -37,23 +37,23 @@ public class KeywordService {
   private int defaultPopularCount;
 
   @Value(
-          "${naver.shopping.popular.url:https://snxbest.naver.com/keyword/best?categoryId=A&sortType=KEYWORD_POPULAR&periodType=DAILY&ageType=ALL&activeRankId=1601977169&syncDate=20250922}")
+      "${naver.shopping.popular.url:https://snxbest.naver.com/keyword/best?categoryId=A&sortType=KEYWORD_POPULAR&periodType=DAILY&ageType=ALL&activeRankId=1601977169&syncDate=20250922}")
   private String popularUrl;
 
   @Value(
-          "${naver.shopping.popular.altUrl1:https://snxbest.naver.com/keyword/issue?categoryId=A&sortType=KEYWORD_ISSUE&periodType=WEEKLY&ageType=ALL&activeRankId=1600477074&syncDate=20250922}")
+      "${naver.shopping.popular.altUrl1:https://snxbest.naver.com/keyword/issue?categoryId=A&sortType=KEYWORD_ISSUE&periodType=WEEKLY&ageType=ALL&activeRankId=1600477074&syncDate=20250922}")
   private String altPopularUrl1;
 
   @Value(
-          "${naver.shopping.popular.altUrl2:https://snxbest.naver.com/keyword/new?categoryId=A&sortType=KEYWORD_NEW&periodType=WEEKLY&ageType=ALL&activeRankId=1600401941&syncDate=20250922}")
+      "${naver.shopping.popular.altUrl2:https://snxbest.naver.com/keyword/new?categoryId=A&sortType=KEYWORD_NEW&periodType=WEEKLY&ageType=ALL&activeRankId=1600401941&syncDate=20250922}")
   private String altPopularUrl2;
 
   @Value(
-          "${naver.shopping.popular.altUrl3:https://snxbest.naver.com/product/best/click?categoryId=A&sortType=PRODUCT_CLICK&periodType=DAILY&ageType=ALL}")
+      "${naver.shopping.popular.altUrl3:https://snxbest.naver.com/product/best/click?categoryId=A&sortType=PRODUCT_CLICK&periodType=DAILY&ageType=ALL}")
   private String altPopularUrl3;
 
   @Value(
-          "${naver.shopping.popular.altUrl4:https://snxbest.naver.com/product/best/buy?categoryId=A&sortType=PRODUCT_BUY&periodType=DAILY}")
+      "${naver.shopping.popular.altUrl4:https://snxbest.naver.com/product/best/buy?categoryId=A&sortType=PRODUCT_BUY&periodType=DAILY}")
   private String altPopularUrl4;
 
   @Value("${naver.shopping.popular.retries:3}")
@@ -81,19 +81,19 @@ public class KeywordService {
 
   // 상품 관련 키워드 패턴들
   private final Set<String> productCategories =
-          Set.of(
-                  "휴대폰", "케이스", "지도", "텀블러", "가방", "신발", "옷", "화장품", "책", "노트북", "마우스", "키보드", "이어폰", "헤드폰",
-                  "충전기", "스마트워치", "태블릿", "카메라", "렌즈", "삼각대", "모니터", "의자", "책상", "침대", "소파", "냉장고", "세탁기",
-                  "에어컨", "청소기", "밥솥", "전자레인지", "커피머신", "블렌더", "토스터", "샴푸", "린스", "바디워시", "치약", "칫솔", "수건",
-                  "베개", "이불", "매트리스", "커튼", "조명", "선풍기", "히터", "가습기", "향수", "립스틱", "파운데이션", "마스카라", "아이섀도",
-                  "블러셔", "운동화", "구두", "샌들", "부츠", "양말", "속옷", "티셔츠", "바지", "원피스", "자켓", "코트", "모자", "장갑",
-                  "머플러", "벨트", "지갑", "시계", "반지", "목걸이", "귀걸이", "팔찌", "선글라스", "안경");
+      Set.of(
+          "휴대폰", "케이스", "지도", "텀블러", "가방", "신발", "옷", "화장품", "책", "노트북", "마우스", "키보드", "이어폰", "헤드폰",
+          "충전기", "스마트워치", "태블릿", "카메라", "렌즈", "삼각대", "모니터", "의자", "책상", "침대", "소파", "냉장고", "세탁기",
+          "에어컨", "청소기", "밥솥", "전자레인지", "커피머신", "블렌더", "토스터", "샴푸", "린스", "바디워시", "치약", "칫솔", "수건",
+          "베개", "이불", "매트리스", "커튼", "조명", "선풍기", "히터", "가습기", "향수", "립스틱", "파운데이션", "마스카라", "아이섀도",
+          "블러셔", "운동화", "구두", "샌들", "부츠", "양말", "속옷", "티셔츠", "바지", "원피스", "자켓", "코트", "모자", "장갑",
+          "머플러", "벨트", "지갑", "시계", "반지", "목걸이", "귀걸이", "팔찌", "선글라스", "안경");
 
   // 브랜드나 모델명 패턴
   private final Set<String> brandKeywords =
-          Set.of(
-                  "아이폰", "갤럭시", "삼성", "LG", "애플", "구글", "픽셀", "화웨이", "나이키", "아디다스", "뉴발란스", "컨버스", "반스",
-                  "퓨마", "루이비통", "구찌", "프라다", "샤넬", "에르메스", "디올", "스타벅스", "투썸", "이디야", "메가커피", "빽다방");
+      Set.of(
+          "아이폰", "갤럭시", "삼성", "LG", "애플", "구글", "픽셀", "화웨이", "나이키", "아디다스", "뉴발란스", "컨버스", "반스",
+          "퓨마", "루이비통", "구찌", "프라다", "샤넬", "에르메스", "디올", "스타벅스", "투썸", "이디야", "메가커피", "빽다방");
 
   /** 프로토타입용 키워드 수집 서비스 executionId를 받아서 샘플 키워드를 DB에 저장 */
   public void collectKeywordAndSave(int executionId) {
@@ -141,8 +141,8 @@ public class KeywordService {
     pb.redirectErrorStream(true);
     Process p = pb.start();
     try (java.io.BufferedReader br =
-                 new java.io.BufferedReader(
-                         new java.io.InputStreamReader(p.getInputStream(), StandardCharsets.UTF_8))) {
+        new java.io.BufferedReader(
+            new java.io.InputStreamReader(p.getInputStream(), StandardCharsets.UTF_8))) {
       StringBuilder sb = new StringBuilder();
       String line;
       while ((line = br.readLine()) != null) {
@@ -182,17 +182,17 @@ public class KeywordService {
       List<String> resultsFinal = new ArrayList<>();
 
       HttpClient client =
-              HttpClient.newBuilder()
-                      .followRedirects(HttpClient.Redirect.NORMAL)
-                      .connectTimeout(Duration.ofSeconds(10))
-                      .build();
+          HttpClient.newBuilder()
+              .followRedirects(HttpClient.Redirect.NORMAL)
+              .connectTimeout(Duration.ofSeconds(10))
+              .build();
 
       // 각 URL에서 전체 페이지 스캔을 완료한 후 다음 URL로 이동
       for (String url : urls) {
         log.info("사이트 전체 페이지 스캔 시작: {}", url);
 
         List<String> siteKeywords =
-                scanFullPageForKeywords(url, client, limit - resultsFinal.size());
+            scanFullPageForKeywords(url, client, limit - resultsFinal.size());
 
         // 수집된 키워드를 결과에 추가
         for (String keyword : siteKeywords) {
@@ -215,7 +215,7 @@ public class KeywordService {
       if (resultsFinal.size() < Math.max(1, limit)) {
         try {
           List<String> expanded =
-                  crawlWithinShopping(urls.get(0), Math.max(1, limit) - resultsFinal.size(), client);
+              crawlWithinShopping(urls.get(0), Math.max(1, limit) - resultsFinal.size(), client);
           for (String k : expanded) {
             if (k == null || k.isEmpty()) continue;
             if (dedupFinal.add(k)) {
@@ -278,7 +278,7 @@ public class KeywordService {
 
       // 3. 페이지 내 링크 탐색으로 추가 키워드 수집
       keywords.addAll(
-              explorePageLinks(url, client, initialContent, dedup, needed - keywords.size()));
+          explorePageLinks(url, client, initialContent, dedup, needed - keywords.size()));
       log.info("페이지 링크 탐색 완료 - 최종 수집 키워드: {}", keywords.size());
 
     } catch (Exception e) {
@@ -293,19 +293,19 @@ public class KeywordService {
     for (int attempt = 1; attempt <= maxRetries; attempt++) {
       try {
         HttpRequest.Builder rb =
-                HttpRequest.newBuilder(URI.create(url))
-                        .timeout(Duration.ofSeconds(20))
-                        .header(
-                                "User-Agent",
-                                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36")
-                        .header(
-                                "Accept",
-                                "text/html,application/xhtml+xml,application/xml;q=0.9,application/json;q=0.8,*/*;q=0.7")
-                        .header("Accept-Language", "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7")
-                        .header("Accept-Encoding", "gzip")
-                        .header("Cache-Control", "no-cache")
-                        .header("Pragma", "no-cache")
-                        .GET();
+            HttpRequest.newBuilder(URI.create(url))
+                .timeout(Duration.ofSeconds(20))
+                .header(
+                    "User-Agent",
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36")
+                .header(
+                    "Accept",
+                    "text/html,application/xhtml+xml,application/xml;q=0.9,application/json;q=0.8,*/*;q=0.7")
+                .header("Accept-Language", "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7")
+                .header("Accept-Encoding", "gzip")
+                .header("Cache-Control", "no-cache")
+                .header("Pragma", "no-cache")
+                .GET();
 
         if (cookieHeader != null && !cookieHeader.isEmpty()) {
           rb.header("Cookie", cookieHeader);
@@ -313,7 +313,7 @@ public class KeywordService {
 
         HttpRequest request = rb.build();
         HttpResponse<byte[]> response =
-                client.send(request, HttpResponse.BodyHandlers.ofByteArray());
+            client.send(request, HttpResponse.BodyHandlers.ofByteArray());
 
         if (response.statusCode() >= 400) {
           throw new IllegalStateException("HTTP status=" + response.statusCode());
@@ -321,20 +321,20 @@ public class KeywordService {
 
         String content = decodeBody(response);
         log.debug(
-                "페이지 로드 완료 - url: {}, status: {}, size: {}KB",
-                url,
-                response.statusCode(),
-                content.length() / 1024);
+            "페이지 로드 완료 - url: {}, status: {}, size: {}KB",
+            url,
+            response.statusCode(),
+            content.length() / 1024);
 
         return content;
 
       } catch (Exception ex) {
         log.warn(
-                "페이지 로드 실패 - url: {}, attempt: {}/{}, error: {}",
-                url,
-                attempt,
-                maxRetries,
-                ex.toString());
+            "페이지 로드 실패 - url: {}, attempt: {}/{}, error: {}",
+            url,
+            attempt,
+            maxRetries,
+            ex.toString());
         if (attempt < maxRetries) {
           try {
             Thread.sleep(500L * attempt);
@@ -349,7 +349,7 @@ public class KeywordService {
 
   /** 스크롤을 시뮬레이션하여 동적 콘텐츠 로드 */
   private List<String> simulateScrollAndLoadMore(
-          String url, HttpClient client, Set<String> dedup, int needed) {
+      String url, HttpClient client, Set<String> dedup, int needed) {
     List<String> keywords = new ArrayList<>();
 
     try {
@@ -362,7 +362,7 @@ public class KeywordService {
         try {
           String content = loadPage(scrollUrl, client);
           List<String> newKeywords =
-                  extractKeywordsFromContent(content, dedup, needed - keywords.size());
+              extractKeywordsFromContent(content, dedup, needed - keywords.size());
           keywords.addAll(newKeywords);
           log.debug("스크롤 URL에서 키워드 추출: {} → {} 개", scrollUrl, newKeywords.size());
 
@@ -416,7 +416,7 @@ public class KeywordService {
 
   /** 페이지 내 링크를 탐색하여 추가 키워드 수집 */
   private List<String> explorePageLinks(
-          String baseUrl, HttpClient client, String content, Set<String> dedup, int needed) {
+      String baseUrl, HttpClient client, String content, Set<String> dedup, int needed) {
     List<String> keywords = new ArrayList<>();
 
     try {
@@ -429,7 +429,7 @@ public class KeywordService {
         try {
           String linkContent = loadPage(link, client);
           List<String> linkKeywords =
-                  extractKeywordsFromContent(linkContent, dedup, needed - keywords.size());
+              extractKeywordsFromContent(linkContent, dedup, needed - keywords.size());
           keywords.addAll(linkKeywords);
           log.debug("관련 링크에서 키워드 추출: {} → {} 개", link, linkKeywords.size());
 
@@ -462,8 +462,8 @@ public class KeywordService {
 
         String absoluteUrl = toAbsoluteUrl(baseUrl, href);
         if (absoluteUrl != null
-                && absoluteUrl.contains("snxbest.naver.com")
-                && (href.contains("keyword") || href.contains("best") || href.contains("popular"))) {
+            && absoluteUrl.contains("snxbest.naver.com")
+            && (href.contains("keyword") || href.contains("best") || href.contains("popular"))) {
           links.add(absoluteUrl);
         }
       }
@@ -497,7 +497,7 @@ public class KeywordService {
     try {
       // 1. JSON 키워드 추출
       Pattern jsonKeywordPattern =
-              Pattern.compile("\"(keyword|rankKeyword)\"\\s*:\\s*\"(.*?)\"", Pattern.CASE_INSENSITIVE);
+          Pattern.compile("\"(keyword|rankKeyword)\"\\s*:\\s*\"(.*?)\"", Pattern.CASE_INSENSITIVE);
       Matcher matcher = jsonKeywordPattern.matcher(content);
       while (matcher.find() && keywords.size() < needed) {
         String keyword = matcher.group(2).trim();
@@ -514,13 +514,13 @@ public class KeywordService {
         String section = content.substring(start, end);
 
         List<Pattern> patterns =
-                List.of(
-                        Pattern.compile(
-                                "(?:(?:>\\s*|\\n|\\r)([1-9][0-9]{0,2})(?:\\s*<[^>]*>){0,6}\\s*)"
-                                        + "([가-힣a-zA-Z0-9+#&()\\-\\s]{2,40})\\s*(?=<)"),
-                        Pattern.compile(">\\s*([가-힣a-zA-Z0-9+#&()\\-\\s]{2,20})\\s*<"),
-                        Pattern.compile("data-[^=]*=\"([가-힣a-zA-Z0-9+#&()\\-\\s]{2,20})\""),
-                        Pattern.compile("(?:alt|title)=\"([가-힣a-zA-Z0-9+#&()\\-\\s]{2,20})\""));
+            List.of(
+                Pattern.compile(
+                    "(?:(?:>\\s*|\\n|\\r)([1-9][0-9]{0,2})(?:\\s*<[^>]*>){0,6}\\s*)"
+                        + "([가-힣a-zA-Z0-9+#&()\\-\\s]{2,40})\\s*(?=<)"),
+                Pattern.compile(">\\s*([가-힣a-zA-Z0-9+#&()\\-\\s]{2,20})\\s*<"),
+                Pattern.compile("data-[^=]*=\"([가-힣a-zA-Z0-9+#&()\\-\\s]{2,20})\""),
+                Pattern.compile("(?:alt|title)=\"([가-힣a-zA-Z0-9+#&()\\-\\s]{2,20})\""));
 
         for (Pattern pattern : patterns) {
           if (keywords.size() >= needed) break;
@@ -558,8 +558,8 @@ public class KeywordService {
     String contentEncoding = response.headers().firstValue("Content-Encoding").orElse("");
     if (contentEncoding != null && contentEncoding.toLowerCase().contains("gzip")) {
       try (GZIPInputStream gis = new GZIPInputStream(new ByteArrayInputStream(response.body()));
-           InputStreamReader isr = new InputStreamReader(gis, StandardCharsets.UTF_8);
-           BufferedReader br = new BufferedReader(isr)) {
+          InputStreamReader isr = new InputStreamReader(gis, StandardCharsets.UTF_8);
+          BufferedReader br = new BufferedReader(isr)) {
         return br.lines().collect(Collectors.joining("\n"));
       }
     }
@@ -568,7 +568,7 @@ public class KeywordService {
 
   // 네이버 쇼핑 내 링크를 한정적으로 따라가 추가 키워드 수집 (최대 depth 2, 최대 6페이지)
   private List<String> crawlWithinShopping(String seedUrl, int needed, HttpClient client)
-          throws Exception {
+      throws Exception {
     List<String> collected = new ArrayList<>();
     if (needed <= 0) return collected;
 
@@ -587,38 +587,38 @@ public class KeywordService {
 
       try {
         HttpRequest.Builder rb =
-                HttpRequest.newBuilder(URI.create(current))
-                        .timeout(Duration.ofSeconds(12))
-                        .header(
-                                "User-Agent",
-                                "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
-                                        + " AppleWebKit/537.36 (KHTML, like Gecko)"
-                                        + " Chrome/122.0.0.0 Safari/537.36")
-                        .header(
-                                "Accept",
-                                "text/html,application/xhtml+xml,application/xml;q=0.9,application/json;q=0.8,*/*;q=0.7")
-                        .header("Accept-Language", "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7")
-                        .header("Referer", "https://snxbest.naver.com")
-                        .header("Accept-Encoding", "gzip")
-                        .GET();
+            HttpRequest.newBuilder(URI.create(current))
+                .timeout(Duration.ofSeconds(12))
+                .header(
+                    "User-Agent",
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+                        + " AppleWebKit/537.36 (KHTML, like Gecko)"
+                        + " Chrome/122.0.0.0 Safari/537.36")
+                .header(
+                    "Accept",
+                    "text/html,application/xhtml+xml,application/xml;q=0.9,application/json;q=0.8,*/*;q=0.7")
+                .header("Accept-Language", "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7")
+                .header("Referer", "https://snxbest.naver.com")
+                .header("Accept-Encoding", "gzip")
+                .GET();
         if (cookieHeader != null && !cookieHeader.isEmpty()) {
           rb.header("Cookie", cookieHeader);
         }
         HttpResponse<byte[]> resp =
-                client.send(rb.build(), HttpResponse.BodyHandlers.ofByteArray());
+            client.send(rb.build(), HttpResponse.BodyHandlers.ofByteArray());
         String body = decodeBody(resp);
 
         // 키워드 추출: productTitle, title-like, query 파라미터(q|query)
         Set<String> dedupLocal = new HashSet<>();
         extractInto(
-                body,
-                Pattern.compile("\"productTitle\"\\s*:\\s*\"(.*?)\""),
-                1,
-                collected,
-                dedupLocal,
-                needed);
+            body,
+            Pattern.compile("\"productTitle\"\\s*:\\s*\"(.*?)\""),
+            1,
+            collected,
+            dedupLocal,
+            needed);
         extractInto(
-                body, Pattern.compile("\"title\"\\s*:\\s*\"(.*?)\""), 1, collected, dedupLocal, needed);
+            body, Pattern.compile("\"title\"\\s*:\\s*\"(.*?)\""), 1, collected, dedupLocal, needed);
 
         // href 내 쿼리 키워드 수집
         Matcher hrefMatcher = Pattern.compile("href=\\\"(.*?)\\\"").matcher(body);
@@ -644,7 +644,7 @@ public class KeywordService {
                   || href.contains("/all")
                   || href.contains("/popular")
                   || href.contains("/catalog"))
-                  && nextLinks.size() < 10) {
+              && nextLinks.size() < 10) {
             nextLinks.add(abs);
           }
           if (collected.size() >= needed) break;
@@ -665,7 +665,7 @@ public class KeywordService {
   }
 
   private void extractInto(
-          String body, Pattern pattern, int groupIdx, List<String> out, Set<String> dedup, int needed) {
+      String body, Pattern pattern, int groupIdx, List<String> out, Set<String> dedup, int needed) {
     Matcher m = pattern.matcher(body);
     while (m.find() && out.size() < needed) {
       String s = m.group(groupIdx);
@@ -755,93 +755,93 @@ public class KeywordService {
 
     // 1. 네이버 쇼핑 UI 키워드들
     Set<String> uiKeywords =
-            Set.of(
-                    "베스트홈",
-                    "베스트브랜드",
-                    "베스트키워드",
-                    "베스트상품",
-                    "선택됨",
-                    "인기키워드",
-                    "이슈키워드",
-                    "신규키워드",
-                    "쇼핑",
-                    "best",
-                    "내 또래를 위한",
-                    "레이어 열기",
-                    "best keyword",
-                    "전체",
-                    "패션의류",
-                    "패션잡화",
-                    "식품",
-                    "일간",
-                    "주간",
-                    "월간",
-                    "랭킹 유지",
-                    "접기",
-                    "원가",
-                    "할인율",
-                    "배송비",
-                    "별점",
-                    "더보기",
-                    "상세보기",
-                    "리뷰",
-                    "인기",
-                    "랭킹",
-                    "검색",
-                    "클릭",
-                    "조회",
-                    "이동",
-                    "바로가기",
-                    "자세히",
-                    "상세",
-                    "보기");
+        Set.of(
+            "베스트홈",
+            "베스트브랜드",
+            "베스트키워드",
+            "베스트상품",
+            "선택됨",
+            "인기키워드",
+            "이슈키워드",
+            "신규키워드",
+            "쇼핑",
+            "best",
+            "내 또래를 위한",
+            "레이어 열기",
+            "best keyword",
+            "전체",
+            "패션의류",
+            "패션잡화",
+            "식품",
+            "일간",
+            "주간",
+            "월간",
+            "랭킹 유지",
+            "접기",
+            "원가",
+            "할인율",
+            "배송비",
+            "별점",
+            "더보기",
+            "상세보기",
+            "리뷰",
+            "인기",
+            "랭킹",
+            "검색",
+            "클릭",
+            "조회",
+            "이동",
+            "바로가기",
+            "자세히",
+            "상세",
+            "보기");
 
     // 2. 기술적/프로그래밍 키워드들
     Set<String> technicalKeywords =
-            Set.of(
-                    "navi",
-                    "shopping",
-                    "bkeypop",
-                    "slot",
-                    "demo",
-                    "filter",
-                    "cate",
-                    "period",
-                    "daily",
-                    "weekly",
-                    "monthly",
-                    "rank",
-                    "pd",
-                    "prod",
-                    "adinfo",
-                    "data",
-                    "api",
-                    "url",
-                    "http",
-                    "html",
-                    "css",
-                    "js",
-                    "json",
-                    "xml",
-                    "div",
-                    "span",
-                    "class",
-                    "style",
-                    "script",
-                    "link",
-                    "meta",
-                    "title",
-                    "header",
-                    "footer",
-                    "nav",
-                    "section",
-                    "article");
+        Set.of(
+            "navi",
+            "shopping",
+            "bkeypop",
+            "slot",
+            "demo",
+            "filter",
+            "cate",
+            "period",
+            "daily",
+            "weekly",
+            "monthly",
+            "rank",
+            "pd",
+            "prod",
+            "adinfo",
+            "data",
+            "api",
+            "url",
+            "http",
+            "html",
+            "css",
+            "js",
+            "json",
+            "xml",
+            "div",
+            "span",
+            "class",
+            "style",
+            "script",
+            "link",
+            "meta",
+            "title",
+            "header",
+            "footer",
+            "nav",
+            "section",
+            "article");
 
     // 3. 네이버 특화 키워드들
     Set<String> naverSpecificKeywords =
-            Set.of(
-                    "네이버", "naver", "snx", "snxbest", "쇼핑몰", "쇼핑하우", "스마트스토어", "브랜드스토어", "카테고리", "상품상세",
-                    "상품정보", "상품후기", "구매후기", "사용후기");
+        Set.of(
+            "네이버", "naver", "snx", "snxbest", "쇼핑몰", "쇼핑하우", "스마트스토어", "브랜드스토어", "카테고리", "상품상세",
+            "상품정보", "상품후기", "구매후기", "사용후기");
 
     // 키워드 매칭 검사
     for (String ui : uiKeywords) {
@@ -933,11 +933,11 @@ public class KeywordService {
 
     // 카테고리별 키워드 매핑
     Map<String, Set<String>> categoryMap =
-            Map.of(
-                    "전자제품", Set.of("휴대폰", "노트북", "태블릿", "이어폰", "충전기", "모니터", "키보드", "마우스"),
-                    "패션", Set.of("옷", "신발", "가방", "시계", "모자", "벨트", "선글라스", "운동화"),
-                    "화장품", Set.of("립스틱", "파운데이션", "마스카라", "향수", "샴푸", "린스", "바디워시"),
-                    "생활용품", Set.of("텀블러", "베개", "이불", "수건", "조명", "청소기", "세탁기", "냉장고"));
+        Map.of(
+            "전자제품", Set.of("휴대폰", "노트북", "태블릿", "이어폰", "충전기", "모니터", "키보드", "마우스"),
+            "패션", Set.of("옷", "신발", "가방", "시계", "모자", "벨트", "선글라스", "운동화"),
+            "화장품", Set.of("립스틱", "파운데이션", "마스카라", "향수", "샴푸", "린스", "바디워시"),
+            "생활용품", Set.of("텀블러", "베개", "이불", "수건", "조명", "청소기", "세탁기", "냉장고"));
 
     Set<String> targetCategories = categoryMap.getOrDefault(categoryFilter, Set.of());
 
@@ -957,12 +957,19 @@ public class KeywordService {
   private void saveKeywordResult(int executionId, String keyword, String statusCode) {
     try {
       String safeKeyword = (keyword == null) ? "" : keyword;
+
+      // 키워드에서 띄어쓰기 제거
+      if (!safeKeyword.isEmpty()) {
+        safeKeyword = safeKeyword.replaceAll("\\s+", ""); // 모든 공백 제거
+        log.info("키워드 공백 제거: {} -> {}", keyword, safeKeyword);
+      }
+
       testDomainMapper.insertKeywordData(executionId, safeKeyword, statusCode);
       log.debug(
-              "키워드 데이터 저장 완료 - executionId: {}, keyword: {}, status: {}",
-              executionId,
-              safeKeyword,
-              statusCode);
+          "키워드 데이터 저장 완료 - executionId: {}, keyword: {}, status: {}",
+          executionId,
+          safeKeyword,
+          statusCode);
     } catch (Exception e) {
       log.error("키워드 데이터 저장 실패 - executionId: {}", executionId, e);
       throw e;
