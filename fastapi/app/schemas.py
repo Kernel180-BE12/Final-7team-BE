@@ -44,16 +44,3 @@ class PublishResponse(BaseModel):
     blogUrl: Optional[str] = None
     publishResponse: Optional[str] = None
     errorMessage: Optional[str] = None
-
-class SsadaguCrawlRequest(BaseModel):
-    keyword: str
-    execution_id: int
-
-class SsadaguCrawlResponse(BaseModel):
-    success: bool
-    execution_id: int
-    product_name: Optional[str] = None
-    product_url: Optional[str] = None
-    price: Optional[int] = None
-    crawling_method: Optional[str] = None
-    error_message: Optional[str] = None

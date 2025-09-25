@@ -9,9 +9,8 @@ from datetime import datetime
 from . import models, schemas, config
 from .database import SessionLocal, engine, get_db
 from playwright.async_api import async_playwright
-from .schemas import PublishRequest, PublishResponse, SsadaguCrawlRequest, SsadaguCrawlResponse
+from .schemas import PublishRequest, PublishResponse
 from .publisher import BlogPostPublisher
-from .crawler import SsadaguCrawler
 
 
 
@@ -97,44 +96,3 @@ async def publish(req: PublishRequest):
 
     publisher = BlogPostPublisher(browser=app.state.browser)
     return await publisher.publish(req)
-
-# 싸다구몰 크롤링 API
-@app.post("/crawl/ssadagu", response_model=SsadaguCrawlResponse)
-async def crawl_ssadagu_product(req: SsadaguCrawlRequest):
-    """
-    싸다구몰에서 키워드로 검색하여 첫번째 상품 정보를 크롤링합니다.
-    """
-    try:
-        if not req.keyword or not req.execution_id:
-            raise HTTPException(
-                status_code=400,
-                detail="keyword and execution_id are required"
-            )
-
-        # 싸다구몰 크롤러 생성
-        crawler = SsadaguCrawler()
-
-        try:
-            # 크롤링 실행 (async)
-            result = await crawler.crawl_ssadagu_product(req.keyword, req.execution_id)
-
-            return SsadaguCrawlResponse(
-                success=result.get('success', False),
-                execution_id=req.execution_id,
-                product_name=result.get('product_name'),
-                product_url=result.get('product_url'),
-                price=result.get('price'),
-                crawling_method=result.get('crawling_method'),
-                error_message=result.get('error_message')
-            )
-
-        finally:
-            # 크롤러 정리 (async)
-            await crawler.close()
-
-    except Exception as e:
-        return SsadaguCrawlResponse(
-            success=False,
-            execution_id=req.execution_id,
-            error_message=f"크롤링 API 오류: {str(e)}"
-        )

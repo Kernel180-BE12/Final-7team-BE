@@ -957,15 +957,6 @@ public class KeywordService {
   private void saveKeywordResult(int executionId, String keyword, String statusCode) {
     try {
       String safeKeyword = (keyword == null) ? "" : keyword;
-
-      // 키워드에서 띄어쓰기 제거
-      if (!safeKeyword.isEmpty()) {
-        safeKeyword = safeKeyword.replaceAll("\\s+", ""); // 모든 공백 제거
-        log.info("키워드 공백 제거: {} -> {}", keyword, safeKeyword);
-      }
-
-      testDomainMapper.insertKeywordData(executionId, safeKeyword, statusCode);
-      String safeKeyword = (keyword == null) ? "" : keyword;
       testDomainMapper.insertKeywordData(executionId, safeKeyword, statusCode);
       log.debug(
           "키워드 데이터 저장 완료 - executionId: {}, keyword: {}, status: {}",

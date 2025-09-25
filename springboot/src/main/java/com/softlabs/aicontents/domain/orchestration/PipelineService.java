@@ -46,9 +46,10 @@ public class PipelineService {
     int executionId = createNewExecution();
     PipeExecuteData pipeExecuteData = new PipeExecuteData();
     ExecuteApiResponseDTO executeApiResponseDTO = new ExecuteApiResponseDTO();
-    System.out.println("executionId=" + executionId);
 
+    System.out.println("executionId=" + executionId);
     // 2. PipeExecuteData 채우기
+
     pipeExecuteData.setExecutionId(executionId);
     System.out.println(pipeExecuteData.getExecutionId() + "생성된 ID는 여기 있다.");
     pipeExecuteData.setStatus("started");
@@ -64,8 +65,6 @@ public class PipelineService {
 
     System.out.println("파이프라인 시작점" + executionId);
 
-    // todo : log 테이블에 STEP00 기록되도록 (동일한 executionID 기반)
-
     try {
       // 캐시 초기화 - 동일한 키워드가 반복해서 생성되는 것을 방지(효과없음)
       //      cacheRefreshService.clearAllCaches(executionId);
@@ -73,25 +72,22 @@ public class PipelineService {
       // step01 - 키워드 추출
       KeywordResult keywordResultExecution = keywordExecutor.keywordExecute(executionId);
       System.out.println("파이프라인 1단계 결과/  " + keywordResultExecution);
+      // todo : if 추출 실패 시 3회 재시도 및 예외처리
+      // if (!step1.isSuccess()) {
+      // throw new RuntimeException("1단계 실패: " + step1.getErrorMessage());
 
-      // step01 완료 판단: TREND_DATA 테이블에서 KEYWORD != null && STATUS_CODE = "SUCCESS" 확인
-      if (!isStep01Completed(executionId)) {
-        throw new RuntimeException("1단계 실패: 키워드 추출이 완료되지 않았습니다");
-      }
-      System.out.println("1단계 완료 확인됨 - 다음 단계로 진행");
+      /// todo: executeApiResponseDTO 결과물 저장 메서드
+      /// todo: 파이프라인 테이블에 상태 저장
 
-
-
-      // step02 - 상품정보 & URL 추출 (step01 완료 시에만 실행)
+      // step02 - 상품정보 & URL 추출
       ProductCrawlingResult productCrawlingResultExecution =
           crawlingExecutor.productCrawlingExecute(executionId, keywordResultExecution);
       System.out.println("파이프라인 2단계 결과/  " + productCrawlingResultExecution);
+      // todo : if 추출 실패 시 3회 재시도 및 예외처리
+      // if (!step1.isSuccess()) {
+      // throw new RuntimeException("1단계 실패: " + step1.getErrorMessage());
 
-      // step02 완료 판단: SSADAGU_CONTENTS 테이블에서 모든 필수 데이터 존재 && STATUS_CODE = "SUCCESS" 확인
-      if (!isStep02Completed(executionId)) {
-        throw new RuntimeException("2단계 실패: 상품 정보 수집이 완료되지 않았습니다");
-      }
-      System.out.println("2단계 완료 확인됨 - 다음 단계로 진행");
+      /// todo: executeApiResponseDTO 결과물 저장 메서드
 
       // step03 - LLM 생성
       AIContentsResult aIContentsResultExecution =
@@ -330,42 +326,5 @@ public class PipelineService {
 
   private void updateExecutionStatus(int executionId, String failed) {
     // todo: PIPELINE_EXECUTIONS에 상태 업데이트하는 코드 구현(SUCCESS, FAILED,PENDING 등등등)
-  }
-
-  /** step01 완료 판단: KeywordExecutor의 완료 판단 로직과 동일 */
-  private boolean isStep01Completed(int executionId) {
-    KeywordResult keywordResult = pipelineMapper.selectKeywordStatuscode(executionId);
-
-    if (keywordResult == null) {
-      return false;
-    }
-
-    // KeywordExecutor의 완료 판단 로직과 동일
-    if (keywordResult.getKeyword() != null
-        && "SUCCESS".equals(keywordResult.getKeyWordStatusCode())) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  /** step02 완료 판단: ProductCrawlingExecutor의 완료 판단 로직과 동일 */
-  private boolean isStep02Completed(int executionId) {
-    ProductCrawlingResult productCrawlingResult =
-        pipelineMapper.selctproductCrawlingStatuscode(executionId);
-
-    if (productCrawlingResult == null) {
-      return false;
-    }
-
-    // ProductCrawlingExecutor의 완료 판단 로직과 동일
-    if (productCrawlingResult.getProductName() != null
-        && productCrawlingResult.getSourceUrl() != null
-        && productCrawlingResult.getPrice() != null
-        && "SUCCESS".equals(productCrawlingResult.getProductStatusCode())) {
-      return true;
-    } else {
-      return false;
-    }
   }
 }
