@@ -965,6 +965,8 @@ public class KeywordService {
       }
 
       testDomainMapper.insertKeywordData(executionId, safeKeyword, statusCode);
+      String safeKeyword = (keyword == null) ? "" : keyword;
+      testDomainMapper.insertKeywordData(executionId, safeKeyword, statusCode);
       log.debug(
           "키워드 데이터 저장 완료 - executionId: {}, keyword: {}, status: {}",
           executionId,
