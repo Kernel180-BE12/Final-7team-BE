@@ -26,6 +26,11 @@ public enum ErrorCode {
   CONFLICT(HttpStatus.CONFLICT, "E501", "데이터 충돌이 발생했습니다."),
   DUPLICATE_RESOURCE(HttpStatus.CONFLICT, "E502", "이미 존재하는 리소스입니다."),
 
+  // 회원가입 관련 에러
+  LOGIN_ID_ALREADY_EXISTS(HttpStatus.CONFLICT, "E503", "이미 존재하는 아이디입니다."),
+  EMAIL_ALREADY_EXISTS(HttpStatus.CONFLICT, "E504", "이미 존재하는 이메일입니다."),
+  EMAIL_VERIFICATION_FAILED(HttpStatus.BAD_REQUEST, "E505", "이메일 인증코드 검증에 실패했습니다."),
+
   // 500번대 서버 에러
   INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "E901", "내부 서버 오류가 발생했습니다."),
   DATABASE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "E902", "데이터베이스 오류가 발생했습니다."),
