@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.softlabs.aicontents.domain.orchestration.mapper.LogMapper">
+
+    <insert id="insertStep_00" parameterType="com.softlabs.aicontents.domain.orchestration.dto.PipeExecuteData">
+        INSERT INTO ADMIN.UNIFIED_LOGS (
+            EXECUTION_ID,
+            LOG_TYPE,
+            STEP_CODE,
+            STATUS_CODE,
+            LOG_LEVEL,
+            LOG_MESSAGE,
+            CREATED_AT
+        ) VALUES (
+                   #{executionId}
+                  ,'START_WORKFLOW'
+                   ,'STEP_00'
+                 ,'SUCCESS'
+                 ,'INFO'
+                 ,'워크플로우 시작'
+                 ,SYSTIMESTAMP
+                 )
+    </insert>
+
+
+    <insert id="insertStep_01Success" parameterType="com.softlabs.aicontents.domain.orchestration.dto.PipeExecuteData">
+        INSERT INTO ADMIN.UNIFIED_LOGS (
+            EXECUTION_ID,
+            LOG_TYPE,
+            STEP_CODE,
+            STATUS_CODE,
+            LOG_LEVEL,
+            LOG_MESSAGE,
+            CREATED_AT
+        ) VALUES (
+                   #{executionId}
+                 ,'TREND_COLLECTION'
+                 ,'STEP_01'
+                 ,'SUCCESS'
+                 ,'INFO'
+                 ,'크롤링 성공: 키워드 저장 완료'
+                 ,SYSTIMESTAMP
+                 )
+    </insert>
+
+    <insert id="insertStep_01Faild" parameterType="com.softlabs.aicontents.domain.orchestration.dto.PipeExecuteData">
+        INSERT INTO ADMIN.UNIFIED_LOGS (
+            EXECUTION_ID,
+            LOG_TYPE,
+            STEP_CODE,
+            STATUS_CODE,
+            LOG_LEVEL,
+            LOG_MESSAGE,
+            CREATED_AT
+        ) VALUES (
+                   #{executionId}
+                 ,'TREND_COLLECTION'
+                 ,'STEP_01'
+                 ,'FAILD'
+                 ,'ERROR'
+                 ,'크롤링 성공: 키워드 저장 완료'
+                 ,SYSTIMESTAMP
+                 )
+    </insert>
+
+    <insert id="insertStep_02Success" parameterType="com.softlabs.aicontents.domain.orchestration.dto.PipeExecuteData">
+        INSERT INTO ADMIN.UNIFIED_LOGS (
+            EXECUTION_ID,
+            LOG_TYPE,
+            STEP_CODE,
+            STATUS_CODE,
+            LOG_LEVEL,
+            LOG_MESSAGE,
+            CREATED_AT
+        ) VALUES (
+                   #{executionId}
+                 ,'CONTENT_CRAWL'
+                 ,'STEP_02'
+                 ,'SUCCESS'
+                 ,'INFO'
+                 ,'상품 정보 저장 완료'
+                 ,SYSTIMESTAMP
+                 )
+    </insert>
+
+    <insert id="insertStep_02Faild" parameterType="com.softlabs.aicontents.domain.orchestration.dto.PipeExecuteData">
+        INSERT INTO ADMIN.UNIFIED_LOGS (
+            EXECUTION_ID,
+            LOG_TYPE,
+            STEP_CODE,
+            STATUS_CODE,
+            LOG_LEVEL,
+            LOG_MESSAGE,
+            CREATED_AT
+        ) VALUES (
+                   #{executionId}
+                 ,'CONTENT_CRAWL'
+                 ,'STEP_02'
+                 ,'FAILD'
+                 ,'ERROR'
+                 ,'상품 정보 저장 완료'
+                 ,SYSTIMESTAMP
+                 )
+
+
+    </insert>
+
+    <insert id="insertStep_03Success" parameterType="com.softlabs.aicontents.domain.orchestration.dto.PipeExecuteData">
+        INSERT INTO ADMIN.UNIFIED_LOGS (
+            EXECUTION_ID,
+            LOG_TYPE,
+            STEP_CODE,
+            STATUS_CODE,
+            LOG_LEVEL,
+            LOG_MESSAGE,
+            CREATED_AT
+        ) VALUES (
+                   #{executionId}
+                 ,'AI_GENERATION'
+                 ,'STEP_03'
+                 ,'SUCCESS'
+                 ,'INFO'
+                 ,'LLM으로 콘텐츠 생성 성공'
+                 ,SYSTIMESTAMP
+                 )
+    </insert>
+
+    <insert id="insertStep_03Faild" parameterType="com.softlabs.aicontents.domain.orchestration.dto.PipeExecuteData">
+        INSERT INTO ADMIN.UNIFIED_LOGS (
+            EXECUTION_ID,
+            LOG_TYPE,
+            STEP_CODE,
+            STATUS_CODE,
+            LOG_LEVEL,
+            LOG_MESSAGE,
+            CREATED_AT
+        ) VALUES (
+                   #{executionId}
+                 ,'AI_GENERATION'
+                 ,'STEP_03'
+                 ,'FAILD'
+                 ,'ERROR'
+                 ,'LLM으로 콘텐츠 생성 성공'
+                 ,SYSTIMESTAMP
+                 )
+    </insert>
+
+
+    <insert id="insertStep_04Success" parameterType="com.softlabs.aicontents.domain.orchestration.dto.PipeExecuteData">
+        INSERT INTO ADMIN.UNIFIED_LOGS (
+            EXECUTION_ID,
+            LOG_TYPE,
+            STEP_CODE,
+            STATUS_CODE,
+            LOG_LEVEL,
+            LOG_MESSAGE,
+            CREATED_AT
+        ) VALUES (
+                   #{executionId}
+                 ,'AI_GENERATION'
+                 ,'STEP_04'
+                 ,'SUCCESS'
+                 ,'INFO'
+                 ,'블로그 발행 성공: 발행 URL 저장 완료'
+                 ,SYSTIMESTAMP
+                 )
+    </insert>
+
+    <insert id="insertStep_04Faild" parameterType="com.softlabs.aicontents.domain.orchestration.dto.PipeExecuteData">
+        INSERT INTO ADMIN.UNIFIED_LOGS (
+            EXECUTION_ID,
+            LOG_TYPE,
+            STEP_CODE,
+            STATUS_CODE,
+            LOG_LEVEL,
+            LOG_MESSAGE,
+            CREATED_AT
+        ) VALUES (
+                   #{executionId}
+                 ,'AI_GENERATION'
+                 ,'STEP_04'
+                 ,'FAILD'
+                 ,'ERROR'
+                 ,'블로그 발행 성공: 발행 URL 저장 완료'
+                 ,SYSTIMESTAMP
+                 )
+    </insert>
+
+    <insert id="insertStep_99" parameterType="com.softlabs.aicontents.domain.orchestration.dto.PipeExecuteData">
+        INSERT INTO ADMIN.UNIFIED_LOGS (
+            EXECUTION_ID,
+            LOG_TYPE,
+            STEP_CODE,
+            STATUS_CODE,
+            LOG_LEVEL,
+            LOG_MESSAGE,
+            CREATED_AT
+        ) VALUES (
+                   #{executionId}
+                 ,'END_WORKFLOW'
+                 ,'STEP_99'
+                 ,'FAILD'
+                 ,'ERROR'
+                 ,'워크플로우 종료'
+                 ,SYSTIMESTAMP
+                 )
+    </insert>
+
+
+
+    <insert id="insertScheduleSuccess" parameterType="com.softlabs.aicontents.domain.scheduler.vo.response.ScheduleResponseVO">
+        INSERT INTO ADMIN.UNIFIED_LOGS (
+            TASK_ID,
+            LOG_TYPE,
+            STEP_CODE,
+            STATUS_CODE,
+            LOG_LEVEL,
+            LOG_MESSAGE,
+            CREATED_AT
+        ) VALUES (
+                   #{taskId}
+                 ,'SCHEDULER'
+                 ,'STEP_100'
+                 ,'SUCCESS'
+                 ,'INFO'
+                 ,'스케줄 등록 성공'
+                 ,SYSTIMESTAMP
+                 )
+    </insert>
+
+    <insert id="insertScheduleFaild" parameterType="com.softlabs.aicontents.domain.scheduler.vo.response.ScheduleResponseVO">
+        INSERT INTO ADMIN.UNIFIED_LOGS (
+            TASK_ID,
+            LOG_TYPE,
+            STEP_CODE,
+            STATUS_CODE,
+            LOG_LEVEL,
+            LOG_MESSAGE,
+            CREATED_AT
+        ) VALUES (
+                   #{taskId}
+                 ,'SCHEDULER'
+                 ,'STEP_100'
+                 ,'FAILD'
+                 ,'ERROR'
+                 ,'스케줄 등록 실패'
+                 ,SYSTIMESTAMP
+                 )
+    </insert>
+
+
+</mapper>

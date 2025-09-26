@@ -113,19 +113,18 @@ class BlogPostPublisher:
                 print(f"게시글 URL: {clean_blog_url}")
 
                 raw = {"url": clean_blog_url, "postId": post_id}
-                return {
-                    "blogPostId": post_id,
-                    "blogUrl": clean_blog_url,
-                    "raw": json.dumps(raw, ensure_ascii=False)
-                    # publishStatus=PublishStatus.SUCCESS,
-                    # blogPostId=post_id,
-                    # blogUrl=clean_blog_url,
-                    # publishResponse=json.dumps(raw, ensure_ascii=False),
-                }
+                return PublishResponse(
+                    publishStatus=PublishStatus.SUCCESS,
+                    blogPostId=post_id,
+                    blogUrl=clean_blog_url,
+                    publishResponse=json.dumps(raw, ensure_ascii=False),
+                )
             else:
                 # postId 추출에 실패한 경우의 예외 처리
-                from .exceptions import UserFixableError
-                raise UserFixableError("게시물 ID를 URL에서 추출하지 못했습니다.")
+                return PublishResponse(
+                    publishStatus=PublishStatus.FAILED,
+                    errorMessage="게시물 ID를 URL에서 추출하지 못했습니다."
+                )
 
         except (PwTimeout, Exception) as e:
             error_message = f"발행 작업 중 오류 발생: {e}"

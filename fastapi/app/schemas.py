@@ -39,15 +39,8 @@ class PublishRequest(BaseModel):
     hashtag: Optional[str] = None
 
 class PublishResponse(BaseModel):
-    publishId: Optional[int] = None
-    aiContentId: int
-    blogPlatform: str = "NAVER"
+    publishStatus: PublishStatus
     blogPostId: Optional[str] = None
     blogUrl: Optional[str] = None
-    publishStatus: PublishStatus
     publishResponse: Optional[str] = None
     errorMessage: Optional[str] = None
-    attemptCount: int = 1
-    publishedAt: Optional[str] = None
-    createdAt: Optional[str] = None
-    updatedAt: Optional[str] = None

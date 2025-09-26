@@ -5,5 +5,5 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface PublishResultMapper {
-  int insertPublishResult(PublishResDto res);
+  void insertPublishResult(PublishResDto publishResultDto);
 }
