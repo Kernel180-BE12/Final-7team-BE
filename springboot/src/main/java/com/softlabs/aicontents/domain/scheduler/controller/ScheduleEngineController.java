@@ -3,14 +3,18 @@ package com.softlabs.aicontents.domain.scheduler.controller;
 import com.softlabs.aicontents.common.dto.request.ScheduleTasksRequestDTO;
 import com.softlabs.aicontents.common.dto.response.ApiResponseDTO;
 import com.softlabs.aicontents.common.dto.response.PageResponseDTO;
+import com.softlabs.aicontents.common.dto.response.ScheduleTaskResponseDTO;
 import com.softlabs.aicontents.domain.orchestration.PipelineService;
 import com.softlabs.aicontents.domain.orchestration.dto.ExecuteApiResponseDTO;
+import com.softlabs.aicontents.domain.orchestration.dto.PipeExecuteData;
+import com.softlabs.aicontents.domain.orchestration.mapper.LogMapper;
 import com.softlabs.aicontents.domain.orchestration.mapper.PipelineMapper;
 import com.softlabs.aicontents.domain.scheduler.dto.ScheduleInfoResquestDTO;
 import com.softlabs.aicontents.domain.scheduler.dto.StatusApiResponseDTO;
 import com.softlabs.aicontents.domain.scheduler.dto.resultDTO.ScheduleResponseDTO;
 import com.softlabs.aicontents.domain.scheduler.mapper.ScheduleEngineMapper;
 import com.softlabs.aicontents.domain.scheduler.service.ScheduleEngineService;
+import com.softlabs.aicontents.domain.scheduler.vo.response.ScheduleResponseVO;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,17 +37,18 @@ public class ScheduleEngineController {
   @Autowired private ScheduleEngineService scheduleEngineService; // 스케줄 엔진
   @Autowired private PipelineMapper pipelineMapper;
   @Autowired private ScheduleEngineMapper scheduleEngineMapper;
+  @Autowired private LogMapper logMapper;
 
   /// 08. 스케줄 생성
   @Operation(summary = "스케줄 생성 API", description = "생성할 스케줄의 상세 정보입니다.")
   @PostMapping("/schedule")
-  public ApiResponseDTO<String> setSchedule(
+  public ApiResponseDTO<ScheduleTaskResponseDTO> setSchedule(
       @RequestBody ScheduleTasksRequestDTO scheduleTasksRequestDTO) {
 
     try {
-      scheduleEngineService.scheduleEngine(scheduleTasksRequestDTO);
+      ScheduleTaskResponseDTO scheduleTaskResponseDTO = scheduleEngineService.scheduleEngine(scheduleTasksRequestDTO);
 
-      return ApiResponseDTO.success("새로운 스케줄 저장 완료");
+      return ApiResponseDTO.success(scheduleTaskResponseDTO,"새로운 스케줄 저장 완료");
     } catch (Exception e) {
 
       return ApiResponseDTO.error("스케줄 저장 실패" + e.getMessage());
@@ -82,14 +87,13 @@ public class ScheduleEngineController {
   //  / 10. 파이프라인 실행
   @PostMapping("/pipeline/execute")
   public ExecuteApiResponseDTO executePipline() {
-
+   ExecuteApiResponseDTO executeApiResponseDTO = new ExecuteApiResponseDTO();
     try {
       // 수동실행일 경우,
-      ExecuteApiResponseDTO executeApiResponseDTO = pipelineService.executionPipline();
-      return executeApiResponseDTO;
+
+      return pipelineService.executionPipline();
     } catch (Exception e) {
-      log.error("파이프라인 실행 실패: " + e.getMessage());
-      throw new RuntimeException("파이프라인 실행 실패", e);
+      return executeApiResponseDTO;
     }
   }
 

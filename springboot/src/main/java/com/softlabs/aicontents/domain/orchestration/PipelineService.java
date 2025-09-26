@@ -70,9 +70,10 @@ public class PipelineService {
 
       //STEP_00 워크플로우 시작
       logMapper.insertStep_00(executionId);
-
+      int exeID= pipeExecuteData.getExecutionId();
+      System.out.println("\n\n\n\n"+exeID);
       // STEP_01 - 키워드 추출
-      KeywordResult keywordResultExecution = keywordExecutor.keywordExecute(executionId);
+      KeywordResult keywordResultExecution = keywordExecutor.keywordExecute(pipeExecuteData.getExecutionId());
       System.out.println("파이프라인 1단계 결과/  " + keywordResultExecution);
       //  STEP_01 완료 판단
       if (!isStep01Completed(executionId)) {
@@ -87,7 +88,7 @@ public class PipelineService {
 
       // STEP_02 - 상품정보 & URL 추출
       ProductCrawlingResult productCrawlingResultExecution =
-          crawlingExecutor.productCrawlingExecute(executionId, keywordResultExecution);
+          crawlingExecutor.productCrawlingExecute(pipeExecuteData.getExecutionId(), keywordResultExecution);
       System.out.println("파이프라인 2단계 결과/  " + productCrawlingResultExecution);
       //  STEP_02 완료 판단
       if (!isStep02Completed(executionId)) {
@@ -105,7 +106,7 @@ public class PipelineService {
 
       // STEP_03 - LLM 생성
       AIContentsResult aIContentsResultExecution =
-          aiExecutor.aIContentsResultExecute(executionId, productCrawlingResultExecution);
+          aiExecutor.aIContentsResultExecute(pipeExecuteData.getExecutionId(), productCrawlingResultExecution);
       System.out.println("파이프라인 3단계 결과/  " + aIContentsResultExecution);
       //  STEP_03 완료 판단
       if (!isStep03Completed(executionId)) {
@@ -119,31 +120,32 @@ public class PipelineService {
 
       // step04 - 블로그 발행
       BlogPublishResult blogPublishResultExecution =
-          blogExecutor.blogPublishResultExecute(executionId, aIContentsResultExecution);
+          blogExecutor.blogPublishResultExecute(pipeExecuteData.getExecutionId(), aIContentsResultExecution);
       System.out.println("파이프라인 4단계 결과/  " + blogPublishResultExecution);
       //  STEP_03 완료 판단
-      if (!isStep04Completed(executionId)) {
-        logMapper.insertStep_04Faild(executionId);
+      if (!isStep04Completed(pipeExecuteData.getExecutionId())) {
+        logMapper.insertStep_04Faild(pipeExecuteData.getExecutionId());
         throw new RuntimeException("4단계 실패: 발행이 완료되지 않았습니다");
       }
-      logMapper.insertStep_04Success(executionId);
+      logMapper.insertStep_04Success(pipeExecuteData.getExecutionId());
       System.out.println("4단계 완료 확인됨 - 워크 플로우 종료");
 
       log.info("파이프라인 성공");
 
       //STEP_99 워크플로우 종료
-      if (executeApiResponseDTO != null) {
-        return executeApiResponseDTO;
-      }
-      logMapper.insertStep_99(executionId);
-      return executeApiResponseDTO;
+        logMapper.insertStep_99(pipeExecuteData.getExecutionId());
 
+        return executeApiResponseDTO;
 
     } catch (Exception e) {
       log.error("파이프라인 실행 실패:{}", e.getMessage());
-      updateExecutionStatus(executionId, "FAILED");
+      executeApiResponseDTO.setSuccess(false);
+      executeApiResponseDTO.setMessage("파이프라인 실행 실패");
+      logMapper.insertStep_00Faild(pipeExecuteData.getExecutionId());
+
+      return executeApiResponseDTO;
+
     }
-    return null;
   }
 
   // @GetMapping("/pipeline/status/{executionId}")

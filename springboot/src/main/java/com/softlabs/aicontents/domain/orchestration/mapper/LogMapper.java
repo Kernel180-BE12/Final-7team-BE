@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 public interface LogMapper {
 
     void insertStep_00(int executionId);
+    void insertStep_00Faild(int executionId);
 
 
     void insertStep_01Success(int executionId);
@@ -18,6 +19,7 @@ public interface LogMapper {
     void insertStep_04Faild(int executionId);
     void insertStep_99(int executionId);
 
-
+    void insertScheduleSuccess(int taskId);
+    void insertScheduleFaild(int taskId);
 
 }

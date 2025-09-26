@@ -3,7 +3,9 @@ package com.softlabs.aicontents.domain.scheduler.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softlabs.aicontents.common.dto.request.ScheduleTasksRequestDTO;
 import com.softlabs.aicontents.common.dto.response.PageResponseDTO;
+import com.softlabs.aicontents.common.dto.response.ScheduleTaskResponseDTO;
 import com.softlabs.aicontents.domain.orchestration.PipelineService;
+import com.softlabs.aicontents.domain.orchestration.mapper.LogMapper;
 import com.softlabs.aicontents.domain.orchestration.mapper.PipelineMapper;
 import com.softlabs.aicontents.domain.scheduler.dto.ScheduleInfoResquestDTO;
 import com.softlabs.aicontents.domain.scheduler.dto.resultDTO.ScheduleResponseDTO;
@@ -34,21 +36,19 @@ public class ScheduleEngineService {
 
   @Autowired private ScheduleEngineMapper scheduleEngineMapper;
   @Autowired private PipelineMapper pipelineMapper;
+  @Autowired private LogMapper logMapper;
   @Autowired private TaskScheduler taskScheduler; // 동적 스케줄 시간
   @Autowired private PipelineService pipelineService;
 
   /// @PostMapping("/schedule")
   @Transactional
-  public void scheduleEngine(ScheduleTasksRequestDTO scheduleTasksRequestDTO) {
+  public ScheduleTaskResponseDTO scheduleEngine(ScheduleTasksRequestDTO scheduleTasksRequestDTO) {
+
+    ScheduleResponseVO scheduleResponseVO = new ScheduleResponseVO();
 
     try {
       // 1. DTO -> VO 변환
       SchedulerRequestVO schedulerRequestVO = this.convertDTOtoVO(scheduleTasksRequestDTO);
-      ScheduleTaskData ScheduleTaskData = pipelineMapper.selectScheduleTaskData();
-      //      // 1-1. VO - Request-> Response 저장
-      //      ScheduleResponseVO scheduleResponseVO =
-      // scheduleEngineMapper.selectScheduleResponseVO(ScheduleTaskData.getTaskId());
-      //      System.out.println("scheduleResponseVO에 저장된 결과 = "+scheduleResponseVO);
 
       // 2. PIPELINE_CONFIG는 그냥 전체 객체를 JSON으로
       ObjectMapper objectMapper = new ObjectMapper();
@@ -56,6 +56,8 @@ public class ScheduleEngineService {
       schedulerRequestVO.setPipelineConfig(pipelineConfigJson);
 
       // 3. NEXT_EXCCUTION, LAST_EXCCUTION
+      //-> 선택사항 메서드로 만들기
+      //날짜에 대한 데이터가 테이블에 안찍힌다
       String scheduleType = schedulerRequestVO.getScheduleType();
       LocalDateTime nextExecution =
           calculateNextExecution(scheduleType, schedulerRequestVO.getExecutionTime());
@@ -63,10 +65,18 @@ public class ScheduleEngineService {
       schedulerRequestVO.setNextExecution(nextExecution);
       schedulerRequestVO.setLastExecution(lastExecution);
 
+
       // 4. DB 저장
       int resultInsert = scheduleEngineMapper.insertSchedule(schedulerRequestVO);
-      if (resultInsert <= 0) {
-        throw new RuntimeException("스케줄 저장 실패");
+
+      // 방금 저장된 스케줄 정보를 다시 조회
+      ScheduleTaskData scheduleTaskData = pipelineMapper.selectScheduleTaskData();
+      scheduleResponseVO = scheduleEngineMapper.selectScheduleResponseVO(scheduleTaskData.getTaskId());
+
+      if (resultInsert == 0) {
+        logMapper.insertScheduleFaild(scheduleResponseVO.getTaskId());
+      } else {
+        logMapper.insertScheduleSuccess(scheduleResponseVO.getTaskId());
       }
 
       // 5. executeImmediately 플래그 확인
@@ -74,24 +84,30 @@ public class ScheduleEngineService {
         // 즉시 실행
         log.info("ExecuteImmediately=true, 즉시 실행");
         pipelineService.executionPipline();
-        log.info("즉시 실행 완료");
       } else {
-        // 스케줄된 시간에 실행을 위한 동적 스케줄 등록
+        // 자동 실행
         log.info("ExecuteImmediately=false, 스케줄 등록");
 
-        // 방금 저장된 스케줄 정보를 다시 조회
-        ScheduleTaskData scheduleTaskData = pipelineMapper.selectScheduleTaskData();
-        ScheduleResponseVO scheduleResponseVO =
-            scheduleEngineMapper.selectScheduleResponseVO(scheduleTaskData.getTaskId());
 
         registerDynamicSchedule(scheduleResponseVO);
         log.info("동적 스케줄 등록 완료");
       }
 
+
+
     } catch (Exception e) {
-      throw new RuntimeException("스케줄 저장 중 오류 발생: " + e.getMessage(), e);
+      log.error("스케줄 저장 중 예외 발생: {}", e.getMessage(), e);
+      logMapper.insertScheduleFaild(scheduleResponseVO.getTaskId());
     }
+
+    // VO -> DTO 로 변환
+    ScheduleTaskResponseDTO scheduleTaskResponseDTO = this.convertVOtoDTO(scheduleResponseVO);
+
+    return scheduleTaskResponseDTO;
   }
+  //scheduleEngine 종료
+
+
 
   // DTO -> VO로 변환
   private SchedulerRequestVO convertDTOtoVO(ScheduleTasksRequestDTO scheduleTasksRequestDTO) {
@@ -109,6 +125,23 @@ public class ScheduleEngineService {
         scheduleTasksRequestDTO.isExecuteImmediately() ? "Y" : "N");
 
     return schedulerRequestVO;
+  }
+  // VO -> DTO 로 변환
+  private ScheduleTaskResponseDTO convertVOtoDTO(ScheduleResponseVO scheduleResponseVO) {
+    ScheduleTaskResponseDTO scheduleTaskResponseDTO  =  new ScheduleTaskResponseDTO();
+
+    scheduleTaskResponseDTO.setTaskId(scheduleResponseVO.getTaskId());
+    scheduleTaskResponseDTO.setScheduleType(scheduleResponseVO.getScheduleType());
+    scheduleTaskResponseDTO.setExecutionTime(scheduleResponseVO.getExecutionTime());
+    scheduleTaskResponseDTO.setKeywordCount(scheduleResponseVO.getKeywordCount());
+    scheduleTaskResponseDTO.setContentCount(scheduleResponseVO.getContentCount());
+    scheduleTaskResponseDTO.setAiModel(scheduleResponseVO.getAiModel());
+    scheduleTaskResponseDTO.setLastExecution(scheduleResponseVO.getLastExecution());
+    scheduleTaskResponseDTO.setNextExecution(scheduleResponseVO.getNextExecution());
+    scheduleTaskResponseDTO.setPipelineConfig(scheduleResponseVO.getPipelineConfig());
+    scheduleTaskResponseDTO.setExecutionTime(scheduleResponseVO.getExecutionTime());
+    scheduleTaskResponseDTO.setTaskName(scheduleResponseVO.getTaskName());
+    return scheduleTaskResponseDTO;
   }
 
   public PageResponseDTO<ScheduleResponseDTO> getScheduleInfoList(

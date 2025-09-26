@@ -211,4 +211,46 @@
     </insert>
 
 
+
+    <insert id="insertScheduleSuccess" parameterType="com.softlabs.aicontents.domain.scheduler.vo.response.ScheduleResponseVO">
+        INSERT INTO ADMIN.UNIFIED_LOGS (
+            TASK_ID,
+            LOG_TYPE,
+            STEP_CODE,
+            STATUS_CODE,
+            LOG_LEVEL,
+            LOG_MESSAGE,
+            CREATED_AT
+        ) VALUES (
+                   #{taskId}
+                 ,'SCHEDULER'
+                 ,'STEP_100'
+                 ,'SUCCESS'
+                 ,'INFO'
+                 ,'스케줄 등록 성공'
+                 ,SYSTIMESTAMP
+                 )
+    </insert>
+
+    <insert id="insertScheduleFaild" parameterType="com.softlabs.aicontents.domain.scheduler.vo.response.ScheduleResponseVO">
+        INSERT INTO ADMIN.UNIFIED_LOGS (
+            TASK_ID,
+            LOG_TYPE,
+            STEP_CODE,
+            STATUS_CODE,
+            LOG_LEVEL,
+            LOG_MESSAGE,
+            CREATED_AT
+        ) VALUES (
+                   #{taskId}
+                 ,'SCHEDULER'
+                 ,'STEP_100'
+                 ,'FAILD'
+                 ,'ERROR'
+                 ,'스케줄 등록 실패'
+                 ,SYSTIMESTAMP
+                 )
+    </insert>
+
+
 </mapper>
