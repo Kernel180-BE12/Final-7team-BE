@@ -9,4 +9,6 @@ import org.apache.ibatis.annotations.Mapper;
 public interface UnifiedLogMapper {
   // 조건에 따른 로그 목록 조회
   List<LogEntryVO> findLogsByConditions(Map<String, Object> params);
+  long countLogsByConditions(Map<String, Object> params);
+
 }
