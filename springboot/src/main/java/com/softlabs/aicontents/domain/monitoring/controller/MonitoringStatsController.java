@@ -1,6 +1,7 @@
 package com.softlabs.aicontents.domain.monitoring.controller;
 
-import com.softlabs.aicontents.domain.monitoring.dto.response.MonitoringStatsResponseDTO;
+import com.softlabs.aicontents.common.dto.response.ApiResponseDTO;
+import com.softlabs.aicontents.domain.monitoring.dto.response.MonitoringStatsSummaryDTO;
 import com.softlabs.aicontents.domain.monitoring.service.MonitoringStatsService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,10 @@ public class MonitoringStatsController {
   // 통계 + 로그 리스트 반환
   @GetMapping("/stats")
   @Operation(summary = "결과 모니터링", description = "전체 성공/실패/성공률과 최근 작업의 상태 반환")
-  public MonitoringStatsResponseDTO getStats() {
-    return monitoringStatsService.getStats();
+//  public MonitoringStatsResponseDTO getStats() {
+//    return monitoringStatsService.getStats();
+//  }
+  public ApiResponseDTO<MonitoringStatsSummaryDTO> getStats() {
+    return new ApiResponseDTO<>(true, monitoringStatsService.getStats(),"조회성공");
   }
 }

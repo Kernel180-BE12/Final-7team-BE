@@ -13,4 +13,7 @@ public interface MonitoringStatsMapper {
   int failedCount();
 
   float allRows();
+
+  int activeExecutions();
+  int totalExecutions();
 }
