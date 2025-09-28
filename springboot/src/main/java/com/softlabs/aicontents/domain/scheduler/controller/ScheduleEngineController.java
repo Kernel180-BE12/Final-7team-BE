@@ -3,15 +3,19 @@ package com.softlabs.aicontents.domain.scheduler.controller;
 import com.softlabs.aicontents.common.dto.request.ScheduleTasksRequestDTO;
 import com.softlabs.aicontents.common.dto.response.ApiResponseDTO;
 import com.softlabs.aicontents.common.dto.response.PageResponseDTO;
+import com.softlabs.aicontents.common.dto.response.ScheduleTaskResponseDTO;
 import com.softlabs.aicontents.domain.orchestration.PipelineService;
-import com.softlabs.aicontents.domain.orchestration.dto.ExecuteApiResponseDTO;
+import com.softlabs.aicontents.domain.orchestration.dto.PipeStatusExcIdReqDTO;
+import com.softlabs.aicontents.domain.orchestration.mapper.LogMapper;
 import com.softlabs.aicontents.domain.orchestration.mapper.PipelineMapper;
 import com.softlabs.aicontents.domain.scheduler.dto.ScheduleInfoResquestDTO;
 import com.softlabs.aicontents.domain.scheduler.dto.StatusApiResponseDTO;
-import com.softlabs.aicontents.domain.scheduler.dto.resultDTO.ScheduleResponseDTO;
+import com.softlabs.aicontents.domain.scheduler.dto.resultDTO.*;
 import com.softlabs.aicontents.domain.scheduler.mapper.ScheduleEngineMapper;
 import com.softlabs.aicontents.domain.scheduler.service.ScheduleEngineService;
 import io.swagger.v3.oas.annotations.Operation;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -33,17 +37,19 @@ public class ScheduleEngineController {
   @Autowired private ScheduleEngineService scheduleEngineService; // 스케줄 엔진
   @Autowired private PipelineMapper pipelineMapper;
   @Autowired private ScheduleEngineMapper scheduleEngineMapper;
+  @Autowired private LogMapper logMapper;
 
   /// 08. 스케줄 생성
   @Operation(summary = "스케줄 생성 API", description = "생성할 스케줄의 상세 정보입니다.")
   @PostMapping("/schedule")
-  public ApiResponseDTO<String> setSchedule(
+  public ApiResponseDTO<ScheduleTaskResponseDTO> setSchedule(
       @RequestBody ScheduleTasksRequestDTO scheduleTasksRequestDTO) {
 
     try {
-      scheduleEngineService.scheduleEngine(scheduleTasksRequestDTO);
+      ScheduleTaskResponseDTO scheduleTaskResponseDTO =
+          scheduleEngineService.scheduleEngine(scheduleTasksRequestDTO);
 
-      return ApiResponseDTO.success("새로운 스케줄 저장 완료");
+      return ApiResponseDTO.success(scheduleTaskResponseDTO, "새로운 스케줄 저장 완료");
     } catch (Exception e) {
 
       return ApiResponseDTO.error("스케줄 저장 실패" + e.getMessage());
@@ -77,37 +83,102 @@ public class ScheduleEngineController {
     }
   }
 
-  //  @Scheduled(cron = "0 23 14 * * *")
-
   /** 파이프라인 */
   //
-  //  / 10. 파이프라인 실행
-  @PostMapping("/pipeline/execute")
-  public ExecuteApiResponseDTO executePipline() {
-
-    try {
-      // 수동실행일 경우,
-      ExecuteApiResponseDTO executeApiResponseDTO = pipelineService.executionPipline();
-      return executeApiResponseDTO;
-    } catch (Exception e) {
-      log.error("파이프라인 실행 실패: " + e.getMessage());
-      throw new RuntimeException("파이프라인 실행 실패", e);
-    }
-  }
+  //   10. 파이프라인 실행
+  //  @PostMapping("/pipeline/execute")
+  //  public ExecuteApiResponseDTO executePipline() {
+  //   ExecuteApiResponseDTO executeApiResponseDTO = new ExecuteApiResponseDTO();
+  //    try {
+  //      // 수동실행일 경우,
+  //
+  //      return pipelineService.executionPipline();
+  //    } catch (Exception e) {
+  //      executeApiResponseDTO.setSuccess(false);
+  //      executeApiResponseDTO.setMessage(e.getMessage());
+  //      return executeApiResponseDTO;
+  //    }
+  //  }
 
   /// 11. 파이프라인 상태 조회
   @GetMapping("/pipeline/status/{executionId}")
-  public ApiResponseDTO<StatusApiResponseDTO> statusPipeline(@PathVariable int executionId) {
+  public ApiResponseDTO<StatusApiResponseDTO> executePipline(@PathVariable int executionId) {
 
     try {
-      StatusApiResponseDTO statusApiResponseDTO = pipelineService.getStatusPipline(executionId);
+      PipeStatusExcIdReqDTO reqDTO = new PipeStatusExcIdReqDTO();
+      reqDTO.setExecutionId(executionId);
+
+      StatusApiResponseDTO statusApiResponseDTO = pipelineService.executionPipline(reqDTO);
+
+      // NULL 체크 추가
+      if (statusApiResponseDTO == null) {
+        StatusApiResponseDTO fallbackResponse =
+            createFallbackResponse(executionId, "FAILED", "Internal Server Error");
+        return ApiResponseDTO.success(fallbackResponse, "Pipeline status retrieved with fallback");
+      }
+      System.out.print("\n\n\n\n\n\n" + statusApiResponseDTO + "\n\n\n\n\n\n");
       String successMesg = "파이프라인 상태 데이터를 pipeResultDataDTO에 저장 완료";
 
       return ApiResponseDTO.success(statusApiResponseDTO, successMesg);
 
     } catch (Exception e) {
-      return ApiResponseDTO.error("파이프라인 상태 조회 실패");
+      log.error("파이프라인 상태 조회 중 예외 발생: executionId={}, error={}", executionId, e.getMessage(), e);
+      StatusApiResponseDTO fallbackResponse =
+          createFallbackResponse(
+              executionId, "FAILED", "Pipeline status query failed: " + e.getMessage());
+      return ApiResponseDTO.success(
+          fallbackResponse, "Pipeline status retrieved with error fallback");
     }
+  }
+
+  /** NULL이나 예외 발생 시 기본 객체 생성 */
+  private StatusApiResponseDTO createFallbackResponse(
+      int executionId, String status, String errorMessage) {
+    StatusApiResponseDTO fallbackResponse = new StatusApiResponseDTO();
+
+    // 필수 정보 설정
+    fallbackResponse.setExecutionId(executionId);
+    fallbackResponse.setOverallStatus(status);
+    fallbackResponse.setCurrentStage("ERROR");
+    fallbackResponse.setCompletedAt(java.time.LocalDateTime.now().toString());
+
+    // Progress 객체 안전 초기화
+    ProgressResult progressResult = new ProgressResult();
+    progressResult.setKeywordExtraction(new KeywordExtraction());
+    progressResult.setProductCrawling(new ProductCrawling());
+    progressResult.setContentGeneration(new ContentGeneration());
+    progressResult.setContentPublishing(new ContentPublishing());
+
+    // 모든 진행상태를 실패로 설정
+    progressResult.getKeywordExtraction().setStatus("FAILED");
+    progressResult.getKeywordExtraction().setProgress(0);
+    progressResult.getProductCrawling().setStatus("FAILED");
+    progressResult.getProductCrawling().setProgress(0);
+    progressResult.getContentGeneration().setStatus("FAILED");
+    progressResult.getContentGeneration().setProgress(0);
+    progressResult.getContentPublishing().setStatus("FAILED");
+    progressResult.getContentPublishing().setProgress(0);
+
+    fallbackResponse.setProgress(progressResult);
+
+    // Stage 객체 안전 초기화
+    StageResults stageResults = new StageResults();
+    stageResults.setKeywords(new ArrayList<>());
+    stageResults.setProducts(new ArrayList<>());
+    stageResults.setContent(new Content());
+    stageResults.setPublishingStatus(new PublishingStatus());
+    fallbackResponse.setStage(stageResults);
+
+    // 로그 정보
+    List<Logs> logs = new ArrayList<>();
+    Logs errorLog = new Logs();
+    errorLog.setStage("ERROR");
+    errorLog.setMessage(errorMessage);
+    errorLog.setTimestamp(java.time.LocalDateTime.now().toString());
+    logs.add(errorLog);
+    fallbackResponse.setLogs(logs);
+
+    return fallbackResponse;
   }
 
   //  // GET 요청으로 바로 실행

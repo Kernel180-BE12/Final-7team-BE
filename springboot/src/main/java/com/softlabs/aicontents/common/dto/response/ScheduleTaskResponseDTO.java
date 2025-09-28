@@ -1,12 +1,10 @@
-package com.softlabs.aicontents.domain.scheduler.vo.response;
+package com.softlabs.aicontents.common.dto.response;
 
 import java.time.LocalDateTime;
 import lombok.Data;
 
 @Data
-public class ScheduleResponseVO {
-
-  // TASK 식별자
+public class ScheduleTaskResponseDTO {
   private int taskId;
   private String scheduleType; // "매일 실행(A)/ 주간 실행(B)/ 월간 실행(C)"
   private String executionTime; // "HH:MM" 자동 실행 시간
@@ -18,7 +16,4 @@ public class ScheduleResponseVO {
   private String pipelineConfig; // 파이프라인 설정 JSON
   private String executeImmediately;
   private String taskName;
-
-  //  private PipeTotalData pipeData;
-
 }
