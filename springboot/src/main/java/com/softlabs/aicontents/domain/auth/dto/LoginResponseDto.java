@@ -8,6 +8,9 @@ public class LoginResponseDto {
   @Schema(description = "액세스 토큰", example = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...")
   private String accessToken;
 
+  @Schema(description = "리프레시 토큰", example = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...")
+  private String refreshToken;
+
   @Schema(description = "토큰 타입", example = "Bearer")
   private String tokenType = "Bearer";
 
@@ -16,8 +19,9 @@ public class LoginResponseDto {
 
   public LoginResponseDto() {}
 
-  public LoginResponseDto(String accessToken, String loginId) {
+  public LoginResponseDto(String accessToken, String refreshToken, String loginId) {
     this.accessToken = accessToken;
+    this.refreshToken = refreshToken;
     this.loginId = loginId;
   }
 
@@ -43,5 +47,13 @@ public class LoginResponseDto {
 
   public void setLoginId(String loginId) {
     this.loginId = loginId;
+  }
+
+  public String getRefreshToken() {
+    return refreshToken;
+  }
+
+  public void setRefreshToken(String refreshToken) {
+    this.refreshToken = refreshToken;
   }
 }
