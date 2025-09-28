@@ -24,7 +24,7 @@ public class StatusApiResponseDTO {
   ProgressResult progress;
 
   // 단계별 결과 데이터
-  StageResults stageResults;
+  StageResults stage;
 
   // 로그 정보
   List<Logs> logs;

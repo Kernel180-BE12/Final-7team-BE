@@ -1,9 +1,9 @@
 package com.softlabs.aicontents.domain.orchestration;
 
-import com.softlabs.aicontents.domain.orchestration.dto.ExecuteApiResponseDTO;
 import com.softlabs.aicontents.domain.orchestration.dto.PipeExecuteData;
 import com.softlabs.aicontents.domain.orchestration.mapper.LogMapper;
 import com.softlabs.aicontents.domain.orchestration.mapper.PipelineMapper;
+import com.softlabs.aicontents.domain.orchestration.vo.PipeStatusResponseVO;
 import com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.AIContentsResult;
 import com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.BlogPublishResult;
 import com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.KeywordResult;
@@ -17,6 +17,8 @@ import com.softlabs.aicontents.domain.scheduler.service.executor.ProductCrawling
 // import com.softlabs.aicontents.domain.orchestration.refreshCache.CacheRefreshService;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.softlabs.aicontents.domain.scheduler.vo.response.ScheduleResponseVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -40,55 +42,69 @@ public class PipelineService {
 
   @Autowired private LogMapper logMapper;
 
-  // @PostMapping("/execute")
-  public ExecuteApiResponseDTO executionPipline() {
+
+  public StatusApiResponseDTO executionPipline() {
 
     // 1. 파이프라인 테이블의 ID(executionId) 생성
     int executionId = createNewExecution();
     PipeExecuteData pipeExecuteData = new PipeExecuteData();
-    ExecuteApiResponseDTO executeApiResponseDTO = new ExecuteApiResponseDTO();
 
-    System.out.println("executionId=" + executionId);
-    // 2. PipeExecuteData 채우기
+    StatusApiResponseDTO statusApiResponseDTO = new StatusApiResponseDTO();
+    ProgressResult progressResult = new ProgressResult();
+    StageResults stageResults = new StageResults();
+    statusApiResponseDTO.setProgress(progressResult);
+    statusApiResponseDTO.setStage(stageResults);
 
-    pipeExecuteData.setExecutionId(executionId);
-    System.out.println(pipeExecuteData.getExecutionId() + "생성된 ID는 여기 있다.");
-    pipeExecuteData.setStatus("started");
-    pipeExecuteData.setEstimatedDuration("약 35분");
-    pipeExecuteData.setStages(
-        List.of(
-            "keyword_extraction", "product_crawling", "content_generation", "content_publishing"));
-    executeApiResponseDTO.setData(pipeExecuteData);
 
-    // 3. ExecuteApiResponseDTO 채우기
-    executeApiResponseDTO.setSuccess(true);
-    executeApiResponseDTO.setMessage("파이프라인 실행이 시작되었습니다");
+    //
+    statusApiResponseDTO.setExecutionId(executionId);
+    // statusApiResponseDTO에는 taskId 필드가 없으므로 제거
+    statusApiResponseDTO.setOverallStatus("PENDING");
+    statusApiResponseDTO.setCurrentStage("START_PIPELINE");
 
-    System.out.println("파이프라인 시작점" + executionId);
+    System.out.println("파이프라인 시작점 executionId=" + executionId);
+
+
+
 
     try {
 
       //STEP_00 워크플로우 시작
       logMapper.insertStep_00(executionId);
-      int exeID= pipeExecuteData.getExecutionId();
-      System.out.println("\n\n\n\n"+exeID);
+
+      statusApiResponseDTO.setOverallStatus("RUNNING");
+      statusApiResponseDTO.setCurrentStage("START_PIPELINE");
+//      return statusApiResponseDTO;
+
+
       // STEP_01 - 키워드 추출
-      KeywordResult keywordResultExecution = keywordExecutor.keywordExecute(pipeExecuteData.getExecutionId());
-      System.out.println("파이프라인 1단계 결과/  " + keywordResultExecution);
+      KeywordResult keywordResult = keywordExecutor.keywordExecute(statusApiResponseDTO.getExecutionId(),statusApiResponseDTO);
+      System.out.println("파이프라인 1단계 결과/  " + keywordResult);
       //  STEP_01 완료 판단
       if (!isStep01Completed(executionId)) {
-        logMapper.insertStep_01Faild(executionId);
-        throw new RuntimeException("1단계 실패: 키워드 추출이 완료되지 않았습니다");
-      }
+        logMapper.insertStep_01Faild(executionId);  // -> 파이프라인 실패 - 크롤링 실패
+        System.out.println("1단계 실패 - 다음 단계로 진행");
+        statusApiResponseDTO.setOverallStatus("RUNNING");
+        statusApiResponseDTO.setCurrentStage("CRAWILING-KEYWORD");
+        // keywordExtraction.setStatus("Faild"); // 변수 선언 필요
+//        return statusApiResponseDTO;
+      } else{
       logMapper.insertStep_01Success(executionId);
       System.out.println("1단계 완료 확인됨 - 다음 단계로 진행");
+      statusApiResponseDTO.setOverallStatus("RUNNING");
+      statusApiResponseDTO.setCurrentStage("CRAWILING-KEYWORD");
+      // keywordExtraction.setStatus("COMPLETED"); // 변수 선언 필요
+//      return statusApiResponseDTO;
+      }
 
-      /// todo: executeApiResponseDTO 결과물 저장 메서드
+
+
       /// todo: 파이프라인 테이블에 상태 저장
+
 
       // STEP_02 - 상품정보 & URL 추출
       ProductCrawlingResult productCrawlingResultExecution =
-          crawlingExecutor.productCrawlingExecute(pipeExecuteData.getExecutionId(), keywordResultExecution);
+          crawlingExecutor.productCrawlingExecute(pipeExecuteData.getExecutionId(), keywordResult);
       System.out.println("파이프라인 2단계 결과/  " + productCrawlingResultExecution);
       //  STEP_02 완료 판단
       if (!isStep02Completed(executionId)) {
@@ -135,15 +151,15 @@ public class PipelineService {
       //STEP_99 워크플로우 종료
         logMapper.insertStep_99(pipeExecuteData.getExecutionId());
 
-        return executeApiResponseDTO;
+        return statusApiResponseDTO;
 
     } catch (Exception e) {
       log.error("파이프라인 실행 실패:{}", e.getMessage());
-      executeApiResponseDTO.setSuccess(false);
-      executeApiResponseDTO.setMessage("파이프라인 실행 실패");
+      statusApiResponseDTO.setOverallStatus("FAILED");
+      statusApiResponseDTO.setCurrentStage("ERROR");
       logMapper.insertStep_00Faild(pipeExecuteData.getExecutionId());
 
-      return executeApiResponseDTO;
+      return statusApiResponseDTO;
 
     }
   }
@@ -337,7 +353,7 @@ public class PipelineService {
 
     stageResults.setPublishingStatus(publishingStatus);
 
-    statusApiResponseDTO.setStageResults(stageResults);
+    statusApiResponseDTO.setStage(stageResults);
     System.out.println("statusApiResponseDTO 반환 =" + statusApiResponseDTO);
 
     // 4. 로그 정보
@@ -369,7 +385,7 @@ public class PipelineService {
 
   //step01 완료 판단
   private boolean isStep01Completed(int executionId) {
-    KeywordResult keywordResult = pipelineMapper.selectKeywordStatuscode(executionId);
+    Keyword keywordResult = pipelineMapper.selectKeywordStatuscode(executionId);
 
     if (keywordResult == null) {
       return false;

@@ -84,30 +84,34 @@ public class ScheduleEngineController {
 
   /** 파이프라인 */
   //
-  //  / 10. 파이프라인 실행
-  @PostMapping("/pipeline/execute")
-  public ExecuteApiResponseDTO executePipline() {
-   ExecuteApiResponseDTO executeApiResponseDTO = new ExecuteApiResponseDTO();
-    try {
-      // 수동실행일 경우,
-
-      return pipelineService.executionPipline();
-    } catch (Exception e) {
-      return executeApiResponseDTO;
-    }
-  }
+//   10. 파이프라인 실행
+//  @PostMapping("/pipeline/execute")
+//  public ExecuteApiResponseDTO executePipline() {
+//   ExecuteApiResponseDTO executeApiResponseDTO = new ExecuteApiResponseDTO();
+//    try {
+//      // 수동실행일 경우,
+//
+//      return pipelineService.executionPipline();
+//    } catch (Exception e) {
+//      executeApiResponseDTO.setSuccess(false);
+//      executeApiResponseDTO.setMessage(e.getMessage());
+//      return executeApiResponseDTO;
+//    }
+//  }
 
   /// 11. 파이프라인 상태 조회
   @GetMapping("/pipeline/status/{executionId}")
-  public ApiResponseDTO<StatusApiResponseDTO> statusPipeline(@PathVariable int executionId) {
+  public ApiResponseDTO<StatusApiResponseDTO> executePipline(@PathVariable int executionId) {
 
     try {
       StatusApiResponseDTO statusApiResponseDTO = pipelineService.getStatusPipline(executionId);
+      System.out.print("\n\n\n\n\n\n"+statusApiResponseDTO+"\n\n\n\n\n\n");
       String successMesg = "파이프라인 상태 데이터를 pipeResultDataDTO에 저장 완료";
+
 
       return ApiResponseDTO.success(statusApiResponseDTO, successMesg);
 
-    } catch (Exception e) {
+    }catch (Exception e) {
       return ApiResponseDTO.error("파이프라인 상태 조회 실패");
     }
   }

@@ -4,6 +4,9 @@ package com.softlabs.aicontents.domain.orchestration.vo;
 import com.softlabs.aicontents.domain.scheduler.dto.resultDTO.Logs;
 import com.softlabs.aicontents.domain.scheduler.dto.resultDTO.ProgressResult;
 import com.softlabs.aicontents.domain.scheduler.dto.resultDTO.StageResults;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import lombok.Data;
 
@@ -11,8 +14,9 @@ import lombok.Data;
 public class PipeStatusResponseVO {
 
   int executionId;
+  int taskId;
   String overallStatus;
-  String startedAt;
+  String startedAt =LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
   String completedAt;
   String currentStage;
 
@@ -20,7 +24,7 @@ public class PipeStatusResponseVO {
   ProgressResult progressResult;
 
   // 단계별 결과 데이터
-  StageResults results;
+  StageResults stageResults;
 
   // 로그 정보
   List<Logs> logs;

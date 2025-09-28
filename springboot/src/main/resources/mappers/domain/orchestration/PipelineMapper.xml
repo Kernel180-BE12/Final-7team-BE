@@ -6,10 +6,12 @@
 
 <mapper namespace="com.softlabs.aicontents.domain.orchestration.mapper.PipelineMapper">
 
-    <select id="selectKeywordStatuscode" resultType="com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.KeywordResult">
-        SELECT STATUS_CODE as keyWordStatusCode,
-               KEYWORD as keyword,
-               EXECUTION_ID as executionId
+    <select id="selectKeywordStatuscode" resultType="com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.KeywordResult;
+">
+        SELECT KEYWORD as keyword,
+               STATUS_CODE as keyWordStatusCode,
+               EXECUTION_ID as executionId,
+                TREND_SCORE as relevanceScore
           FROM ADMIN.TREND_DATA
          WHERE EXECUTION_ID =#{executionId}
 

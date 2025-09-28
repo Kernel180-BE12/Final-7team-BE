@@ -67,6 +67,7 @@ public class ScheduleEngineService {
 
 
       // 4. DB 저장
+      //taskId 최초 생성
       int resultInsert = scheduleEngineMapper.insertSchedule(schedulerRequestVO);
 
       // 방금 저장된 스케줄 정보를 다시 조회

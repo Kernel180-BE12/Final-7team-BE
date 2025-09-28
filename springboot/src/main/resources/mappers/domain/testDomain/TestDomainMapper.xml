@@ -10,12 +10,14 @@
             EXECUTION_ID,
             KEYWORD,
             STATUS_CODE,
+            TREND_SCORE,
             CREATED_AT,
             UPDATED_AT
         ) VALUES (
                      #{executionId},
                      #{keyword},
                      #{statusCode},
+                     98,
                      SYSTIMESTAMP,
                      SYSTIMESTAMP
                  )
