@@ -1,4 +1,4 @@
-import asyncio, sys
+import asyncio, sys, uuid, time
 if sys.platform.startswith("win"):
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
@@ -9,7 +9,7 @@ from datetime import datetime
 from . import models, schemas, config
 from .database import SessionLocal, engine, get_db
 from playwright.async_api import async_playwright
-from .schemas import PublishRequest, PublishResponse
+from .schemas import PublishRequest, PublishResponse, PublishStatus
 from .publisher import BlogPostPublisher
 
 
@@ -83,16 +83,48 @@ async def startup():
     print("Playwright를 시작합니다...")
     app.state.playwright = await async_playwright().start()
     app.state.browser = await app.state.playwright.chromium.launch(headless=True)
+    app.state.publisher = BlogPostPublisher(app.state.browser)
     print("Playwright 시작 완료.")
 @app.on_event("shutdown")
 async def shutdown():
-    await app.state.browser.close()
-    await app.state.playwright.stop()
+    print("Playwright 종료 중...")
+    if getattr(app.state, "browser", None):
+        await app.state.browser.close()
+    if getattr(app.state, "playwright", None):
+        await app.state.playwright.stop()
+    print("Playwright 종료 완료.")
 
 @app.post("/publish", response_model=PublishResponse)
 async def publish(req: PublishRequest):
-    if not req.aiContentId:
-        raise HTTPException(status_code=400, detail="aiContentId is required")
+    pub = getattr(app.state, "publisher", None)
+    if pub is None:
+        raise HTTPException(status_code=503, detail="Service starting up. Try again.")
 
-    publisher = BlogPostPublisher(browser=app.state.browser)
-    return await publisher.publish(req)
+    cid = f"p-{uuid.uuid4().hex[:12]}"
+    t0 = time.perf_counter()
+
+        # Playwright 실행 → 발행 결과
+    r = await pub.publish(req)
+    return PublishResponse(
+        publishId=None,                      # FastAPI에서 생성 안 하면 None
+        aiContentId=req.aiContentId,
+        blogPlatform="NAVER",
+        blogPostId=r.get("blogPostId"),
+        blogUrl=r.get("blogUrl"),
+        publishStatus=PublishStatus.SUCCESS, # ← 성공 고정
+        publishResponse=r.get("raw"),        # 원시/요약 응답 문자열
+        errorMessage=None,
+        attemptCount=1,
+        publishedAt=r.get("publishedAt"),
+        createdAt=None,
+        updatedAt=None,
+        correlationId=cid,
+        durationMs=int((time.perf_counter()-t0)*1000),
+    )
+
+
+    # if not req.aiContentId:
+    #     raise HTTPException(status_code=400, detail="aiContentId is required")
+    #
+    # publisher = BlogPostPublisher(browser=app.state.browser)
+    # return await publisher.publish(req)
