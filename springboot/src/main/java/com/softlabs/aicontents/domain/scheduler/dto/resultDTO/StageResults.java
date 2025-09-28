@@ -4,7 +4,7 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class ExecutionResults {
+public class StageResults {
   List<Keyword> keywords;
   List<Product> products;
   Content content;

@@ -28,7 +28,7 @@
             EVIDENCE_CSV,
             SCHEMA_VERSION,
             CREATED_AT
-        FROM DEV_USER.AI_POST
+        FROM ADMIN.AI_POST
         WHERE POST_ID = #{postId}
     </select>
 
