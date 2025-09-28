@@ -7,12 +7,12 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class LogListResponse {
-  private Long executionId; // 실행 ID
+  //private Long executionId; // 실행 ID
   private List<LogEntryVO> logs; // 로그 목록
-  private PaginationInfo paginationInfo;
+  private Pagination pagination;
   @Data
   @AllArgsConstructor
-  public static class PaginationInfo{
+  public static class Pagination{
     private  int currentPage;
     private int totalPages;//
     private long totalCount;
