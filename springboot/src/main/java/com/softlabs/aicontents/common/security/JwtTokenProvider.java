@@ -16,18 +16,21 @@ public class JwtTokenProvider {
 
   private final SecretKey secretKey;
   private final long accessTokenValidityInMilliseconds;
+  private final long refreshTokenValidityInMilliseconds;
   private final UserDetailsService userDetailsService;
 
   public JwtTokenProvider(
       @Value("${jwt.secret:mySecretKey1234567890123456789012}") String secretKey,
       @Value("${jwt.access-token-validity-in-seconds:3600}") long accessTokenValidityInSeconds,
+      @Value("${jwt.refresh-token-validity-in-seconds:1209600}") long refreshTokenValidityInSeconds,
       UserDetailsService userDetailsService) {
     this.secretKey = Keys.hmacShaKeyFor(secretKey.getBytes());
     this.accessTokenValidityInMilliseconds = accessTokenValidityInSeconds * 1000;
+    this.refreshTokenValidityInMilliseconds = refreshTokenValidityInSeconds * 1000;
     this.userDetailsService = userDetailsService;
   }
 
-  public String createToken(String loginId) {
+  public String createAccessToken(String loginId) {
     Date now = new Date();
     Date validity = new Date(now.getTime() + accessTokenValidityInMilliseconds);
 
@@ -37,6 +40,23 @@ public class JwtTokenProvider {
         .setExpiration(validity)
         .signWith(secretKey, SignatureAlgorithm.HS256)
         .compact();
+  }
+
+  public String createRefreshToken(String loginId) {
+    Date now = new Date();
+    Date validity = new Date(now.getTime() + refreshTokenValidityInMilliseconds);
+
+    return Jwts.builder()
+        .setSubject(loginId)
+        .setIssuedAt(now)
+        .setExpiration(validity)
+        .signWith(secretKey, SignatureAlgorithm.HS256)
+        .compact();
+  }
+
+  @Deprecated
+  public String createToken(String loginId) {
+    return createAccessToken(loginId);
   }
 
   public Authentication getAuthentication(String token) {
