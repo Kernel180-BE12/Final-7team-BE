@@ -15,5 +15,6 @@ public interface MonitoringStatsMapper {
   float allRows();
 
   int activeExecutions();
+
   int totalExecutions();
 }

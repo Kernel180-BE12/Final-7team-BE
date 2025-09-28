@@ -1,4 +1,5 @@
 package com.softlabs.aicontents.domain.monitoring.vo.response;
+
 import java.sql.Timestamp;
 
 /*
@@ -11,5 +12,4 @@ public record MonitoringStatsResponseVO(
     String logMessage, // 로그 메시지
     String logDetail, // 로그 상세
     String statusCode, // 상태 코드
-    Timestamp createdAt
-    ) {}
+    Timestamp createdAt) {}
