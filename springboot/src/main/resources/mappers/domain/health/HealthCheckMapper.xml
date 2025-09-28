@@ -38,4 +38,11 @@
             from SCHEDULED_TASKS
         )
     </select>
+
+    <!--DB 상태 조회-->
+    <select id="selectDbStatus" resultType="string">
+        select status from health_check
+        order by last_checked_at desc
+            fetch first 1 row only
+    </select>
 </mapper>
