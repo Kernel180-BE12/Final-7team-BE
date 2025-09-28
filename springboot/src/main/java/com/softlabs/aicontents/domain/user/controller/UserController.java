@@ -1,33 +1,33 @@
-//package com.softlabs.aicontents.domain.user.controller;
+// package com.softlabs.aicontents.domain.user.controller;
 //
-//import com.softlabs.aicontents.common.dto.response.ApiResponseDTO;
-//import com.softlabs.aicontents.domain.email.service.EmailService;
-//import com.softlabs.aicontents.domain.email.service.VerificationCodeService;
-//import com.softlabs.aicontents.domain.user.dto.UserSignupDto;
-//import com.softlabs.aicontents.domain.user.service.SignupValidationService;
-//import com.softlabs.aicontents.domain.user.service.UserService;
-//import com.softlabs.aicontents.domain.user.vo.User;
-//import io.swagger.v3.oas.annotations.Operation;
-//import io.swagger.v3.oas.annotations.Parameter;
-//import io.swagger.v3.oas.annotations.responses.ApiResponse;
-//import io.swagger.v3.oas.annotations.responses.ApiResponses;
-//import io.swagger.v3.oas.annotations.tags.Tag;
-//import jakarta.validation.Valid;
-//import lombok.extern.slf4j.Slf4j;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.http.ResponseEntity;
-//import org.springframework.web.bind.annotation.GetMapping;
-//import org.springframework.web.bind.annotation.PostMapping;
-//import org.springframework.web.bind.annotation.RequestBody;
-//import org.springframework.web.bind.annotation.RequestMapping;
-//import org.springframework.web.bind.annotation.RequestParam;
-//import org.springframework.web.bind.annotation.RestController;
+// import com.softlabs.aicontents.common.dto.response.ApiResponseDTO;
+// import com.softlabs.aicontents.domain.email.service.EmailService;
+// import com.softlabs.aicontents.domain.email.service.VerificationCodeService;
+// import com.softlabs.aicontents.domain.user.dto.UserSignupDto;
+// import com.softlabs.aicontents.domain.user.service.SignupValidationService;
+// import com.softlabs.aicontents.domain.user.service.UserService;
+// import com.softlabs.aicontents.domain.user.vo.User;
+// import io.swagger.v3.oas.annotations.Operation;
+// import io.swagger.v3.oas.annotations.Parameter;
+// import io.swagger.v3.oas.annotations.responses.ApiResponse;
+// import io.swagger.v3.oas.annotations.responses.ApiResponses;
+// import io.swagger.v3.oas.annotations.tags.Tag;
+// import jakarta.validation.Valid;
+// import lombok.extern.slf4j.Slf4j;
+// import org.springframework.beans.factory.annotation.Autowired;
+// import org.springframework.http.ResponseEntity;
+// import org.springframework.web.bind.annotation.GetMapping;
+// import org.springframework.web.bind.annotation.PostMapping;
+// import org.springframework.web.bind.annotation.RequestBody;
+// import org.springframework.web.bind.annotation.RequestMapping;
+// import org.springframework.web.bind.annotation.RequestParam;
+// import org.springframework.web.bind.annotation.RestController;
 //
-//@RestController
-//@RequestMapping("/users")
-//@Slf4j
-//@Tag(name = "User", description = "사용자 관리 API")
-//public class UserController {
+// @RestController
+// @RequestMapping("/users")
+// @Slf4j
+// @Tag(name = "User", description = "사용자 관리 API")
+// public class UserController {
 //
 //  private final UserService userService;
 //  private final EmailService emailService;
@@ -55,7 +55,8 @@
 //      })
 //  @GetMapping("/check-login-id")
 //  public ResponseEntity<ApiResponseDTO<Boolean>> checkLoginIdDuplicate(
-//      @Parameter(description = "확인할 로그인 ID", required = true, example = "testuser123") @RequestParam
+//      @Parameter(description = "확인할 로그인 ID", required = true, example = "testuser123")
+// @RequestParam
 //          String loginId) {
 //    boolean isDuplicate = userService.isLoginIdDuplicate(loginId);
 //
@@ -103,7 +104,8 @@
 //      String verificationCode = verificationCodeService.generateVerificationCode(email);
 //      emailService.sendVerificationEmail(email, verificationCode);
 //
-//      return ResponseEntity.ok(ApiResponseDTO.success(null, "인증코드가 메일로 발송되었습니다. 인증코드는 5분간 유효합니다."));
+//      return ResponseEntity.ok(ApiResponseDTO.success(null, "인증코드가 메일로 발송되었습니다. 인증코드는 5분간
+// 유효합니다."));
 //    } catch (Exception e) {
 //      log.error("인증코드 발송 실패: {}", e.getMessage());
 //      return ResponseEntity.internalServerError().body(ApiResponseDTO.error("인증코드 발송에 실패했습니다."));
@@ -156,4 +158,4 @@
 //
 //    return ResponseEntity.ok(ApiResponseDTO.success(true, "회원가입이 완료되었습니다."));
 //  }
-//}
+// }

@@ -1,26 +1,27 @@
-//package com.softlabs.aicontents.domain.orchestration.vo;
+// package com.softlabs.aicontents.domain.orchestration.vo;
 //
-//import com.softlabs.aicontents.domain.scheduler.dto.resultDTO.Product;
-//import lombok.Data;
+// import com.softlabs.aicontents.domain.scheduler.dto.resultDTO.Product;
+// import lombok.Data;
 //
-//import java.time.LocalDateTime;
-//import java.time.format.DateTimeFormatter;
-//import java.util.ArrayList;
-//import java.util.List;
+// import java.time.LocalDateTime;
+// import java.time.format.DateTimeFormatter;
+// import java.util.ArrayList;
+// import java.util.List;
 //
-//@Data
-//public class PipeTotalData {
+// @Data
+// public class PipeTotalData {
 //
 //   private int executionId;
 //    private int taskId;
 //    private String overallStatus;
-//    private String startedAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+//    private String startedAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd
+// HH:mm:ss"));
 //    private String completedAt;
 //    private String currentStage;
 //    //
 //
 //// 각 단계별 진행 상황
-////ProgressResult progressResult;
+//// ProgressResult progressResult;
 //
 //    private String keywordExtractionStatus;
 //    private int keywordExtractionProgress;
@@ -43,7 +44,7 @@
 //
 //
 //// 단계별 결과 데이터
-////StageResults stageResults;
+//// StageResults stageResults;
 //    //List<Keyword> keywords;
 //    @Data
 //    public static class Keyword {
@@ -100,4 +101,4 @@
 //    }
 //
 //
-//}
+// }

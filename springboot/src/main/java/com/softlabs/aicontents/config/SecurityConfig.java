@@ -1,59 +1,68 @@
-////package com.softlabs.aicontents.config;
-////
-////import org.springframework.context.annotation.Bean;
-////import org.springframework.context.annotation.Configuration;
-////import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-////import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-////import org.springframework.security.web.SecurityFilterChain;
-////
-////@Configuration
-////@EnableWebSecurity
-////public class SecurityConfig {
-////
-////  @Bean
-////  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-////    http
-////        // REST API에서는 보통 CSRF를 끕니다.
-////        .csrf(csrf -> csrf.disable())
-////
-////        // 요청별 권한 설정
-////        .authorizeHttpRequests(
-////            authz ->
-////                authz
-////                    .requestMatchers("/users/send-verification-code")
-////                    .permitAll()
-////                    .requestMatchers("/users/verify-code")
-////                    .permitAll()
-////                    .requestMatchers("/users/check-login-id")
-////                    .permitAll()
-////                    .requestMatchers("/users/check-email")
-////                    .permitAll()
-////                    .requestMatchers("/users/signup")
-////                    .permitAll()
-////                    .requestMatchers("/swagger-ui/**", "/v3/api-docs/**")
-////                    .permitAll()
-////                    .anyRequest()
-////                    .authenticated());
-////
-////    return http.build();
-////  }
-////}
 package com.softlabs.aicontents.config;
 
+import com.softlabs.aicontents.common.security.JwtAuthenticationEntryPoint;
+import com.softlabs.aicontents.common.security.JwtAuthenticationFilter;
+import com.softlabs.aicontents.common.security.JwtTokenProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
+  private final JwtTokenProvider jwtTokenProvider;
+  private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+
+  public SecurityConfig(
+      JwtTokenProvider jwtTokenProvider, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
+    this.jwtTokenProvider = jwtTokenProvider;
+    this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
+  }
+
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
+
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http.csrf(csrf -> csrf.disable())
+        .sessionManagement(
+            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .exceptionHandling(
+            exceptions -> exceptions.authenticationEntryPoint(jwtAuthenticationEntryPoint))
+        .authorizeHttpRequests(
+            authz ->
+                authz
+                    .requestMatchers("/auth/login")
+                    .permitAll()
+                    .requestMatchers("/users/send-verification-code")
+                    .permitAll()
+                    .requestMatchers("/users/verify-code")
+                    .permitAll()
+                    .requestMatchers("/users/check-login-id")
+                    .permitAll()
+                    .requestMatchers("/users/check-email")
+                    .permitAll()
+                    .requestMatchers("/users/signup")
+                    .permitAll()
+                    .requestMatchers("/swagger-ui/**", "/v3/api-docs/**")
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated())
+        .addFilterBefore(
+            new JwtAuthenticationFilter(jwtTokenProvider),
+            UsernamePasswordAuthenticationFilter.class);
+
     http.csrf(csrf -> csrf.disable()) // CSRF 비활성화
-            .authorizeHttpRequests(auth -> auth.anyRequest().permitAll()); // 모든 요청 허용
+        .authorizeHttpRequests(auth -> auth.anyRequest().permitAll()); // 모든 요청 허용
     return http.build();
   }
 }

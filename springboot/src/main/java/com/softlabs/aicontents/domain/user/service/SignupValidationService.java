@@ -1,15 +1,15 @@
-//package com.softlabs.aicontents.domain.user.service;
+// package com.softlabs.aicontents.domain.user.service;
 //
-//import com.softlabs.aicontents.common.enums.ErrorCode;
-//import com.softlabs.aicontents.common.exception.BusinessException;
-//import com.softlabs.aicontents.domain.email.service.VerificationCodeService;
-//import lombok.extern.slf4j.Slf4j;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.stereotype.Service;
+// import com.softlabs.aicontents.common.enums.ErrorCode;
+// import com.softlabs.aicontents.common.exception.BusinessException;
+// import com.softlabs.aicontents.domain.email.service.VerificationCodeService;
+// import lombok.extern.slf4j.Slf4j;
+// import org.springframework.beans.factory.annotation.Autowired;
+// import org.springframework.stereotype.Service;
 //
-//@Service
-//@Slf4j
-//public class SignupValidationService {
+// @Service
+// @Slf4j
+// public class SignupValidationService {
 //
 //  private final UserService userService;
 //  private final VerificationCodeService verificationCodeService;
@@ -36,4 +36,4 @@
 //
 //    log.info("회원가입 검증 완료 - loginId: {}, email: {}", loginId, email);
 //  }
-//}
+// }
