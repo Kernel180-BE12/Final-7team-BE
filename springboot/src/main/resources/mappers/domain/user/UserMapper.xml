@@ -48,20 +48,6 @@
          WHERE login_id = #{loginId}
     </select>
 
-    <!-- JWT 로그인을 위한 사용자 조회 -->
-    <select id="findByLoginId" resultMap="UserResultMap">
-        <!-- UserMapper.findByLoginId -->
-        SELECT id,
-               login_id,
-               email,
-               password,
-               created_at,
-               updated_at,
-               last_login_at
-          FROM users
-         WHERE login_id = #{loginId}
-    </select>
-
     <!-- 이메일로 사용자 조회 -->
     <select id="selectUserByEmail" resultMap="UserResultMap">
         <!-- UserMapper.selectUserByEmail -->
