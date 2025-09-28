@@ -5,7 +5,7 @@
 <mapper namespace="com.softlabs.aicontents.domain.monitoring.mapper.MonitoringStatsMapper">
     <!--최근 3건 조회-->
     <select id="findRecentLogs" resultType="com.softlabs.aicontents.domain.monitoring.vo.response.MonitoringStatsResponseVO">
-        select LOG_MESSAGE,LOG_DETAIL,STATUS_CODE from UNIFIED_LOGS
+        select LOG_ID,LOG_MESSAGE,LOG_DETAIL,STATUS_CODE,created_at from UNIFIED_LOGS
         where STEP_CODE='STEP_99'
         order by created_at desc fetch first 3 rows only
     </select>
@@ -26,5 +26,16 @@
     <select id="allRows" resultType="float">
         select count(*) from UNIFIED_LOGS
         where STEP_CODE='STEP_99'
+    </select>
+
+    <!--총 스케줄 개수-->
+    <select id="totalExecutions" resultType="int">
+        select count(*) from SCHEDULED_TASKS
+    </select>
+
+    <!--활성화된 스케줄 개수-->
+    <select id="activeExecutions" resultType="int">
+        select count(*) from SCHEDULED_TASKS
+        where IS_ACTIVE='Y'
     </select>
 </mapper>
