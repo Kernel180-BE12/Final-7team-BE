@@ -8,8 +8,8 @@
 
     <select id="selectKeywordStatuscode" resultType="com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.KeywordResult">
         SELECT STATUS_CODE as keyWordStatusCode,
-                   KEYWORD as keyword,
-              EXECUTION_ID as executionId
+               KEYWORD as keyword,
+               EXECUTION_ID as executionId
           FROM ADMIN.TREND_DATA
          WHERE EXECUTION_ID =#{executionId}
 
@@ -17,9 +17,9 @@
 
     <select id="selctproductCrawlingStatuscode" resultType="com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.ProductCrawlingResult">
         SELECT STATUS_CODE as productStatusCode,
-              PRODUCT_NAME as productName,
-                SOURCE_URL as sourceUrl,
-                     PRICE as price
+               PRODUCT_NAME as productName,
+               SOURCE_URL as sourceUrl,
+               PRICE as price
         FROM ADMIN.SSADAGU_CONTENTS
         WHERE EXECUTION_ID =#{executionId}
 
@@ -28,11 +28,11 @@
 
     <select id="selectAiContentStatuscode" resultType="com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.AIContentsResult">
         SELECT STATUS_CODE as aIContentStatusCode,
-                     TITLE as title,
-                   SUMMARY as summary,
-                  HASHTAGS as hashtags,
-                   CONTENT as content,
-                SOURCE_URL as sourceUrl
+               TITLE as title,
+               SUMMARY as summary,
+               HASHTAGS as hashtags,
+               CONTENT as content,
+               SOURCE_URL as sourceUrl
         FROM ADMIN.AI_GENERATED_CONTENTS
         WHERE EXECUTION_ID =#{executionId}
 
@@ -40,9 +40,9 @@
 
     <select id="selectPublishStatuscode" resultType="com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.BlogPublishResult">
         SELECT STATUS_CODE as publishStatusCode,
-             BLOG_PLATFORM as blogPlatform,
-              BLOG_POST_ID as blogPostId,
-                  BLOG_URL as blogUrl
+               BLOG_PLATFORM as blogPlatform,
+               BLOG_POST_ID as blogPostId,
+               BLOG_URL as blogUrl
         FROM ADMIN.BLOG_PUBLISH_LOGS
         WHERE EXECUTION_ID =#{executionId}
 
@@ -57,6 +57,13 @@
         SELECT execution_id as executionId
           FROM ADMIN.PIPELINE_EXECUTIONS
          WHERE execution_id = (SELECT MAX(execution_id) FROM ADMIN.PIPELINE_EXECUTIONS)
+    </select>
+
+    <select id="selectScheduleTaskData" resultType="com.softlabs.aicontents.domain.scheduler.vo.response.ScheduleTaskData">
+        SELECT TASK_ID as taskId,
+               EXECUTE_IMMEDIATELY as executeImmediately
+          FROM ADMIN.SCHEDULED_TASKS
+         WHERE TASK_ID = (SELECT MAX(TASK_ID) FROM ADMIN.SCHEDULED_TASKS)
     </select>
 
 </mapper>

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.softlabs.aicontents.domain.user.mapper.UserMapper">
+
+    <resultMap id="UserResultMap" type="com.softlabs.aicontents.domain.user.vo.User">
+        <id property="id" column="id"/>
+        <result property="loginId" column="login_id"/>
+        <result property="email" column="email"/>
+        <result property="password" column="password"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <result property="lastLoginAt" column="last_login_at"/>
+    </resultMap>
+
+    <!-- 사용자 등록 -->
+    <insert id="insertUser" parameterType="com.softlabs.aicontents.domain.user.vo.User"
+            useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        <!-- UserMapper.insertUser -->
+        INSERT INTO users (
+            login_id,
+            email,
+            password,
+            created_at,
+            updated_at
+        ) VALUES (
+            #{loginId},
+            #{email},
+            #{password},
+            #{createdAt},
+            #{updatedAt}
+        )
+    </insert>
+
+    <!-- 로그인 ID로 사용자 조회 -->
+    <select id="selectUserByLoginId" resultMap="UserResultMap">
+        <!-- UserMapper.selectUserByLoginId -->
+        SELECT id,
+               login_id,
+               email,
+               password,
+               created_at,
+               updated_at,
+               last_login_at
+          FROM users
+         WHERE login_id = #{loginId}
+    </select>
+
+    <!-- JWT 로그인을 위한 사용자 조회 -->
+    <select id="findByLoginId" resultMap="UserResultMap">
+        <!-- UserMapper.findByLoginId -->
+        SELECT id,
+               login_id,
+               email,
+               password,
+               created_at,
+               updated_at,
+               last_login_at
+          FROM users
+         WHERE login_id = #{loginId}
+    </select>
+
+    <!-- 이메일로 사용자 조회 -->
+    <select id="selectUserByEmail" resultMap="UserResultMap">
+        <!-- UserMapper.selectUserByEmail -->
+        SELECT id,
+               login_id,
+               email,
+               password,
+               created_at,
+               updated_at,
+               last_login_at
+          FROM users
+         WHERE email = #{email}
+    </select>
+
+    <!-- ID로 사용자 조회 -->
+    <select id="selectUserById" resultMap="UserResultMap">
+        <!-- UserMapper.selectUserById -->
+        SELECT id,
+               login_id,
+               email,
+               password,
+               created_at,
+               updated_at,
+               last_login_at
+          FROM users
+         WHERE id = #{id}
+    </select>
+
+    <!-- 사용자 정보 수정 -->
+    <update id="updateUser" parameterType="com.softlabs.aicontents.domain.user.vo.User">
+        <!-- UserMapper.updateUser -->
+        UPDATE users
+           SET email = #{email},
+               password = #{password},
+               updated_at = #{updatedAt},
+               last_login_at = #{lastLoginAt}
+         WHERE id = #{id}
+    </update>
+
+    <!-- 사용자 삭제 -->
+    <delete id="deleteUser">
+        <!-- UserMapper.deleteUser -->
+        DELETE FROM users
+         WHERE id = #{id}
+    </delete>
+
+    <!-- 로그인 ID 중복 확인 -->
+    <select id="existsByLoginId" resultType="boolean">
+        <!-- UserMapper.existsByLoginId -->
+        SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END
+          FROM users
+         WHERE login_id = #{loginId}
+    </select>
+
+    <!-- 이메일 중복 확인 -->
+    <select id="existsByEmail" resultType="boolean">
+        <!-- UserMapper.existsByEmail -->
+        SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END
+          FROM users
+         WHERE email = #{email}
+    </select>
+
+</mapper>
