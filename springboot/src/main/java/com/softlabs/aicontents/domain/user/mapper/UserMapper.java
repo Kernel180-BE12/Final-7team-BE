@@ -11,8 +11,6 @@ public interface UserMapper {
 
   User selectUserByLoginId(@Param("loginId") String loginId);
 
-  User findByLoginId(@Param("loginId") String loginId);
-
   User selectUserByEmail(@Param("email") String email);
 
   User selectUserById(@Param("id") Long id);

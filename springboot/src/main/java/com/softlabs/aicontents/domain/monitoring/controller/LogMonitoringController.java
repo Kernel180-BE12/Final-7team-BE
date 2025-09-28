@@ -1,6 +1,5 @@
 package com.softlabs.aicontents.domain.monitoring.controller;
 
-import com.softlabs.aicontents.common.dto.response.ApiResponseDTO;
 import com.softlabs.aicontents.domain.monitoring.dto.request.LogSearchRequest;
 import com.softlabs.aicontents.domain.monitoring.service.LogMonitoringService;
 import com.softlabs.aicontents.domain.monitoring.vo.response.LogListResponse;
@@ -19,8 +18,8 @@ public class LogMonitoringController {
 
   @GetMapping("/logs")
   @Operation(summary = "작업 로그 조회 API", description = "해당하는 작업 ID의 로그를 조회합니다")
-  public ResponseEntity<ApiResponseDTO<LogListResponse>> getLogs(LogSearchRequest request) {
-    LogListResponse response = logMonitoringService.getLogs(request);
-    return ResponseEntity.ok(ApiResponseDTO.success(response));
+  public ResponseEntity<LogListResponse> getLogs(LogSearchRequest request) {
+    // 검색 요청 객체를 서비스에 넘겨 결과 반환
+    return ResponseEntity.ok(logMonitoringService.getLogs(request));
   }
 }
