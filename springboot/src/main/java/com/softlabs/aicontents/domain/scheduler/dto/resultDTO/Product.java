@@ -7,6 +7,8 @@ public class Product {
 
   String productId;
   String name;
-  int price;
+  Integer price;
   String platform;
+  String url;
+  boolean selected;
 }

@@ -1,10 +1,15 @@
 package com.softlabs.aicontents.domain.scheduler.service.executor;
 
+import com.softlabs.aicontents.domain.orchestration.mapper.LogMapper;
 import com.softlabs.aicontents.domain.orchestration.mapper.PipelineMapper;
 import com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.AIContentsResult;
 import com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.ProductCrawlingResult;
 // import com.softlabs.aicontents.domain.testMapper.AIContentMapper;
+import com.softlabs.aicontents.domain.scheduler.dto.StatusApiResponseDTO;
+import com.softlabs.aicontents.domain.scheduler.dto.resultDTO.Content;
 import com.softlabs.aicontents.domain.testDomainService.AIContentService;
+
+import java.util.Arrays;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,13 +21,11 @@ import org.springframework.stereotype.Service;
 public class AIContentExecutor {
 
   @Autowired private AIContentService aiContentService;
-
-  // todo: 실제 LLM생성 클래스로 변경
-
   @Autowired private PipelineMapper pipelineMapper;
+  @Autowired private LogMapper logMapper;
 
   public AIContentsResult aIContentsResultExecute(
-      int executionId, ProductCrawlingResult productCrawlingResult) {
+      int executionId, ProductCrawlingResult productCrawlingResult, StatusApiResponseDTO statusApiResponseDTO) {
 
     // 1. 메서드 실행
     System.out.println("LLM 생성 메서드 실행 - aiContentService(productCrawlingResult)");
@@ -36,10 +39,14 @@ public class AIContentExecutor {
     // 3. null 체크
     if (aiContentsResult == null) {
       System.out.println("NullPointerException 감지");
+      logMapper.insertStep_03Faild(executionId);
       aiContentsResult = new AIContentsResult();
       aiContentsResult.setSuccess(false);
       aiContentsResult.setExecutionId(executionId);
     }
+
+    Content content = new Content();
+    boolean success = false;
 
     // 4. 완료 판단
     if (aiContentsResult.getTitle() != null
@@ -49,12 +56,40 @@ public class AIContentExecutor {
         && aiContentsResult.getSourceUrl() != null
         && "SUCCESS".equals(aiContentsResult.getAIContentStatusCode())) {
 
+      logMapper.insertStep_03Success(executionId);
+      success = true;
       aiContentsResult.setSuccess(true);
+
+      content.setTitle(aiContentsResult.getTitle());
+      content.setSummary(aiContentsResult.getSummary());
+      content.setContent(aiContentsResult.getContent());
+      content.setTags(Arrays.asList(aiContentsResult.getHashtags().split(",")));
+
     } else {
+      logMapper.insertStep_03Faild(executionId);
+      success = false;
       aiContentsResult.setSuccess(false);
+
+      content.setTitle(aiContentsResult.getTitle());
+      content.setSummary(aiContentsResult.getSummary());
+      content.setContent(aiContentsResult.getContent());
+      if (aiContentsResult.getHashtags() != null) {
+        content.setTags(Arrays.asList(aiContentsResult.getHashtags().split(",")));
+      }
     }
 
-    System.out.println("여기 탔음" + aiContentsResult);
+    if(success) {
+      statusApiResponseDTO.getProgress().getContentGeneration().setStatus(aiContentsResult.getAIContentStatusCode());
+      statusApiResponseDTO.getProgress().getContentGeneration().setProgress(aiContentsResult.getProgress());
+      statusApiResponseDTO.getStage().setContent(content);
+    }
+    System.out.println("\n\nstatusApiResponseDTO ="+statusApiResponseDTO+"\n\n");
+
+    if (!success) {
+      statusApiResponseDTO.getProgress().getContentGeneration().setStatus(aiContentsResult.getAIContentStatusCode());
+      statusApiResponseDTO.getProgress().getContentGeneration().setProgress(aiContentsResult.getProgress());
+      statusApiResponseDTO.getStage().setContent(content);
+    }
 
     return aiContentsResult;
   }

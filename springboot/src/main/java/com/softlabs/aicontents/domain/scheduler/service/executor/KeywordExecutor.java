@@ -50,7 +50,7 @@ public class KeywordExecutor {
 
       // 4. 완료 판단 = keyword !=null, keyWordStatusCode =="SUCCESS"
       if (keywordResult.getKeyword() != null
-              && "SUCCESS".equals(keywordResult.getStatus())) {
+              && "SUCCESS".equals(keywordResult.getKeyWordStatusCode())) {
         logMapper.insertStep_01Success(executionId);
         success = true;
         keywordResult.setSelected(true);
@@ -75,14 +75,14 @@ public class KeywordExecutor {
       if(success) {
 
         // 최종 응답 객체에 매핑 (StatusApiResponseDTO는 progress, stage 필드 사용)
-        statusApiResponseDTO.getProgress().getKeywordExtraction().setStatus(keywordResult.getStatus());
+        statusApiResponseDTO.getProgress().getKeywordExtraction().setStatus(keywordResult.getKeyWordStatusCode());
         statusApiResponseDTO.getProgress().getKeywordExtraction().setProgress(keywordResult.getProgress());
         statusApiResponseDTO.getStage().setKeywords(keywordList);
       }
       System.out.println("\n\nstatusApiResponseDTO ="+statusApiResponseDTO+"\n\n");
 
       if (!success) {
-        statusApiResponseDTO.getProgress().getKeywordExtraction().setStatus(keywordResult.getStatus());
+        statusApiResponseDTO.getProgress().getKeywordExtraction().setStatus(keywordResult.getKeyWordStatusCode());
         statusApiResponseDTO.getProgress().getKeywordExtraction().setProgress(keywordResult.getProgress());
         statusApiResponseDTO.getStage().setKeywords(keywordList);
       }

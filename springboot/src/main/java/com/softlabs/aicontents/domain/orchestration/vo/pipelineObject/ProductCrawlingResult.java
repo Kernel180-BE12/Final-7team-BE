@@ -21,4 +21,12 @@ public class ProductCrawlingResult {
   private Integer price;
   private String productStatusCode;
   private String platform = "싸다구몰";
+
+  // 진행률 필드 추가
+  private int progress;
+  private String status;
+  //
+  private String productId;
+  private boolean selected;
+
 }

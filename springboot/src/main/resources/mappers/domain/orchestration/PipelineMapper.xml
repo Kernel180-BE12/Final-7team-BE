@@ -6,12 +6,16 @@
 
 <mapper namespace="com.softlabs.aicontents.domain.orchestration.mapper.PipelineMapper">
 
-    <select id="selectKeywordStatuscode" resultType="com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.KeywordResult;
-">
+    <select id="selectKeywordStatuscode" resultType="com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.KeywordResult">
         SELECT KEYWORD as keyword,
                STATUS_CODE as keyWordStatusCode,
                EXECUTION_ID as executionId,
-                TREND_SCORE as relevanceScore
+               TREND_SCORE as relevanceScore,
+               CASE
+                   WHEN STATUS_CODE = 'SUCCESS' AND KEYWORD IS NOT NULL THEN 100
+                   WHEN STATUS_CODE = 'FAILED' THEN 0
+                   ELSE 50
+               END as progress
           FROM ADMIN.TREND_DATA
          WHERE EXECUTION_ID =#{executionId}
 
@@ -21,7 +25,12 @@
         SELECT STATUS_CODE as productStatusCode,
                PRODUCT_NAME as productName,
                SOURCE_URL as sourceUrl,
-               PRICE as price
+               PRICE as price,
+               CASE
+                   WHEN STATUS_CODE = 'SUCCESS' AND PRODUCT_NAME IS NOT NULL AND SOURCE_URL IS NOT NULL AND PRICE IS NOT NULL THEN 100
+                   WHEN STATUS_CODE = 'FAILED' THEN 0
+                   ELSE 50
+               END as progress
         FROM ADMIN.SSADAGU_CONTENTS
         WHERE EXECUTION_ID =#{executionId}
 
@@ -34,7 +43,12 @@
                SUMMARY as summary,
                HASHTAGS as hashtags,
                CONTENT as content,
-               SOURCE_URL as sourceUrl
+               SOURCE_URL as sourceUrl,
+               CASE
+                   WHEN STATUS_CODE = 'SUCCESS' AND TITLE IS NOT NULL AND SUMMARY IS NOT NULL AND HASHTAGS IS NOT NULL AND CONTENT IS NOT NULL AND SOURCE_URL IS NOT NULL THEN 100
+                   WHEN STATUS_CODE = 'FAILED' THEN 0
+                   ELSE 50
+               END as progress
         FROM ADMIN.AI_GENERATED_CONTENTS
         WHERE EXECUTION_ID =#{executionId}
 
@@ -44,7 +58,12 @@
         SELECT STATUS_CODE as publishStatusCode,
                BLOG_PLATFORM as blogPlatform,
                BLOG_POST_ID as blogPostId,
-               BLOG_URL as blogUrl
+               BLOG_URL as blogUrl,
+               CASE
+                   WHEN STATUS_CODE = 'SUCCESS' AND BLOG_PLATFORM IS NOT NULL AND BLOG_POST_ID IS NOT NULL AND BLOG_URL IS NOT NULL THEN 100
+                   WHEN STATUS_CODE = 'FAILED' THEN 0
+                   ELSE 50
+               END as progress
         FROM ADMIN.BLOG_PUBLISH_LOGS
         WHERE EXECUTION_ID =#{executionId}
 

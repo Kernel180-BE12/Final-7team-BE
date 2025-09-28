@@ -17,4 +17,10 @@ public class BlogPublishResult {
   private String blogPostId;
   private String blogUrl;
   private String publishStatusCode;
+
+  // 진행률 필드 추가
+  private int progress;
+  private String status;
+  String publishStatus;
+
 }

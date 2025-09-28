@@ -45,19 +45,30 @@ public class PipelineService {
   @Autowired private LogMapper logMapper;
 
 
-  public StatusApiResponseDTO executionPipline(@RequestParam PipeStatusExcIdReqDTO ReqDTO) {
+  public StatusApiResponseDTO executionPipline(PipeStatusExcIdReqDTO reqDTO) {
 
     // 1. 파이프라인 테이블의 ID(executionId) 생성
 
     int executionId=createNewExecution();
-    ReqDTO.setExecutionId(executionId);
+    reqDTO.setExecutionId(executionId);
     PipeExecuteData pipeExecuteData = new PipeExecuteData();
 
     StatusApiResponseDTO statusApiResponseDTO = new StatusApiResponseDTO();
     ProgressResult progressResult = new ProgressResult();
+    progressResult.setKeywordExtraction(new KeywordExtraction());
+    progressResult.setProductCrawling(new ProductCrawling());
+    progressResult.setContentGeneration(new ContentGeneration());
+    progressResult.setContentPublishing(new ContentPublishing());
+
     StageResults stageResults = new StageResults();
+    stageResults.setKeywords(new ArrayList<>());
+    stageResults.setProducts(new ArrayList<>());
+    stageResults.setContent(new Content());
+    stageResults.setPublishingStatus(new PublishingStatus());
+
     statusApiResponseDTO.setProgress(progressResult);
     statusApiResponseDTO.setStage(stageResults);
+    statusApiResponseDTO.setLogs(new ArrayList<>());
 
 
     //
@@ -108,7 +119,7 @@ public class PipelineService {
 
       // STEP_02 - 상품정보 & URL 추출
       ProductCrawlingResult productCrawlingResultExecution =
-          crawlingExecutor.productCrawlingExecute(pipeExecuteData.getExecutionId(), keywordResult);
+          crawlingExecutor.productCrawlingExecute(executionId, keywordResult, statusApiResponseDTO);
       System.out.println("파이프라인 2단계 결과/  " + productCrawlingResultExecution);
       //  STEP_02 완료 판단
       if (!isStep02Completed(executionId)) {
@@ -126,7 +137,7 @@ public class PipelineService {
 
       // STEP_03 - LLM 생성
       AIContentsResult aIContentsResultExecution =
-          aiExecutor.aIContentsResultExecute(pipeExecuteData.getExecutionId(), productCrawlingResultExecution);
+          aiExecutor.aIContentsResultExecute(executionId, productCrawlingResultExecution, statusApiResponseDTO);
       System.out.println("파이프라인 3단계 결과/  " + aIContentsResultExecution);
       //  STEP_03 완료 판단
       if (!isStep03Completed(executionId)) {
@@ -138,30 +149,80 @@ public class PipelineService {
       // todo : if 추출 실패 시 3회 재시도 및 예외처리
       /// todo: executeApiResponseDTO 결과물 저장 메서드
 
-      // step04 - 블로그 발행
+      // STEP_04 - 블로그 발행
       BlogPublishResult blogPublishResultExecution =
-          blogExecutor.blogPublishResultExecute(pipeExecuteData.getExecutionId(), aIContentsResultExecution);
+          blogExecutor.blogPublishResultExecute(executionId, aIContentsResultExecution, statusApiResponseDTO);
       System.out.println("파이프라인 4단계 결과/  " + blogPublishResultExecution);
-      //  STEP_03 완료 판단
-      if (!isStep04Completed(pipeExecuteData.getExecutionId())) {
-        logMapper.insertStep_04Faild(pipeExecuteData.getExecutionId());
+      //  STEP_04 완료 판단
+      if (!isStep04Completed(executionId)) {
+        logMapper.insertStep_04Faild(executionId);
         throw new RuntimeException("4단계 실패: 발행이 완료되지 않았습니다");
       }
-      logMapper.insertStep_04Success(pipeExecuteData.getExecutionId());
+      logMapper.insertStep_04Success(executionId);
       System.out.println("4단계 완료 확인됨 - 워크 플로우 종료");
 
       log.info("파이프라인 성공");
 
       //STEP_99 워크플로우 종료
-        logMapper.insertStep_99(pipeExecuteData.getExecutionId());
+        logMapper.insertStep_99(executionId);
 
         return statusApiResponseDTO;
 
     } catch (Exception e) {
-      log.error("파이프라인 실행 실패:{}", e.getMessage());
+      log.error("파이프라인 실행 실패: executionId={}, error={}", executionId, e.getMessage(), e);
+
+      // statusApiResponseDTO가 NULL인 경우 생성
+      if (statusApiResponseDTO == null) {
+        statusApiResponseDTO = createSafeStatusResponse(executionId);
+      }
+
+      // Progress와 Stage가 NULL인 경우 초기화
+      if (statusApiResponseDTO.getProgress() == null) {
+        progressResult = new ProgressResult();
+        progressResult.setKeywordExtraction(new KeywordExtraction());
+        progressResult.setProductCrawling(new ProductCrawling());
+        progressResult.setContentGeneration(new ContentGeneration());
+        progressResult.setContentPublishing(new ContentPublishing());
+        statusApiResponseDTO.setProgress(progressResult);
+      } else {
+        progressResult = statusApiResponseDTO.getProgress();
+      }
+
+      if (statusApiResponseDTO.getStage() == null) {
+        stageResults = new StageResults();
+        stageResults.setKeywords(new ArrayList<>());
+        stageResults.setProducts(new ArrayList<>());
+        stageResults.setContent(new Content());
+        stageResults.setPublishingStatus(new PublishingStatus());
+        statusApiResponseDTO.setStage(stageResults);
+      } else {
+        stageResults = statusApiResponseDTO.getStage();
+      }
+
+      if (statusApiResponseDTO.getLogs() == null) {
+        statusApiResponseDTO.setLogs(new ArrayList<>());
+      }
+
+      statusApiResponseDTO.setExecutionId(executionId);
       statusApiResponseDTO.setOverallStatus("FAILED");
       statusApiResponseDTO.setCurrentStage("ERROR");
-      logMapper.insertStep_00Faild(pipeExecuteData.getExecutionId());
+      statusApiResponseDTO.setCompletedAt(java.time.LocalDateTime.now().toString());
+
+      // 모든 단계를 실패로 설정
+      setAllStepsToFailed(statusApiResponseDTO.getProgress());
+
+      // 에러 로그 추가
+      Logs errorLog = new Logs();
+      errorLog.setStage("ERROR");
+      errorLog.setMessage("Pipeline execution failed: " + e.getMessage());
+      errorLog.setTimestamp(java.time.LocalDateTime.now().toString());
+      statusApiResponseDTO.getLogs().add(errorLog);
+
+      try {
+        logMapper.insertStep_00Faild(executionId);
+      } catch (Exception logException) {
+        log.error("로그 삽입 실패: {}", logException.getMessage());
+      }
 
       return statusApiResponseDTO;
 
@@ -373,14 +434,33 @@ public class PipelineService {
 
   public int createNewExecution() {
 
-    // 1. 삽입
-    pipelineMapper.insertNewExecutionId();
-    // 2. 조회
-    PipeExecuteData pipeExecuteData = pipelineMapper.selectNewExecutionId();
-    // 3. 객체 저장
-    int executionId = pipeExecuteData.getExecutionId();
+    try {
+      // 1. 삽입
+      pipelineMapper.insertNewExecutionId();
+      // 2. 조회
+      PipeExecuteData pipeExecuteData = pipelineMapper.selectNewExecutionId();
 
-    return executionId;
+      // NULL 체크
+      if (pipeExecuteData == null) {
+        log.error("Failed to create new execution - PipeExecuteData is null");
+        throw new RuntimeException("Failed to create new execution ID");
+      }
+
+      // 3. 객체 저장
+      int executionId = pipeExecuteData.getExecutionId();
+
+      if (executionId <= 0) {
+        log.error("Invalid execution ID generated: {}", executionId);
+        throw new RuntimeException("Invalid execution ID generated");
+      }
+
+      log.info("New execution ID created successfully: {}", executionId);
+      return executionId;
+
+    } catch (Exception e) {
+      log.error("Failed to create new execution: {}", e.getMessage(), e);
+      throw new RuntimeException("Database operation failed during execution ID creation", e);
+    }
   }
 
   private void updateExecutionStatus(int executionId, String failed) {
@@ -458,6 +538,64 @@ public class PipelineService {
       return true;
     } else {
       return false;
+    }
+  }
+
+  /**
+   * NULL 안전한 StatusApiResponseDTO 생성
+   */
+  private StatusApiResponseDTO createSafeStatusResponse(int executionId) {
+    StatusApiResponseDTO safeResponse = new StatusApiResponseDTO();
+
+    // 필수 정보 설정
+    safeResponse.setExecutionId(executionId);
+    safeResponse.setOverallStatus("FAILED");
+    safeResponse.setCurrentStage("ERROR");
+    safeResponse.setCompletedAt(java.time.LocalDateTime.now().toString());
+
+    // Progress 객체 안전 초기화
+    ProgressResult progressResult = new ProgressResult();
+    progressResult.setKeywordExtraction(new KeywordExtraction());
+    progressResult.setProductCrawling(new ProductCrawling());
+    progressResult.setContentGeneration(new ContentGeneration());
+    progressResult.setContentPublishing(new ContentPublishing());
+    safeResponse.setProgress(progressResult);
+
+    // Stage 객체 안전 초기화
+    StageResults stageResults = new StageResults();
+    stageResults.setKeywords(new ArrayList<>());
+    stageResults.setProducts(new ArrayList<>());
+    stageResults.setContent(new Content());
+    stageResults.setPublishingStatus(new PublishingStatus());
+    safeResponse.setStage(stageResults);
+
+    // 로그 초기화
+    safeResponse.setLogs(new ArrayList<>());
+
+    return safeResponse;
+  }
+
+  /**
+   * 모든 단계를 실패 상태로 설정
+   */
+  private void setAllStepsToFailed(ProgressResult progressResult) {
+    if (progressResult != null) {
+      if (progressResult.getKeywordExtraction() != null) {
+        progressResult.getKeywordExtraction().setStatus("FAILED");
+        progressResult.getKeywordExtraction().setProgress(0);
+      }
+      if (progressResult.getProductCrawling() != null) {
+        progressResult.getProductCrawling().setStatus("FAILED");
+        progressResult.getProductCrawling().setProgress(0);
+      }
+      if (progressResult.getContentGeneration() != null) {
+        progressResult.getContentGeneration().setStatus("FAILED");
+        progressResult.getContentGeneration().setProgress(0);
+      }
+      if (progressResult.getContentPublishing() != null) {
+        progressResult.getContentPublishing().setStatus("FAILED");
+        progressResult.getContentPublishing().setProgress(0);
+      }
     }
   }
 

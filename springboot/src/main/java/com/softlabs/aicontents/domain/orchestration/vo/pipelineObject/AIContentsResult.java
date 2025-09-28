@@ -2,6 +2,8 @@ package com.softlabs.aicontents.domain.orchestration.vo.pipelineObject;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class AIContentsResult {
 
@@ -24,4 +26,11 @@ public class AIContentsResult {
   private String hashtags;
   private String content;
   private String aIContentStatusCode;
+
+  // 진행률 필드 추가
+  private int progress;
+  private String status;
+  //
+  private List<String> tags;
+
 }

@@ -1,14 +1,19 @@
 package com.softlabs.aicontents.domain.scheduler.service.executor;
 
+import com.softlabs.aicontents.domain.orchestration.mapper.LogMapper;
 import com.softlabs.aicontents.domain.orchestration.mapper.PipelineMapper;
 import com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.KeywordResult;
 import com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.ProductCrawlingResult;
-// import com.softlabs.aicontents.domain.testMapper.ProductCrawlingMapper;
+import com.softlabs.aicontents.domain.scheduler.dto.StatusApiResponseDTO;
+import com.softlabs.aicontents.domain.scheduler.dto.resultDTO.Product;
 import com.softlabs.aicontents.domain.testDomainService.ProductCrawlingService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 @Slf4j
@@ -16,43 +21,76 @@ import org.springframework.stereotype.Service;
 public class ProductCrawlingExecutor {
 
   @Autowired private ProductCrawlingService productCrawlingService;
-  // todo: 실제 싸다구 정보 수집 서비스 클래스로 변경
-
   @Autowired private PipelineMapper pipelineMapper;
+  @Autowired private LogMapper logMapper;
 
   public ProductCrawlingResult productCrawlingExecute(
-      int executionId, KeywordResult keywordResult) {
+      int executionId, KeywordResult keywordResult, StatusApiResponseDTO statusApiResponseDTO) {
 
-    // 1. 메서드 실행
-    System.out.println(
-        "\n\nkeywordResult에 기반한 크롤링-상품 정보 수집 메서드 실행 - productCrawlingService(keywordResult)");
-
+    // 1. 메서드 실행 + 결과 DB저장
     productCrawlingService.productCrawlingExecute(executionId, keywordResult);
-    System.out.println("\n\n 2단계 메서드 실행됐고, 결과를 DB에 저장했다.\n\n");
 
     // 2. 실행 결과를 DB 조회+ 객체 저장
     ProductCrawlingResult productCrawlingResult =
         pipelineMapper.selctproductCrawlingStatuscode(executionId);
+    List<Product> productList = new ArrayList<>();
+    boolean success = false;
 
-    // 3.null 체크
+    // 3. null 체크
     if (productCrawlingResult == null) {
-      System.out.println("NullPointerException 감지");
+      System.out.println("NullPointerException");
+      logMapper.insertStep_02Faild(executionId);
+      success = false;
+
       productCrawlingResult = new ProductCrawlingResult();
-      productCrawlingResult.setSuccess(false);
       productCrawlingResult.setExecutionId(executionId);
+      productCrawlingResult.setSuccess(false);
     }
 
-    // 4. 완료 판단 =
-    //  (product_name, source_url, price)!= null && productStatusCode = "SUCCEDSS"
+    // 4. 완료 판단 = (product_name, source_url, price) != null && productStatusCode == "SUCCESS"
     if (productCrawlingResult.getProductName() != null
         && productCrawlingResult.getSourceUrl() != null
         && productCrawlingResult.getPrice() != null
         && "SUCCESS".equals(productCrawlingResult.getProductStatusCode())) {
+      logMapper.insertStep_02Success(executionId);
+      success = true;
       productCrawlingResult.setSuccess(true);
+
+      Product product = new Product();
+      product.setName(productCrawlingResult.getProductName());
+      product.setUrl(productCrawlingResult.getSourceUrl());
+      product.setPrice(productCrawlingResult.getPrice());
+      product.setPlatform(productCrawlingResult.getPlatform());
+      product.setSelected(true);
+      productList.add(product);
+
     } else {
+      logMapper.insertStep_02Faild(executionId);
+      success = false;
       productCrawlingResult.setSuccess(false);
+
+      Product product = new Product();
+      product.setName(productCrawlingResult.getProductName());
+      product.setUrl(productCrawlingResult.getSourceUrl());
+      product.setPrice(productCrawlingResult.getPrice());
+      product.setPlatform(productCrawlingResult.getPlatform());
+      product.setSelected(false);
+      productList.add(product);
     }
-    System.out.println("여기 탔음" + productCrawlingResult);
+
+    if(success) {
+      // 최종 응답 객체에 매핑
+      statusApiResponseDTO.getProgress().getProductCrawling().setStatus(productCrawlingResult.getProductStatusCode());
+      statusApiResponseDTO.getProgress().getProductCrawling().setProgress(productCrawlingResult.getProgress());
+      statusApiResponseDTO.getStage().setProducts(productList);
+    }
+    System.out.println("\n\nstatusApiResponseDTO ="+statusApiResponseDTO+"\n\n");
+
+    if (!success) {
+      statusApiResponseDTO.getProgress().getProductCrawling().setStatus(productCrawlingResult.getProductStatusCode());
+      statusApiResponseDTO.getProgress().getProductCrawling().setProgress(productCrawlingResult.getProgress());
+      statusApiResponseDTO.getStage().setProducts(productList);
+    }
 
     return productCrawlingResult;
   }

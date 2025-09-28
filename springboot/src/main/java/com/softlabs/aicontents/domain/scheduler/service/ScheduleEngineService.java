@@ -98,6 +98,7 @@ public class ScheduleEngineService {
 
 
 
+
     } catch (Exception e) {
       log.error("스케줄 저장 중 예외 발생: {}", e.getMessage(), e);
       logMapper.insertScheduleFaild(scheduleResponseVO.getTaskId());
