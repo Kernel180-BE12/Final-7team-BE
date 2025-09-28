@@ -22,7 +22,9 @@ public class BlogPublishExecutor {
   @Autowired private LogMapper logMapper;
 
   public BlogPublishResult blogPublishResultExecute(
-      int executionId, AIContentsResult aIContentsResult, StatusApiResponseDTO statusApiResponseDTO) {
+      int executionId,
+      AIContentsResult aIContentsResult,
+      StatusApiResponseDTO statusApiResponseDTO) {
 
     // 1. 메서드 실행
     System.out.println("\n\n발행 메서드 실행 - blogPublishService(aIContentsResult)\n\n");
@@ -69,16 +71,28 @@ public class BlogPublishExecutor {
       publishingStatus.setPlatform(blogPublishResult.getBlogPlatform());
     }
 
-    if(success) {
-      statusApiResponseDTO.getProgress().getContentPublishing().setStatus(blogPublishResult.getPublishStatusCode());
-      statusApiResponseDTO.getProgress().getContentPublishing().setProgress(blogPublishResult.getProgress());
+    if (success) {
+      statusApiResponseDTO
+          .getProgress()
+          .getContentPublishing()
+          .setStatus(blogPublishResult.getPublishStatusCode());
+      statusApiResponseDTO
+          .getProgress()
+          .getContentPublishing()
+          .setProgress(blogPublishResult.getProgress());
       statusApiResponseDTO.getStage().setPublishingStatus(publishingStatus);
     }
-    System.out.println("\n\nstatusApiResponseDTO ="+statusApiResponseDTO+"\n\n");
+    System.out.println("\n\nstatusApiResponseDTO =" + statusApiResponseDTO + "\n\n");
 
     if (!success) {
-      statusApiResponseDTO.getProgress().getContentPublishing().setStatus(blogPublishResult.getPublishStatusCode());
-      statusApiResponseDTO.getProgress().getContentPublishing().setProgress(blogPublishResult.getProgress());
+      statusApiResponseDTO
+          .getProgress()
+          .getContentPublishing()
+          .setStatus(blogPublishResult.getPublishStatusCode());
+      statusApiResponseDTO
+          .getProgress()
+          .getContentPublishing()
+          .setProgress(blogPublishResult.getProgress());
       statusApiResponseDTO.getStage().setPublishingStatus(publishingStatus);
     }
 

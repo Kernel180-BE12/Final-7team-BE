@@ -5,6 +5,7 @@ import com.softlabs.aicontents.common.dto.request.ScheduleTasksRequestDTO;
 import com.softlabs.aicontents.common.dto.response.PageResponseDTO;
 import com.softlabs.aicontents.common.dto.response.ScheduleTaskResponseDTO;
 import com.softlabs.aicontents.domain.orchestration.PipelineService;
+import com.softlabs.aicontents.domain.orchestration.dto.PipeStatusExcIdReqDTO;
 import com.softlabs.aicontents.domain.orchestration.mapper.LogMapper;
 import com.softlabs.aicontents.domain.orchestration.mapper.PipelineMapper;
 import com.softlabs.aicontents.domain.scheduler.dto.ScheduleInfoResquestDTO;
@@ -29,8 +30,6 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.softlabs.aicontents.domain.orchestration.dto.PipeStatusExcIdReqDTO;
-
 
 @Service
 @Slf4j
@@ -58,8 +57,8 @@ public class ScheduleEngineService {
       schedulerRequestVO.setPipelineConfig(pipelineConfigJson);
 
       // 3. NEXT_EXCCUTION, LAST_EXCCUTION
-      //-> 선택사항 메서드로 만들기
-      //날짜에 대한 데이터가 테이블에 안찍힌다
+      // -> 선택사항 메서드로 만들기
+      // 날짜에 대한 데이터가 테이블에 안찍힌다
       String scheduleType = schedulerRequestVO.getScheduleType();
       LocalDateTime nextExecution =
           calculateNextExecution(scheduleType, schedulerRequestVO.getExecutionTime());
@@ -67,14 +66,14 @@ public class ScheduleEngineService {
       schedulerRequestVO.setNextExecution(nextExecution);
       schedulerRequestVO.setLastExecution(lastExecution);
 
-
       // 4. DB 저장
-      //taskId 최초 생성
+      // taskId 최초 생성
       int resultInsert = scheduleEngineMapper.insertSchedule(schedulerRequestVO);
 
       // 방금 저장된 스케줄 정보를 다시 조회
       ScheduleTaskData scheduleTaskData = pipelineMapper.selectScheduleTaskData();
-      scheduleResponseVO = scheduleEngineMapper.selectScheduleResponseVO(scheduleTaskData.getTaskId());
+      scheduleResponseVO =
+          scheduleEngineMapper.selectScheduleResponseVO(scheduleTaskData.getTaskId());
 
       if (resultInsert == 0) {
         logMapper.insertScheduleFaild(scheduleResponseVO.getTaskId());
@@ -96,9 +95,6 @@ public class ScheduleEngineService {
         log.info("동적 스케줄 등록 완료");
       }
 
-
-
-
     } catch (Exception e) {
       log.error("스케줄 저장 중 예외 발생: {}", e.getMessage(), e);
       logMapper.insertScheduleFaild(scheduleResponseVO.getTaskId());
@@ -109,9 +105,8 @@ public class ScheduleEngineService {
 
     return scheduleTaskResponseDTO;
   }
-  //scheduleEngine 종료
 
-
+  // scheduleEngine 종료
 
   // DTO -> VO로 변환
   private SchedulerRequestVO convertDTOtoVO(ScheduleTasksRequestDTO scheduleTasksRequestDTO) {
@@ -130,9 +125,10 @@ public class ScheduleEngineService {
 
     return schedulerRequestVO;
   }
+
   // VO -> DTO 로 변환
   private ScheduleTaskResponseDTO convertVOtoDTO(ScheduleResponseVO scheduleResponseVO) {
-    ScheduleTaskResponseDTO scheduleTaskResponseDTO  =  new ScheduleTaskResponseDTO();
+    ScheduleTaskResponseDTO scheduleTaskResponseDTO = new ScheduleTaskResponseDTO();
 
     scheduleTaskResponseDTO.setTaskId(scheduleResponseVO.getTaskId());
     scheduleTaskResponseDTO.setScheduleType(scheduleResponseVO.getScheduleType());

@@ -8,7 +8,6 @@ import com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.ProductCra
 import com.softlabs.aicontents.domain.scheduler.dto.StatusApiResponseDTO;
 import com.softlabs.aicontents.domain.scheduler.dto.resultDTO.Content;
 import com.softlabs.aicontents.domain.testDomainService.AIContentService;
-
 import java.util.Arrays;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +24,9 @@ public class AIContentExecutor {
   @Autowired private LogMapper logMapper;
 
   public AIContentsResult aIContentsResultExecute(
-      int executionId, ProductCrawlingResult productCrawlingResult, StatusApiResponseDTO statusApiResponseDTO) {
+      int executionId,
+      ProductCrawlingResult productCrawlingResult,
+      StatusApiResponseDTO statusApiResponseDTO) {
 
     // 1. 메서드 실행
     System.out.println("LLM 생성 메서드 실행 - aiContentService(productCrawlingResult)");
@@ -78,16 +79,28 @@ public class AIContentExecutor {
       }
     }
 
-    if(success) {
-      statusApiResponseDTO.getProgress().getContentGeneration().setStatus(aiContentsResult.getAIContentStatusCode());
-      statusApiResponseDTO.getProgress().getContentGeneration().setProgress(aiContentsResult.getProgress());
+    if (success) {
+      statusApiResponseDTO
+          .getProgress()
+          .getContentGeneration()
+          .setStatus(aiContentsResult.getAIContentStatusCode());
+      statusApiResponseDTO
+          .getProgress()
+          .getContentGeneration()
+          .setProgress(aiContentsResult.getProgress());
       statusApiResponseDTO.getStage().setContent(content);
     }
-    System.out.println("\n\nstatusApiResponseDTO ="+statusApiResponseDTO+"\n\n");
+    System.out.println("\n\nstatusApiResponseDTO =" + statusApiResponseDTO + "\n\n");
 
     if (!success) {
-      statusApiResponseDTO.getProgress().getContentGeneration().setStatus(aiContentsResult.getAIContentStatusCode());
-      statusApiResponseDTO.getProgress().getContentGeneration().setProgress(aiContentsResult.getProgress());
+      statusApiResponseDTO
+          .getProgress()
+          .getContentGeneration()
+          .setStatus(aiContentsResult.getAIContentStatusCode());
+      statusApiResponseDTO
+          .getProgress()
+          .getContentGeneration()
+          .setProgress(aiContentsResult.getProgress());
       statusApiResponseDTO.getStage().setContent(content);
     }
 

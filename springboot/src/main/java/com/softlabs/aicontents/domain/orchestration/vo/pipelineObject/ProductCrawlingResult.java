@@ -28,5 +28,4 @@ public class ProductCrawlingResult {
   //
   private String productId;
   private boolean selected;
-
 }

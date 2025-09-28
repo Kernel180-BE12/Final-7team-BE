@@ -22,5 +22,4 @@ public class BlogPublishResult {
   private int progress;
   private String status;
   String publishStatus;
-
 }

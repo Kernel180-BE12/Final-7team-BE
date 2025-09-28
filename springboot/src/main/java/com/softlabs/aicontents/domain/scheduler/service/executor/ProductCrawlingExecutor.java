@@ -7,13 +7,12 @@ import com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.ProductCra
 import com.softlabs.aicontents.domain.scheduler.dto.StatusApiResponseDTO;
 import com.softlabs.aicontents.domain.scheduler.dto.resultDTO.Product;
 import com.softlabs.aicontents.domain.testDomainService.ProductCrawlingService;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 @Slf4j
@@ -78,17 +77,29 @@ public class ProductCrawlingExecutor {
       productList.add(product);
     }
 
-    if(success) {
+    if (success) {
       // 최종 응답 객체에 매핑
-      statusApiResponseDTO.getProgress().getProductCrawling().setStatus(productCrawlingResult.getProductStatusCode());
-      statusApiResponseDTO.getProgress().getProductCrawling().setProgress(productCrawlingResult.getProgress());
+      statusApiResponseDTO
+          .getProgress()
+          .getProductCrawling()
+          .setStatus(productCrawlingResult.getProductStatusCode());
+      statusApiResponseDTO
+          .getProgress()
+          .getProductCrawling()
+          .setProgress(productCrawlingResult.getProgress());
       statusApiResponseDTO.getStage().setProducts(productList);
     }
-    System.out.println("\n\nstatusApiResponseDTO ="+statusApiResponseDTO+"\n\n");
+    System.out.println("\n\nstatusApiResponseDTO =" + statusApiResponseDTO + "\n\n");
 
     if (!success) {
-      statusApiResponseDTO.getProgress().getProductCrawling().setStatus(productCrawlingResult.getProductStatusCode());
-      statusApiResponseDTO.getProgress().getProductCrawling().setProgress(productCrawlingResult.getProgress());
+      statusApiResponseDTO
+          .getProgress()
+          .getProductCrawling()
+          .setStatus(productCrawlingResult.getProductStatusCode());
+      statusApiResponseDTO
+          .getProgress()
+          .getProductCrawling()
+          .setProgress(productCrawlingResult.getProgress());
       statusApiResponseDTO.getStage().setProducts(productList);
     }
 

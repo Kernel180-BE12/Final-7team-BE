@@ -1,8 +1,7 @@
 package com.softlabs.aicontents.domain.orchestration.vo.pipelineObject;
 
-import lombok.Data;
-
 import java.util.List;
+import lombok.Data;
 
 @Data
 public class AIContentsResult {
@@ -32,5 +31,4 @@ public class AIContentsResult {
   private String status;
   //
   private List<String> tags;
-
 }

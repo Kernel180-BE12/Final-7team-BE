@@ -19,6 +19,6 @@ public class ScheduleResponseVO {
   private String executeImmediately;
   private String taskName;
 
-//  private PipeTotalData pipeData;
+  //  private PipeTotalData pipeData;
 
 }

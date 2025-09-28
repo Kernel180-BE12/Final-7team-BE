@@ -2,19 +2,17 @@ package com.softlabs.aicontents.domain.scheduler.service.executor;
 
 import com.softlabs.aicontents.domain.orchestration.mapper.LogMapper;
 import com.softlabs.aicontents.domain.orchestration.mapper.PipelineMapper;
-import com.softlabs.aicontents.domain.scheduler.dto.StatusApiResponseDTO;
 import com.softlabs.aicontents.domain.orchestration.vo.pipelineObject.KeywordResult;
 // import com.softlabs.aicontents.domain.testMapper.KeywordMapper;
+import com.softlabs.aicontents.domain.scheduler.dto.StatusApiResponseDTO;
 import com.softlabs.aicontents.domain.scheduler.dto.resultDTO.Keyword;
-import com.softlabs.aicontents.domain.scheduler.dto.resultDTO.KeywordExtraction;
 import com.softlabs.aicontents.domain.testDomainService.KeywordService;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 @Slf4j
@@ -35,58 +33,66 @@ public class KeywordExecutor {
     List<Keyword> keywordList = new ArrayList<>();
     boolean success = false;
 
+    // 3. null 체크
+    if (keywordResult == null) {
+      System.out.println("NullPointerException");
+      logMapper.insertStep_01Faild(executionId);
+      success = false;
 
-      // 3. null 체크
-      if (keywordResult == null) {
-        System.out.println("NullPointerException");
-        logMapper.insertStep_01Faild(executionId);
-        success = false;
+      keywordResult = new KeywordResult();
+      keywordResult.setExecutionId(executionId);
+      keywordResult.setSelected(false);
+    }
 
-        keywordResult = new KeywordResult();
-        keywordResult.setExecutionId(executionId);
-        keywordResult.setSelected(false);
+    // 4. 완료 판단 = keyword !=null, keyWordStatusCode =="SUCCESS"
+    if (keywordResult.getKeyword() != null
+        && "SUCCESS".equals(keywordResult.getKeyWordStatusCode())) {
+      logMapper.insertStep_01Success(executionId);
+      success = true;
+      keywordResult.setSelected(true);
+      Keyword keyword = new Keyword();
+      keyword.setKeyword(keywordResult.getKeyword());
+      keyword.setSelected(keywordResult.isSelected());
+      keyword.setRelevanceScore(keywordResult.getRelevanceScore());
+      keywordList.add(keyword);
 
-      }
+    } else {
+      logMapper.insertStep_01Faild(executionId);
+      success = false;
+      keywordResult.setSelected(false);
+      Keyword keyword = new Keyword();
+      keyword.setKeyword(keywordResult.getKeyword());
+      keyword.setSelected(keywordResult.isSelected());
+      keyword.setRelevanceScore(keywordResult.getRelevanceScore());
+      keywordList.add(keyword);
+    }
 
-      // 4. 완료 판단 = keyword !=null, keyWordStatusCode =="SUCCESS"
-      if (keywordResult.getKeyword() != null
-              && "SUCCESS".equals(keywordResult.getKeyWordStatusCode())) {
-        logMapper.insertStep_01Success(executionId);
-        success = true;
-        keywordResult.setSelected(true);
-        Keyword keyword = new Keyword();
-        keyword.setKeyword(keywordResult.getKeyword());
-        keyword.setSelected(keywordResult.isSelected());
-        keyword.setRelevanceScore(keywordResult.getRelevanceScore());
-        keywordList.add(keyword);
+    if (success) {
 
-      } else {
-        logMapper.insertStep_01Faild(executionId);
-        success = false;
-        keywordResult.setSelected(false);
-        Keyword keyword = new Keyword();
-        keyword.setKeyword(keywordResult.getKeyword());
-        keyword.setSelected(keywordResult.isSelected());
-        keyword.setRelevanceScore(keywordResult.getRelevanceScore());
-        keywordList.add(keyword);
+      // 최종 응답 객체에 매핑 (StatusApiResponseDTO는 progress, stage 필드 사용)
+      statusApiResponseDTO
+          .getProgress()
+          .getKeywordExtraction()
+          .setStatus(keywordResult.getKeyWordStatusCode());
+      statusApiResponseDTO
+          .getProgress()
+          .getKeywordExtraction()
+          .setProgress(keywordResult.getProgress());
+      statusApiResponseDTO.getStage().setKeywords(keywordList);
+    }
+    System.out.println("\n\nstatusApiResponseDTO =" + statusApiResponseDTO + "\n\n");
 
-      }
-
-      if(success) {
-
-        // 최종 응답 객체에 매핑 (StatusApiResponseDTO는 progress, stage 필드 사용)
-        statusApiResponseDTO.getProgress().getKeywordExtraction().setStatus(keywordResult.getKeyWordStatusCode());
-        statusApiResponseDTO.getProgress().getKeywordExtraction().setProgress(keywordResult.getProgress());
-        statusApiResponseDTO.getStage().setKeywords(keywordList);
-      }
-      System.out.println("\n\nstatusApiResponseDTO ="+statusApiResponseDTO+"\n\n");
-
-      if (!success) {
-        statusApiResponseDTO.getProgress().getKeywordExtraction().setStatus(keywordResult.getKeyWordStatusCode());
-        statusApiResponseDTO.getProgress().getKeywordExtraction().setProgress(keywordResult.getProgress());
-        statusApiResponseDTO.getStage().setKeywords(keywordList);
-      }
-
+    if (!success) {
+      statusApiResponseDTO
+          .getProgress()
+          .getKeywordExtraction()
+          .setStatus(keywordResult.getKeyWordStatusCode());
+      statusApiResponseDTO
+          .getProgress()
+          .getKeywordExtraction()
+          .setProgress(keywordResult.getProgress());
+      statusApiResponseDTO.getStage().setKeywords(keywordList);
+    }
 
     return keywordResult;
   }

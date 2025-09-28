@@ -4,7 +4,6 @@ import com.softlabs.aicontents.domain.scheduler.dto.resultDTO.Logs;
 import com.softlabs.aicontents.domain.scheduler.dto.resultDTO.ProgressResult;
 import com.softlabs.aicontents.domain.scheduler.dto.resultDTO.StageResults;
 import io.swagger.v3.oas.annotations.media.Schema;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;

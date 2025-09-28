@@ -5,20 +5,17 @@ import com.softlabs.aicontents.common.dto.response.ApiResponseDTO;
 import com.softlabs.aicontents.common.dto.response.PageResponseDTO;
 import com.softlabs.aicontents.common.dto.response.ScheduleTaskResponseDTO;
 import com.softlabs.aicontents.domain.orchestration.PipelineService;
-import com.softlabs.aicontents.domain.orchestration.dto.ExecuteApiResponseDTO;
-import com.softlabs.aicontents.domain.orchestration.dto.PipeExecuteData;
 import com.softlabs.aicontents.domain.orchestration.dto.PipeStatusExcIdReqDTO;
 import com.softlabs.aicontents.domain.orchestration.mapper.LogMapper;
 import com.softlabs.aicontents.domain.orchestration.mapper.PipelineMapper;
 import com.softlabs.aicontents.domain.scheduler.dto.ScheduleInfoResquestDTO;
 import com.softlabs.aicontents.domain.scheduler.dto.StatusApiResponseDTO;
 import com.softlabs.aicontents.domain.scheduler.dto.resultDTO.*;
-import java.util.ArrayList;
-import java.util.List;
 import com.softlabs.aicontents.domain.scheduler.mapper.ScheduleEngineMapper;
 import com.softlabs.aicontents.domain.scheduler.service.ScheduleEngineService;
-import com.softlabs.aicontents.domain.scheduler.vo.response.ScheduleResponseVO;
 import io.swagger.v3.oas.annotations.Operation;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -49,9 +46,10 @@ public class ScheduleEngineController {
       @RequestBody ScheduleTasksRequestDTO scheduleTasksRequestDTO) {
 
     try {
-      ScheduleTaskResponseDTO scheduleTaskResponseDTO = scheduleEngineService.scheduleEngine(scheduleTasksRequestDTO);
+      ScheduleTaskResponseDTO scheduleTaskResponseDTO =
+          scheduleEngineService.scheduleEngine(scheduleTasksRequestDTO);
 
-      return ApiResponseDTO.success(scheduleTaskResponseDTO,"새로운 스케줄 저장 완료");
+      return ApiResponseDTO.success(scheduleTaskResponseDTO, "새로운 스케줄 저장 완료");
     } catch (Exception e) {
 
       return ApiResponseDTO.error("스케줄 저장 실패" + e.getMessage());
@@ -87,20 +85,20 @@ public class ScheduleEngineController {
 
   /** 파이프라인 */
   //
-//   10. 파이프라인 실행
-//  @PostMapping("/pipeline/execute")
-//  public ExecuteApiResponseDTO executePipline() {
-//   ExecuteApiResponseDTO executeApiResponseDTO = new ExecuteApiResponseDTO();
-//    try {
-//      // 수동실행일 경우,
-//
-//      return pipelineService.executionPipline();
-//    } catch (Exception e) {
-//      executeApiResponseDTO.setSuccess(false);
-//      executeApiResponseDTO.setMessage(e.getMessage());
-//      return executeApiResponseDTO;
-//    }
-//  }
+  //   10. 파이프라인 실행
+  //  @PostMapping("/pipeline/execute")
+  //  public ExecuteApiResponseDTO executePipline() {
+  //   ExecuteApiResponseDTO executeApiResponseDTO = new ExecuteApiResponseDTO();
+  //    try {
+  //      // 수동실행일 경우,
+  //
+  //      return pipelineService.executionPipline();
+  //    } catch (Exception e) {
+  //      executeApiResponseDTO.setSuccess(false);
+  //      executeApiResponseDTO.setMessage(e.getMessage());
+  //      return executeApiResponseDTO;
+  //    }
+  //  }
 
   /// 11. 파이프라인 상태 조회
   @GetMapping("/pipeline/status/{executionId}")
@@ -114,26 +112,28 @@ public class ScheduleEngineController {
 
       // NULL 체크 추가
       if (statusApiResponseDTO == null) {
-        StatusApiResponseDTO fallbackResponse = createFallbackResponse(executionId, "FAILED", "Internal Server Error");
+        StatusApiResponseDTO fallbackResponse =
+            createFallbackResponse(executionId, "FAILED", "Internal Server Error");
         return ApiResponseDTO.success(fallbackResponse, "Pipeline status retrieved with fallback");
       }
-      System.out.print("\n\n\n\n\n\n"+statusApiResponseDTO+"\n\n\n\n\n\n");
+      System.out.print("\n\n\n\n\n\n" + statusApiResponseDTO + "\n\n\n\n\n\n");
       String successMesg = "파이프라인 상태 데이터를 pipeResultDataDTO에 저장 완료";
-
 
       return ApiResponseDTO.success(statusApiResponseDTO, successMesg);
 
-    }catch (Exception e) {
+    } catch (Exception e) {
       log.error("파이프라인 상태 조회 중 예외 발생: executionId={}, error={}", executionId, e.getMessage(), e);
-      StatusApiResponseDTO fallbackResponse = createFallbackResponse(executionId, "FAILED", "Pipeline status query failed: " + e.getMessage());
-      return ApiResponseDTO.success(fallbackResponse, "Pipeline status retrieved with error fallback");
+      StatusApiResponseDTO fallbackResponse =
+          createFallbackResponse(
+              executionId, "FAILED", "Pipeline status query failed: " + e.getMessage());
+      return ApiResponseDTO.success(
+          fallbackResponse, "Pipeline status retrieved with error fallback");
     }
   }
 
-  /**
-   * NULL이나 예외 발생 시 기본 객체 생성
-   */
-  private StatusApiResponseDTO createFallbackResponse(int executionId, String status, String errorMessage) {
+  /** NULL이나 예외 발생 시 기본 객체 생성 */
+  private StatusApiResponseDTO createFallbackResponse(
+      int executionId, String status, String errorMessage) {
     StatusApiResponseDTO fallbackResponse = new StatusApiResponseDTO();
 
     // 필수 정보 설정
