@@ -1,9 +1,8 @@
 package com.softlabs.aicontents.domain.monitoring.vo.response;
 
-import java.time.LocalDateTime;
-
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import java.time.LocalDateTime;
 import lombok.Data;
 
 @Data // VO: 조회 결과 전달용
