@@ -17,13 +17,11 @@ public class LogSearchRequest {
   private String status; // 로그 상태 코드
   private String logLevel; // 로그 레벨
 
-  //페이징 관려 파라미터 추가
-  private int page = 1; //기본값 1
-  private int limit = 20; //기본값 20
+  // 페이징 관려 파라미터 추가
+  private int page = 1; // 기본값 1
+  private int limit = 20; // 기본값 20
 
-  public int getOffset(){
-    return (page-1) * limit;
+  public int getOffset() {
+    return (page - 1) * limit;
   }
-
-
 }

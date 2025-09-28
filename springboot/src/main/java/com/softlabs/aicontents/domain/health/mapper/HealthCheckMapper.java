@@ -16,4 +16,6 @@ public interface HealthCheckMapper {
   String selectKeywordStatus();
 
   String selectScheduledStatus();
+
+  String selectDbStatus();
 }
