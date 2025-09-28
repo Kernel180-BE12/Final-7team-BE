@@ -29,6 +29,8 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.softlabs.aicontents.domain.orchestration.dto.PipeStatusExcIdReqDTO;
+
 
 @Service
 @Slf4j
@@ -84,12 +86,12 @@ public class ScheduleEngineService {
       if (scheduleTasksRequestDTO.isExecuteImmediately()) {
         // 즉시 실행
         log.info("ExecuteImmediately=true, 즉시 실행");
-        pipelineService.executionPipline();
+
+        PipeStatusExcIdReqDTO reqDTO = new PipeStatusExcIdReqDTO();
+        pipelineService.executionPipline(reqDTO);
       } else {
         // 자동 실행
         log.info("ExecuteImmediately=false, 스케줄 등록");
-
-
         registerDynamicSchedule(scheduleResponseVO);
         log.info("동적 스케줄 등록 완료");
       }
@@ -242,7 +244,8 @@ public class ScheduleEngineService {
       Runnable task =
           () -> {
             try {
-              pipelineService.executionPipline();
+              PipeStatusExcIdReqDTO reqDTO = new PipeStatusExcIdReqDTO();
+              pipelineService.executionPipline(reqDTO);
               log.info("스케줄 실행 완료: {}", scheduleResponseVO.getTaskName());
             } catch (Exception e) {
               log.error("스케줄 실행 실패: {}", e.getMessage());

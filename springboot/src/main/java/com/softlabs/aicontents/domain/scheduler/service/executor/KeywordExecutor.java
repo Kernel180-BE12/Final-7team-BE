@@ -41,8 +41,11 @@ public class KeywordExecutor {
         System.out.println("NullPointerException");
         logMapper.insertStep_01Faild(executionId);
         success = false;
+
+        keywordResult = new KeywordResult();
         keywordResult.setExecutionId(executionId);
-        return keywordResult;
+        keywordResult.setSelected(false);
+
       }
 
       // 4. 완료 판단 = keyword !=null, keyWordStatusCode =="SUCCESS"
@@ -78,11 +81,11 @@ public class KeywordExecutor {
       }
       System.out.println("\n\nstatusApiResponseDTO ="+statusApiResponseDTO+"\n\n");
 
-
-      statusApiResponseDTO.getProgress().getKeywordExtraction().setStatus(keywordResult.getStatus());
-      statusApiResponseDTO.getProgress().getKeywordExtraction().setProgress(keywordResult.getProgress());
-      statusApiResponseDTO.getStage().setKeywords(keywordList);
-
+      if (!success) {
+        statusApiResponseDTO.getProgress().getKeywordExtraction().setStatus(keywordResult.getStatus());
+        statusApiResponseDTO.getProgress().getKeywordExtraction().setProgress(keywordResult.getProgress());
+        statusApiResponseDTO.getStage().setKeywords(keywordList);
+      }
 
 
     return keywordResult;

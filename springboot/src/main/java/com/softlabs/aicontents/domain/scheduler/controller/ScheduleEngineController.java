@@ -7,6 +7,7 @@ import com.softlabs.aicontents.common.dto.response.ScheduleTaskResponseDTO;
 import com.softlabs.aicontents.domain.orchestration.PipelineService;
 import com.softlabs.aicontents.domain.orchestration.dto.ExecuteApiResponseDTO;
 import com.softlabs.aicontents.domain.orchestration.dto.PipeExecuteData;
+import com.softlabs.aicontents.domain.orchestration.dto.PipeStatusExcIdReqDTO;
 import com.softlabs.aicontents.domain.orchestration.mapper.LogMapper;
 import com.softlabs.aicontents.domain.orchestration.mapper.PipelineMapper;
 import com.softlabs.aicontents.domain.scheduler.dto.ScheduleInfoResquestDTO;
@@ -101,10 +102,10 @@ public class ScheduleEngineController {
 
   /// 11. 파이프라인 상태 조회
   @GetMapping("/pipeline/status/{executionId}")
-  public ApiResponseDTO<StatusApiResponseDTO> executePipline(@PathVariable int executionId) {
+  public ApiResponseDTO<StatusApiResponseDTO> executePipline(@PathVariable PipeStatusExcIdReqDTO ReqDTO) {
 
     try {
-      StatusApiResponseDTO statusApiResponseDTO = pipelineService.getStatusPipline(executionId);
+      StatusApiResponseDTO statusApiResponseDTO = pipelineService.executionPipline(ReqDTO);
       System.out.print("\n\n\n\n\n\n"+statusApiResponseDTO+"\n\n\n\n\n\n");
       String successMesg = "파이프라인 상태 데이터를 pipeResultDataDTO에 저장 완료";
 

@@ -4,6 +4,9 @@ import com.softlabs.aicontents.domain.scheduler.dto.resultDTO.Logs;
 import com.softlabs.aicontents.domain.scheduler.dto.resultDTO.ProgressResult;
 import com.softlabs.aicontents.domain.scheduler.dto.resultDTO.StageResults;
 import io.swagger.v3.oas.annotations.media.Schema;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import lombok.Data;
 
@@ -16,7 +19,7 @@ public class StatusApiResponseDTO {
   // 실행정보
   int executionId;
   String overallStatus;
-  String startedAt;
+  String startedAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
   String completedAt;
   String currentStage;
 
