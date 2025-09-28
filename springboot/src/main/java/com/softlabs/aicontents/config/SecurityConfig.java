@@ -3,6 +3,7 @@ package com.softlabs.aicontents.config;
 import com.softlabs.aicontents.common.security.JwtAuthenticationEntryPoint;
 import com.softlabs.aicontents.common.security.JwtAuthenticationFilter;
 import com.softlabs.aicontents.common.security.JwtTokenProvider;
+import com.softlabs.aicontents.domain.auth.service.TokenBlacklistService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -19,11 +20,15 @@ public class SecurityConfig {
 
   private final JwtTokenProvider jwtTokenProvider;
   private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+  private final TokenBlacklistService tokenBlacklistService;
 
   public SecurityConfig(
-      JwtTokenProvider jwtTokenProvider, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
+      JwtTokenProvider jwtTokenProvider,
+      JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
+      TokenBlacklistService tokenBlacklistService) {
     this.jwtTokenProvider = jwtTokenProvider;
     this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
+    this.tokenBlacklistService = tokenBlacklistService;
   }
 
   @Bean
@@ -41,7 +46,7 @@ public class SecurityConfig {
         .authorizeHttpRequests(
             authz ->
                 authz
-                    .requestMatchers("/auth/login")
+                    .requestMatchers("/auth/login", "/auth/refresh")
                     .permitAll()
                     .requestMatchers("/users/send-verification-code")
                     .permitAll()
@@ -58,7 +63,7 @@ public class SecurityConfig {
                     .anyRequest()
                     .authenticated())
         .addFilterBefore(
-            new JwtAuthenticationFilter(jwtTokenProvider),
+            new JwtAuthenticationFilter(jwtTokenProvider, tokenBlacklistService),
             UsernamePasswordAuthenticationFilter.class);
 
     return http.build();
