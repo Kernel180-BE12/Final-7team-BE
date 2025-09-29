@@ -5,6 +5,7 @@ import io.jsonwebtoken.security.Keys;
 import java.util.Date;
 import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,17 +18,17 @@ public class JwtTokenProvider {
   private final SecretKey secretKey;
   private final long accessTokenValidityInMilliseconds;
   private final long refreshTokenValidityInMilliseconds;
-  private final UserDetailsService userDetailsService;
+  private final ApplicationContext applicationContext;
 
   public JwtTokenProvider(
       @Value("${jwt.secret:mySecretKey1234567890123456789012}") String secretKey,
       @Value("${jwt.access-token-validity-in-seconds:3600}") long accessTokenValidityInSeconds,
       @Value("${jwt.refresh-token-validity-in-seconds:1209600}") long refreshTokenValidityInSeconds,
-      UserDetailsService userDetailsService) {
+      ApplicationContext applicationContext) {
     this.secretKey = Keys.hmacShaKeyFor(secretKey.getBytes());
     this.accessTokenValidityInMilliseconds = accessTokenValidityInSeconds * 1000;
     this.refreshTokenValidityInMilliseconds = refreshTokenValidityInSeconds * 1000;
-    this.userDetailsService = userDetailsService;
+    this.applicationContext = applicationContext;
   }
 
   public String createAccessToken(String loginId) {
@@ -60,6 +61,7 @@ public class JwtTokenProvider {
   }
 
   public Authentication getAuthentication(String token) {
+    UserDetailsService userDetailsService = applicationContext.getBean(UserDetailsService.class);
     UserDetails userDetails = userDetailsService.loadUserByUsername(getLoginId(token));
     return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
   }
