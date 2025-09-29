@@ -20,12 +20,11 @@ public class SwaggerConfig {
                 .description("Softlabs 프로젝트 백엔드 API 명세서")
                 .version("v1.0"))
         .addSecurityItem(new SecurityRequirement().addList("Bearer Authentication"))
-        .components(new Components().addSecuritySchemes("Bearer Authentication", createAPIKeyScheme()));
+        .components(
+            new Components().addSecuritySchemes("Bearer Authentication", createAPIKeyScheme()));
   }
 
   private SecurityScheme createAPIKeyScheme() {
-    return new SecurityScheme().type(SecurityScheme.Type.HTTP)
-        .bearerFormat("JWT")
-        .scheme("bearer");
+    return new SecurityScheme().type(SecurityScheme.Type.HTTP).bearerFormat("JWT").scheme("bearer");
   }
 }
