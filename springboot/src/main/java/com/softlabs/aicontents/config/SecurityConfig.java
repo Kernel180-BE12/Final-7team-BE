@@ -46,7 +46,7 @@ public class SecurityConfig {
         .authorizeHttpRequests(
             authz ->
                 authz
-                    .requestMatchers("/auth/login", "/auth/refresh")
+                    .requestMatchers("/", "/auth/login", "/auth/refresh")
                     .permitAll()
                     .requestMatchers("/users/send-verification-code")
                     .permitAll()
