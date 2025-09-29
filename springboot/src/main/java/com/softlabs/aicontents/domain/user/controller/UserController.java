@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -47,6 +49,7 @@ public class UserController {
   }
 
   @Operation(summary = "로그인 ID 중복 확인", description = "회원가입 시 로그인 ID가 중복되는지 확인합니다.")
+  @SecurityRequirements({})
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "200", description = "중복 확인 성공"),
@@ -67,6 +70,7 @@ public class UserController {
   }
 
   @Operation(summary = "이메일 중복 확인", description = "회원가입 시 이메일이 중복되는지 확인합니다.")
+  @SecurityRequirements({})
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "200", description = "중복 확인 성공"),
@@ -88,6 +92,7 @@ public class UserController {
   }
 
   @Operation(summary = "인증코드 발송", description = "이메일로 인증코드를 발송합니다. 인증코드는 5분간 유효합니다.")
+  @SecurityRequirements({})
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "200", description = "인증코드 발송 성공"),
@@ -111,6 +116,7 @@ public class UserController {
   }
 
   @Operation(summary = "인증코드 확인", description = "이메일로 발송된 인증코드를 확인합니다.")
+  @SecurityRequirements({})
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "200", description = "인증코드 확인 완료"),
@@ -134,6 +140,7 @@ public class UserController {
   }
 
   @Operation(summary = "회원가입", description = "새로운 사용자 계정을 생성합니다. 이메일 인증이 완료된 상태여야 합니다.")
+  @SecurityRequirements({})
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "200", description = "회원가입 성공"),
