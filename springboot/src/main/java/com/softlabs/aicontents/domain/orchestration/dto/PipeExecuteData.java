@@ -7,6 +7,7 @@ import lombok.Data;
 public class PipeExecuteData {
 
   private int executionId;
+  private int taskId;
   private String status;
   private String estimatedDuration;
   private List<String> stages;

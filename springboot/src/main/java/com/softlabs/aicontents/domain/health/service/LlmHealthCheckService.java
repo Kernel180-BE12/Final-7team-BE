@@ -21,7 +21,6 @@ public class LlmHealthCheckService {
       String url = "http://13.124.8.131/fastapi/health";
 
       // FastAPI 호출 -> 응답을 Map으로 받음
-      @SuppressWarnings("unchecked")
       Map<String, Object> response = restTemplate.getForObject(url, Map.class);
 
       // 응답이 null이 아니고 status 값이 "ok" 일때 true 반환

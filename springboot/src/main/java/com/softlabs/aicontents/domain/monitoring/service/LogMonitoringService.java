@@ -30,11 +30,22 @@ public class LogMonitoringService {
     param.put(
         "logLevel",
         request.getLogLevel() != null ? request.getLogLevel().toUpperCase() : null); // 로그 레벌 조건
+    param.put("limit", request.getLimit());
+    param.put("offset", request.getOffset());
+
+    // 전체 개수 조회
+    long totalCount = logMapper.countLogsByConditions(param);
 
     // 조건에 맞는 로그 목록 조회
     List<LogEntryVO> logs = logMapper.findLogsByConditions(param);
 
+    // totalPages 계산
+    int totalPages = (int) Math.ceil((double) totalCount / request.getLimit());
+
     // 응답 DTO 생성 후 반환
-    return new LogListResponse(request.getExecutionId(), logs);
+    return new LogListResponse(
+        logs,
+        new LogListResponse.Pagination(
+            request.getPage(), totalPages, totalCount, request.getLimit()));
   }
 }
