@@ -48,7 +48,9 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	// Swagger
+
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0'
+
 	
 	// 검증 관련 의존성
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
