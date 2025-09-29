@@ -22,7 +22,7 @@ public class DashBoard {
 
     String role = reqDTO.getRole();
     System.out.println("role = " + role);
-    if (!role.equals("admin") || role == null) {
+    if (role == null || !role.equals("admin")) {
       return "권한이 없습니다.";
     }
 
