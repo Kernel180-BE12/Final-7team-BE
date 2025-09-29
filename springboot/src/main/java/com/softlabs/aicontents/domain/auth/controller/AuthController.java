@@ -10,6 +10,8 @@ import com.softlabs.aicontents.domain.auth.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +30,7 @@ public class AuthController {
 
   @PostMapping("/login")
   @Operation(summary = "로그인", description = "사용자 로그인을 처리합니다.")
+  @SecurityRequirements({})
   @ApiResponses({
     @ApiResponse(responseCode = "200", description = "로그인 성공"),
     @ApiResponse(responseCode = "400", description = "잘못된 요청"),
@@ -41,6 +44,7 @@ public class AuthController {
 
   @PostMapping("/logout")
   @Operation(summary = "로그아웃", description = "사용자 로그아웃을 처리합니다.")
+  @SecurityRequirement(name = "Bearer Authentication")
   @ApiResponses({
     @ApiResponse(responseCode = "200", description = "로그아웃 성공"),
     @ApiResponse(responseCode = "400", description = "잘못된 요청"),
@@ -54,6 +58,7 @@ public class AuthController {
 
   @PostMapping("/refresh")
   @Operation(summary = "토큰 재발급", description = "리프레시 토큰을 사용하여 새로운 액세스 토큰을 발급합니다.")
+  @SecurityRequirements({})
   @ApiResponses({
     @ApiResponse(responseCode = "200", description = "토큰 재발급 성공"),
     @ApiResponse(responseCode = "400", description = "잘못된 요청"),
