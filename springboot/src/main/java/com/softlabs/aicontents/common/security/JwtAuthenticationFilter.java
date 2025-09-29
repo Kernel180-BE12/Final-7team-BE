@@ -1,5 +1,6 @@
 package com.softlabs.aicontents.common.security;
 
+import com.softlabs.aicontents.domain.auth.service.TokenBlacklistService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,9 +14,12 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
   private final JwtTokenProvider jwtTokenProvider;
+  private final TokenBlacklistService tokenBlacklistService;
 
-  public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
+  public JwtAuthenticationFilter(
+      JwtTokenProvider jwtTokenProvider, TokenBlacklistService tokenBlacklistService) {
     this.jwtTokenProvider = jwtTokenProvider;
+    this.tokenBlacklistService = tokenBlacklistService;
   }
 
   @Override
@@ -25,7 +29,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     String token = resolveToken(request);
 
-    if (token != null && jwtTokenProvider.validateToken(token)) {
+    if (token != null
+        && jwtTokenProvider.validateToken(token)
+        && !tokenBlacklistService.isBlacklisted(token)) {
       Authentication authentication = jwtTokenProvider.getAuthentication(token);
       SecurityContextHolder.getContext().setAuthentication(authentication);
     }

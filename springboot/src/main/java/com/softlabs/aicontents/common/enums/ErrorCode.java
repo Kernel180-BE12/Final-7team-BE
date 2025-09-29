@@ -33,6 +33,7 @@ public enum ErrorCode {
 
   // 로그인 관련 에러
   INVALID_CREDENTIALS(HttpStatus.UNAUTHORIZED, "E506", "로그인 아이디 또는 비밀번호가 잘못되었습니다."),
+  INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "E507", "유효하지 않은 리프레시 토큰입니다."),
 
   // 500번대 서버 에러
   INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "E901", "내부 서버 오류가 발생했습니다."),
