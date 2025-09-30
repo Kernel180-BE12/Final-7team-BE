@@ -1,15 +1,17 @@
 package com.softlabs.aicontents.domain.user.service;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class PasswordService {
 
-  private final BCryptPasswordEncoder passwordEncoder;
+  private final PasswordEncoder passwordEncoder;
 
-  public PasswordService() {
-    this.passwordEncoder = new BCryptPasswordEncoder();
+  @Autowired
+  public PasswordService(PasswordEncoder passwordEncoder) {
+    this.passwordEncoder = passwordEncoder;
   }
 
   public String hashPassword(String plainPassword) {

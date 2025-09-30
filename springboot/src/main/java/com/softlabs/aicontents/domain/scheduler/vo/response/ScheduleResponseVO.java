@@ -18,4 +18,7 @@ public class ScheduleResponseVO {
   private String pipelineConfig; // 파이프라인 설정 JSON
   private String executeImmediately;
   private String taskName;
+
+  //  private PipeTotalData pipeData;
+
 }

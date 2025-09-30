@@ -48,7 +48,9 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	// Swagger
-	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.0'
+
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0'
+
 	
 	// 검증 관련 의존성
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -67,6 +69,14 @@ dependencies {
 
 	// Email
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+	// JWT
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+	// Redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
 	// H2 Database for testing
 	testRuntimeOnly 'com.h2database:h2'
