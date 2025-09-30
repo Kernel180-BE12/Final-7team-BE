@@ -10,13 +10,13 @@ public class LogListResponse {
   private Long executionId; // 실행 ID
   private List<LogEntryVO> logs; // 로그 목록
   private Pagination pagination;
+
   @Data
   @AllArgsConstructor
-  public static class Pagination{
-    private  int currentPage;
-    private int totalPages;//
+  public static class Pagination {
+    private int currentPage;
+    private int totalPages; //
     private long totalCount;
     private int pageSize;
   }
-
 }
