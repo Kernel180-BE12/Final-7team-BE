@@ -48,6 +48,20 @@
          WHERE login_id = #{loginId}
     </select>
 
+    <!-- 로그인 ID로 사용자 조회 (findByLoginId) -->
+    <select id="findByLoginId" resultMap="UserResultMap">
+        <!-- UserMapper.findByLoginId -->
+        SELECT id,
+               login_id,
+               email,
+               password,
+               created_at,
+               updated_at,
+               last_login_at
+          FROM users
+         WHERE login_id = #{loginId}
+    </select>
+
     <!-- 이메일로 사용자 조회 -->
     <select id="selectUserByEmail" resultMap="UserResultMap">
         <!-- UserMapper.selectUserByEmail -->

@@ -44,6 +44,7 @@ public class LogMonitoringService {
 
     // 응답 DTO 생성 후 반환
     return new LogListResponse(
+        request.getExecutionId(),
         logs,
         new LogListResponse.Pagination(
             request.getPage(), totalPages, totalCount, request.getLimit()));
