@@ -84,6 +84,16 @@ jobs:
           docker build -t ${{ secrets.ECR_REGISTRY }}/final-7team-nginx:latest ./nginx
           docker push ${{ secrets.ECR_REGISTRY }}/final-7team-nginx:latest
 
+      # 7. docker-compose.yml 파일을 EC2로 전송
+      - name: Upload docker-compose.yml to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_KEY }}
+          source: "docker-compose.yml"
+          target: "~/softlabs/"
+
   # 3. EC2로 배포
   deploy-to-ec2:
     needs: build-and-push-backend
